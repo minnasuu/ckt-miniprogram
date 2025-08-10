@@ -35,4 +35,5 @@
 .tab-bar-item.active {
   color: var(--ckt-gray-12);
   font-weight: 600;
+  position: relative;
 }

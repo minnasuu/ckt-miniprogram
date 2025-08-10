@@ -2,54 +2,73 @@
 Page({
   data: {
     statusBarHeight: 0,
+    showAiTools: false, // 控制AI工具显示/隐藏的开关
     tools: [
       {
-        id: 1,
-        icon: '/images/tools/export.png',
-        title: '图解笔记本',
-        description: '记录图解笔记、导出为图片',
-        new: true,
-        path: '/pages/tools/pattern-note/index'
+        id: 'note',
+        type: '图解工具',
+        data: [
+          {
+            id: 1,
+            icon: '/images/tools/export.png',
+            title: '图解笔记本',
+            description: '记录图解笔记、导出为图片',
+            new: true,
+            path: '/pages/tools/pattern-note/index'
+          },
+        ]
       },
       {
-        id: 2,
-        icon: '/images/tools/export.png',
-        title: '图片转像素',
-        description: '图片一键转像素图、两种算法',
-        new: true,
-        path: '/pages/tools/image-to-pixel/index'
+        id: 'image',
+        type: "图片工具",
+        data: [
+          {
+            id: "iamge-1",
+            icon: '/images/tools/export.png',
+            title: '图片转像素',
+            description: '图片一键转像素图、两种算法',
+            new: true,
+            path: '/pages/tools/image-to-pixel/index'
+          },
+          {
+            id: "image-2",
+            icon: '/images/tools/design.png',
+            title: '提取图片主色',
+            description: '一键提取图片主要颜色、生成色卡',
+            new: false,
+            path: '/pages/tools/extract-color/index'
+          },
+          {
+            id: "image-5",
+            icon: '/images/tools/template.png',
+            title: '图片换色',
+            description: '在线更换图片颜色，一键预览相同款式的其他颜色效果',
+            new: false,
+            path: '/pages/tools/color-change/index'
+          }
+        ]
       },
       {
-        id: 3,
-        icon: '/images/tools/design.png',
-        title: '提取图片主色',
-        description: '一键提取图片主要颜色、生成色卡',
-        new: false,
-        path: '/pages/tools/extract-color/index'
-      },
-      {
-        id: 4,
-        icon: '/images/tools/material.png',
-        title: '配色',
-        description: '内置常用图样、线材色卡',
-        new: false,
-        path: '/pages/tools/color-palette/index'
-      },
-      {
-        id: 5,
-        icon: '/images/tools/template.png',
-        title: '像素画板',
-        description: '在线绘制像素图、内置线材色卡',
-        new: false,
-        path: '/pages/tools/pixel-canvas/index'
-      },
-      {
-        id: 6,
-        icon: '/images/tools/template.png',
-        title: '图片换色',
-        description: '在线更换图片颜色，一键预览相同款式的其他颜色效果',
-        new: false,
-        path: '/pages/tools/color-change/index'
+        id: 'pattern',
+        type: "图案",
+        data: [
+          {
+            id: "pattern-1",
+            icon: '/images/tools/template.png',
+            title: '像素画板',
+            description: '在线绘制像素图、内置线材色卡',
+            new: false,
+            path: '/pages/tools/pixel-canvas/index'
+          },
+          {
+            id: "pattern-2",
+            icon: '/images/tools/material.png',
+            title: '配色',
+            description: '内置常用图样、线材色卡',
+            new: false,
+            path: '/pages/tools/color-palette/index'
+          },
+        ]
       }
     ],
     aiTools:[
@@ -85,12 +104,11 @@ Page({
   
   // 卡片点击事件
   onToolTap(e) {
-    const { id } = e.currentTarget.dataset;
-    const tool = this.data.tools.find(item => item.id === id);
+    const { id, path } = e.currentTarget.dataset;
     
-    if (tool && tool.path) {
+    if (path) {
       wx.navigateTo({
-        url: tool.path
+        url: path
       });
     }
   },

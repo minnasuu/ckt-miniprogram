@@ -1,4 +1,4 @@
-// idea.js
+// index.js - 主页面
 Page({
   data: {
     statusBarHeight: 0

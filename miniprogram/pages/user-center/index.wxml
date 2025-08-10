@@ -37,7 +37,7 @@
     <!-- 功能列表 -->
     <view class="function-list"></view>
   </view>
-  <custom-tabbar selected="{{4}}"></custom-tabbar>
+  <custom-tabbar selected="{{2}}"></custom-tabbar>
 
   <!-- 编辑弹窗 -->
   <view class="dialog-mask" wx:if="{{showDialog}}">

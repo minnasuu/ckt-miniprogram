@@ -70,13 +70,6 @@
           "scene": null
         },
         {
-          "name": "灵感",
-          "pathName": "pages/idea/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
           "name": "提取主色",
           "pathName": "pages/tools/extract-color/index",
           "query": "",

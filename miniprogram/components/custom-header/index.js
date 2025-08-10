@@ -35,7 +35,7 @@ Component({
           });
         } else {
           wx.switchTab({
-            url: '/pages/index/index'
+            url: '/pages/tutorial/index'
           });
         }
       }

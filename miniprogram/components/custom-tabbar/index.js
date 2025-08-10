@@ -7,23 +7,27 @@ Component({
   },
   data: {
     list: [
+      // {
+      //   pagePath: "pages/idea/index",
+      //   text: "AI 灵感"
+      // },
       {
-        pagePath: "pages/idea/index",
-        text: "AI 灵感"
-      },
-      {
+        id: "tutorial",
         pagePath: "pages/tutorial/index",
         text: "教程"
       },
+      // {
+      //   id: "index",
+      //   pagePath: "pages/index/index",
+      //   text: "CKT"
+      // },
       {
-        pagePath: "pages/index/index",
-        text: "CKT"
-      },
-      {
+        id: "tools",
         pagePath: "pages/tools/index",
         text: "工具"
       },
       {
+        id: "user-center",
         pagePath: "pages/user-center/index",
         text: "我的"
       }

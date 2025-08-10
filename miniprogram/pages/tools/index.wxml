@@ -2,7 +2,7 @@
 <view class="tools-view" style="padding-top: {{statusBarHeight + 44}}px;">
   <!-- 页面内容 -->
   <view class="tools-content">
-    <view class="tools-top-container">
+    <view wx:if="{{showAiTools}}" class="tools-top-container">
       <swiper 
         autoplay="{{true}}" 
         interval="3000" 
@@ -21,16 +21,28 @@
         </swiper-item>
       </swiper>
     </view>
-    <view class="tools-grid">
-      <view class="tool-card" wx:for="{{tools}}" wx:key="id" bindtap="onToolTap" data-id="{{item.id}}">
-        <view class="new-tag" wx:if="{{item.new}}">NEW</view>
-        <view class="tool-icon" style="clip-path: path('{{item.icon}}');"></view>
-        <view class="tool-card-text">
-          <view class="tool-title">{{item.title}}</view>
-          <view class="tool-description">{{item.description}}</view>
+    
+    <!-- 按分类显示工具 -->
+    <view class="tools-categories">
+      <view class="category-section" wx:for="{{tools}}" wx:key="id">
+        <!-- 分类标题 -->
+        <view class="category-title">
+          <text class="category-name">{{item.type}}</text>
+        </view>
+        
+        <!-- 分类下的工具网格 -->
+        <view class="tools-grid">
+          <view class="tool-card" wx:for="{{item.data}}" wx:key="id" wx:for-item="tool" bindtap="onToolTap" data-id="{{tool.id}}" data-path="{{tool.path}}">
+            <view class="new-tag" wx:if="{{tool.new}}">NEW</view>
+            <view class="tool-icon" style="clip-path: path('{{tool.icon}}');"></view>
+            <view class="tool-card-text">
+              <view class="tool-title">{{tool.title}}</view>
+              <view class="tool-description">{{tool.description}}</view>
+            </view>
+          </view>
         </view>
       </view>
     </view>
   </view>
-  <custom-tabbar selected="{{3}}"></custom-tabbar>
+  <custom-tabbar selected="{{1}}"></custom-tabbar>
 </view>

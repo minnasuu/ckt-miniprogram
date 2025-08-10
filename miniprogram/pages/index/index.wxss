@@ -1,4 +1,4 @@
-/* pages/idea/index.wxss */
+/* pages/index/index.wxss */
 .ckt-view{
   width: 100vw;
   height: 100vh;

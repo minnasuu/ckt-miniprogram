@@ -7,10 +7,10 @@ Page({
   data: {
     statusBarHeight: 88,
     data:[
-      {id:'idea-update',title:'灵感日推',desc:'每天10:00更新'}
+      // {id:'idea-update',title:'灵感日推',desc:'每天10:00更新'} // 临时隐藏AI灵感功能
     ],
 
-    // 灵感日推
+    // 灵感日推 - 临时隐藏
     showIdeaUpdateDrawer:false,
     ideaUpdateTitleValue:'',
     ideaUpdateDescValue:'',

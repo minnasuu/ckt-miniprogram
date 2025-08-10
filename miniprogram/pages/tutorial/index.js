@@ -20,7 +20,7 @@ Page({
     });
 
     // 加载初始数据
-    this.fetchIdeaList();
+    // this.fetchIdeaList(); // 临时注释掉，等待AI灵感页面恢复
   },
 
   // 导航点击事件处理函数

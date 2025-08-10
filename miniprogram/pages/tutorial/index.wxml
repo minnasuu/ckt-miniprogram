@@ -27,5 +27,5 @@
       </swiper-item>
     </swiper>
   </view>
-  <custom-tabbar selected="{{1}}"></custom-tabbar>
+  <custom-tabbar selected="{{0}}"></custom-tabbar>
 </view>
