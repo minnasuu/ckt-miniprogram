@@ -1,0 +1,14 @@
+.loading-container {
+  width: 10px;
+  aspect-ratio: 1;
+  background: var(--ckt-theme-6);
+  border-radius: 50%;
+  animation: loadingAnimation 0.6s infinite linear alternate;
+
+}
+
+@keyframes loadingAnimation {
+  0%  {box-shadow: 10px 0 var(--ckt-theme-6),-20px 0 var(--ckt-theme-6)}
+  50% {box-shadow: 10px 0 var(--ckt-theme-6),-10px 0 var(--ckt-theme-6)}
+  100%{box-shadow: 20px 0 var(--ckt-theme-6),-10px 0 var(--ckt-theme-6)}
+}

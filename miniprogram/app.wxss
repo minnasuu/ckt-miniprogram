@@ -1,0 +1,105 @@
+/**app.wxss**/
+page{
+  --ckt-red-1: #FFECE8;
+  --ckt-red-2: #FDCDC5;
+  --ckt-red-3: #FBACA3;
+  --ckt-red-4: #F98981;
+  --ckt-red-5: #F76560;
+  --ckt-red-6: #F53F3F;
+  --ckt-red-7: #CB272D;
+  --ckt-red-8: #A1151E;
+  --ckt-red-9: #770813;
+  --ckt-red-10: #4D000A;
+
+  --ckt-orangered-1: #FFF3E8;
+  --ckt-orangered-2: #FDDDC3;
+  --ckt-orangered-3: #FCC59F;
+  --ckt-orangered-4: #FAAC7B;
+  --ckt-orangered-5: #F99057;
+  --ckt-orangered-6: #F77234;
+  --ckt-orangered-7: #CC5120;
+  --ckt-orangered-8: #A23511;
+  --ckt-orangered-9: #771F06;
+  --ckt-orangered-10: #4D0E00;
+
+  --ckt-green-1: #F5FFE8;
+  --ckt-green-2: #D6EEB9;
+  --ckt-green-3: #B7DD8F;
+  --ckt-green-4: #99CC68;
+  --ckt-green-5: #7BBB47;
+  --ckt-green-6: #60AA2A;
+  --ckt-green-7: #49931B;
+  --ckt-green-8: #357B0F;
+  --ckt-green-9: #246406;
+  --ckt-green-10: #164D00;
+
+  --ckt-blue-1: #E8F7FF;
+  --ckt-blue-2: #C3E7FE;
+  --ckt-blue-3: #9FD4FD;
+  --ckt-blue-4: #7BC0FC;
+  --ckt-blue-5: #57A9FB;
+  --ckt-blue-6: #3491FA;
+  --ckt-blue-7: #206CCF;
+  --ckt-blue-8: #114BA3;
+  --ckt-blue-9: #063078;
+  --ckt-blue-10: #001A4D;
+
+  --ckt-lime-1: #F8FFE8;
+  --ckt-lime-2: #E5F6C6;
+  --ckt-lime-3: #D2EDA6;
+  --ckt-lime-4: #BEE588;
+  --ckt-lime-5: #A9DC6C;
+  --ckt-lime-6: #95D351;
+  --ckt-lime-7: #70B133;
+  --ckt-lime-8: #50901C;
+  --ckt-lime-9: #346E0B;
+  --ckt-lime-10: #1D4D00;
+  
+  --ckt-theme-1: #FFE8E8;
+  --ckt-theme-2: #FDCBCD;
+  --ckt-theme-3: #FAAEB4;
+  --ckt-theme-4: #F8919D;
+  --ckt-theme-5: #F57589;
+  --ckt-theme-6: #F35A75;
+  --ckt-theme-7: #C93857;
+  --ckt-theme-8: #A01E3E;
+  --ckt-theme-9: #760B29;
+  --ckt-theme-10: #4D0018;
+
+  --ckt-gray-0: #FFFFFF;
+  --ckt-gray-1: #F8F8F8;
+  --ckt-gray-2: #EEEEEE;
+  --ckt-gray-3: #E8E8E8;
+  --ckt-gray-4: #DDDDDD;
+  --ckt-gray-5: #C6C6C6;
+  --ckt-gray-6: #A6A6A6;
+  --ckt-gray-7: #8B8B8B;
+  --ckt-gray-8: #777777;
+  --ckt-gray-9: #5E5E5E;
+  --ckt-gray-10: #4B4B4B;
+  --ckt-gray-11: #393939;
+  --ckt-gray-12: #2C2C2C;
+  --ckt-gray-13: #202020;
+  --ckt-gray-14: #181818;
+}
+
+/* 定义全局字体 */
+@font-face {
+  font-family: 'AiDianFengYaHei'; /* 自定义字体名称 */
+  src: url('https://suminhan.cn/AiDianFengYaHei.ttf'); /* 替换为实际的字体文件路径 */
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+button {
+  background: initial;
+}
+
+button:focus{
+  outline: 0;
+}
+
+button::after{
+  border: none;
+}

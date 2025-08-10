@@ -1,0 +1,19 @@
+<view class="color-container" wx:if="{{mainColors || imgUrl}}">
+  <block wx:if="{{isLoading}}">
+    <!-- 骨架屏 -->
+    <view 
+      wx:for="{{colorIndexArray}}" 
+      wx:key="index" 
+      class="color-item skeleton"
+    ></view>
+  </block>
+  <block wx:else>
+    <!-- 实际颜色 -->
+    <view 
+      wx:for="{{mainColors.length ? mainColors:colorList}}" 
+      wx:key="index" 
+      class="color-item" 
+      style="background-color: {{item}};"
+    ></view>
+  </block>
+</view>

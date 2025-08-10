@@ -1,0 +1,98 @@
+{
+  "setting": {
+    "compileHotReLoad": true,
+    "urlCheck": true
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "工具-换色",
+          "pathName": "pages/tools/color-change/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "基础对话",
+          "pathName": "pages/tools/ai-chat/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "后台",
+          "pathName": "pages/management/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "工具-配色",
+          "pathName": "pages/tools/color-palette/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "工具-像素画版",
+          "pathName": "pages/tools/pixel-canvas/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "工具-图片转像素",
+          "pathName": "pages/tools/image-to-pixel/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "工具-图解笔记本",
+          "pathName": "pages/tools/pattern-note/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "工具",
+          "pathName": "pages/tools/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "教程",
+          "pathName": "pages/tutorial/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "灵感",
+          "pathName": "pages/idea/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "提取主色",
+          "pathName": "pages/tools/extract-color/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "个人中心",
+          "pathName": "pages/user-center/index",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  "projectname": "ckt-miniprogram",
+  "libVersion": "3.8.0"
+}

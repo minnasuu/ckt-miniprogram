@@ -1,0 +1,2 @@
+<!--components/common/switch/index.tsx.wxml-->
+<switch color="var(--ckt-theme-6)" bind:change="onChange"/>

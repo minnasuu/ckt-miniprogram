@@ -1,0 +1,5 @@
+<!-- components/tools/part-title/index.wxml -->
+<view class="part-title">
+  <text class="main-title">{{title}}</text>
+  <text wx:if="{{subTitle}}" class="sub-title">{{subTitle}}</text>
+</view>

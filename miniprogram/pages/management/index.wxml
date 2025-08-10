@@ -1,0 +1,28 @@
+<!--pages/management/index.wxml-->
+<view class="management-view">
+    <custom-header showBack title="CKT 管理台"></custom-header>
+
+    <view wx:for="{{data}}" class="content" style="padding-top:{{statusBarHeight}}px" bind:tap="onCardTap" data-type="{{item.id}}">
+        <view class="item">
+            <view class="title">{{item.title}}</view>
+            <text class="desc">{{item.desc}}</text>
+        </view>
+    </view>
+
+    <drawer-layout
+        wx:if="{{showIdeaUpdateDrawer}}"
+        bind:cancel="onIdeaUpdateCancel"
+        bind:close="onIdeaUpdateCancel"
+        bind:submit="onIdeaUpdateSubmit"
+    >
+        <view style="padding: 12px;display:flex;flex-direction:column;gap:12px">
+            <view wx:if="{{ideaUpdateImages.length>0}}" class="upload-image-list">
+              <view wx:for="{{ideaUpdateImages}}" class="upload-image-item"><image src="{{item.imageUrl}}" mode="aspectFit"></image></view>
+              <view class="upload-image-item"><image-uploader multiple bind:imageSelected="onIdeaUpdateImgChange" height="100%" placeholderText="+"></image-uploader></view>
+            </view>
+            <image-uploader wx:else multiple bind:imageSelected="onIdeaUpdateImgChange"></image-uploader>
+            <input placeholder="输入标题..." bind:input="onIdeaUpdateTitleInput"/>
+            <input placeholder="输入描述..." bind:input="onIdeaUpdateDescInput"/>
+        </view>
+    </drawer-layout>
+</view>

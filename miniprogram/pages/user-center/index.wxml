@@ -1,0 +1,69 @@
+<!-- pages/me/index.wxml -->
+<view class="user-center-container" style="padding-top: {{statusBarHeight}}px">
+  <view class="content-container">
+    <!-- 用户信息区域 -->
+    <view class="user-container">
+      <view class="user-info" bindtap="handleLogin">
+        <view class="avatar-container">
+          <view class="avatar-skeleton skeleton-animation" wx:if="{{isLoggingIn}}"></view>
+          <image class="avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" mode="aspectFill" wx:else></image>
+        </view>
+        <view class="user-detail">
+          <view class="username-skeleton skeleton-animation" wx:if="{{isLoggingIn}}"></view>
+          <view class="username" wx:else>{{userInfo.username || '点击登录'}}</view>
+        </view>
+      </view>
+      <view wx:if="{{userInfo}}" class="logout-button" bindtap="showLogoutConfirm"><view class="logout-icon"></view></view>
+    </view>
+    <!-- 功能按钮区域 -->
+    <view class="function-buttons">
+      <view class="function-button" bindtap="onFunctionTap" data-type="create">
+        <view class="button-num"><span>12</span></view>
+        <view class="button-content">
+          <view class="button-icon create"></view>
+          <text class="button-text">创作</text>
+        </view>
+      </view>
+      <view class="function-button" bindtap="onFunctionTap" data-type="favorite">
+        <view class="button-num"><span>0</span></view>
+        <view class="button-content">
+        <view class="button-icon favorite"></view>
+        <text class="button-text">收藏</text>
+        </view>
+      </view>
+    </view>
+    <!-- 后台入口（仅作者可见） -->
+    <navigator wx:if="{{userInfo.openId === 'od7SO5Pt8HG7dDS5A_1Uuv7ky_Mg'}}" url="/pages/management/index" class="management-entry">后台入口（仅作者可见）<arrow color="var(--ckt-gray-8)"></arrow></navigator>
+    <!-- 功能列表 -->
+    <view class="function-list"></view>
+  </view>
+  <custom-tabbar selected="{{4}}"></custom-tabbar>
+
+  <!-- 编辑弹窗 -->
+  <view class="dialog-mask" wx:if="{{showDialog}}">
+    <view class="dialog">
+      <view class="dialog-title">编辑用户信息</view>
+      <!-- 编辑头像 -->
+      <view class="edit-avatar {{isConfirming ? 'disabled':''}}">
+        <image src="{{tempAvatar || userInfo.avatar || '/images/default-avatar.png'}}" mode="aspectFill" class="edit-avatar" bindtap="chooseAvatar"></image>
+      </view>
+      <!-- 编辑用户名 -->
+      <view class="edit-item {{isConfirming ? 'disabled':''}}">
+        <text>用户名：</text>
+        <input placeholderText="{{userInfo.username}}" value="{{tempUsername}}" bindinput="onUsernameInput" />
+      </view>
+      <!-- 操作按钮 -->
+      <view class="dialog-buttons">
+        <button bindtap="cancelEdit" class="button cancel">取消</button>
+        <button 
+          bindtap="confirmEdit" 
+          class="button submit" 
+          disabled="{{isConfirming}}"
+        >
+          {{isConfirming ? '更新中...' : '确定'}}
+        </button>
+      </view>
+      <close-icon bind:close="cancelEdit" top="{{12}}" right="{{4}}"></close-icon>
+    </view>
+  </view>
+</view>

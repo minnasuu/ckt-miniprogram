@@ -1,0 +1,12 @@
+<view class="number-input-container {{class}}">
+  <view class="btn minus {{value <= min ? 'disabled' : ''}}" bind:tap="handleMinus">-</view>
+  <input 
+    class="input" 
+    type="number" 
+    value="{{value}}"
+    bind:input="handleInput"
+    bind:blur="handleBlur"
+    disabled="{{disabledInput}}"
+  />
+  <view class="btn plus {{value >= max ? 'disabled' : ''}}" bind:tap="handlePlus">+</view>
+</view>

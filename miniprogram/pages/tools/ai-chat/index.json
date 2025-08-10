@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "alert-message": "/components/common/alert-message/index",
+    "loading": "/components/common/loading/index",
+    "deep-think": "/components/tools/deep-think/index",
+    "towxml": "/towxml/towxml",
+    "think-content": "/components/think-content/index",
+    "loading-spine": "/components/common/loading-spine/index"
+  }
+}

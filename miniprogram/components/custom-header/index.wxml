@@ -1,0 +1,8 @@
+<view class="header" style="height: {{statusBarHeight+44}}px;background-color:{{background}}">
+  <view class="header-content">
+    <view class="back" bindtap="onBack" wx:if="{{showBack}}">
+      <view class="back-icon"></view>
+    </view>
+    <view class="title">{{title}}</view>
+  </view>
+</view>

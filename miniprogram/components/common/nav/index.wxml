@@ -1,0 +1,5 @@
+  <view class="nav-list">
+    <view wx:for="{{navList}}" class="nav-item {{(currentNav === index||currentNav===item.type) ? 'active' : ''}}" wx:key="{{item.type}}" data-index="{{index}}" data-type="{{item.type}}" bindtap="onNavChange">
+      {{item.name}}
+    </view>
+  </view>

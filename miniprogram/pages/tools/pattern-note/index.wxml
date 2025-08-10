@@ -1,0 +1,111 @@
+<view class="pattern-note-view">
+  <custom-header title="图解笔记本" showBack background="transparent"></custom-header>
+    <view class="pn-content" style="padding-top: {{statusBarHeight+44}}px">
+        <view class="pn-operate-area">
+            <view class="pn-input-area">
+                <view class="pn-header">
+                    <view class="pn-header-title-list">
+                        <block wx:for="{{data}}" wx:for-item="headItem" wx:for-index="headIndex">
+                            <view wx:if="{{headIndex>0}}" class="divider"></view>
+                            <view
+                                class="pn-header-title-item {{cur === headItem.id ? 'active':''}}"
+                                bind:tap="handleTitleTap"
+                                data-id="{{headItem.id}}"
+                            >
+                                {{headItem.title}}
+                                <view class="pn-header-title-input {{titleInputId === headItem.id ? '':'hide'}}">
+                                    <input
+                                        class="title-change-input"
+                                        placeholder="{{headItem.title}}"
+                                        bindblur="handleTitleBlur"
+                                        bindinput="handleTItleChange"
+                                    ></input>
+                                </view>
+                            </view>
+                        </block>
+                        <button class="title-add-btn" disabled="{{!data[data.length-1].values}}" bindtap="handleAddPart">+</button>
+                    </view>
+                    <custom-checkbox
+                        text="显示针数"
+                        checked="{{showStich}}"
+                        bind:change="handleShowStich"
+                    ></custom-checkbox>
+                </view>
+                <view class="pn-textarea-container">
+                    <view class="pn-textarea-lines">
+                        <view wx:for="{{lineNumbers}}" wx:key="index">{{item}}</view>
+                    </view>
+                     <textarea
+                        class="pn-textarea"
+                        height="100%"
+                        adjust-position="true"
+                        placeholder="请输入 {{curItem.title}} 的图解内容"
+                        value="{{curItem.values}}"
+                        bindinput="handleInputChange"
+                      ></textarea>
+                    <view class="pn-textarea-stiches {{showStich ? '' : 'hide'}}">
+                        <textarea
+                            value="{{curItem.nums}}"
+                            bindfocus="updateLineNumber"
+                            bindtap="updateLineNumber"
+                            bindkeydown="updateLineNumber"
+                            bindblur="handleNumsBlur"
+                            bindchange="handleNumsChange"
+                      ></textarea>
+                    </view>
+                    <view class="pn-dash-container {{showStich ? '':'hide'}} transition" >
+                          <view wx:for="{{curItem.values.aplit('/n')}}" wx:for-item="numItm" wx:for-index="numIdx" wx:key="numIdx" class="pn-dash-list">
+                            <view class="hide-value">{{numItm}}</view>
+                            <view class="dividers">
+                                <view class="divider {{numIdx === curLine ? 'active':''}}"></view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="pn-bottom-btns">
+              <custom-checkbox checked="{{autoSave}}" bind:change="handleAutoSaveChange" text="自动保存"></custom-checkbox>
+              <button bindtap="handlePreviewBtnTap" class="default">预览 下载</button>
+              <button bindtap="handleSaveBtnTap" class="primary">保存图解</button>
+            </view>
+        </view>
+        </view>
+
+        <alert-message 
+          message="{{alertMessage}}" 
+          show="{{showAlert}}" 
+          type="success"
+        />
+        <view
+            class="pattern-preview-dialog {{!showPreviewDialog? 'hide':''}}"
+        >
+           <view id="previewContentRef" class="flex column gap-12 p-24">
+               <view wx:for="{{data}}" wx:key="{{itm.id}}" class="flex column gap-4">
+                   <view class="fw-600 fs-14 color-gray-2">{{itm.title}}</view>
+                   <view class="relative flex gap-12 fs-14">
+                       <view class="color-gray-4">
+                           <view wx:for="{{lineNumbers}}" wx:for-item="itm1" wx:for-index="idx1" wx:key="idx1">{{itm1}}</view>
+                       </view>
+                       <view class="flex column color-gray-2">
+                           <view wx:for="{{lineNumbers}}" wx:for-item="itm2" wx:for-index="idx2" wx:key="idx2">{{itm2}}</view>
+                       </view>
+                       <view class="ml-auto fs-14 color-gray-4">
+                        <view wx:for="{{lineNumbers}}" wx:for-item="itm3" wx:for-index="idx3" wx:key="idx3">{{itm3}}</view>
+                      </view>
+                       <view class="absolute top-0 left-0 flex column pr-12 width-100 events-none"
+                            style="padding-left: 24px;padding-right: 32px"
+                          >
+                           <view wx:for="{{lineNumbers}}" wx:for-item="numItm" wx:for-index="numIdx" wx:key="numIdx" class="flex gap-24">
+                               <view class="opacity-0">{{numItm}}</view>
+                               <view class="flex-1 width-1 flex items-center gap-24 color-gray-4">
+                                   <view class="flex-1 width-1 border-dash"
+                                        style="transform: translateY(1px)"></view>
+                               </view>
+                           </view>
+                       </view>
+                   </view>
+               </view>
+           </view>
+           <button bindtap="handleSavePatternImg">{{saveLoading ? '保存中...':'保存到仓库'}}</button>
+        </view>
+</view>

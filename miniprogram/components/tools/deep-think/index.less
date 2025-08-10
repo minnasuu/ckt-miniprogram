@@ -1,0 +1,110 @@
+/* components/tools/deep-think/index.wxss */
+.deep-think {
+  background: var(--ckt-gray-1);
+  border-radius: 20rpx;
+  margin: 20rpx;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.header:active {
+  background-color: #f5f5f5;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.expand-icon {
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.arrow {
+  width: 12rpx;
+  height: 12rpx;
+  border-right: 2rpx solid #666;
+  border-bottom: 2rpx solid #666;
+  transform: rotate(45deg);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expand-icon.expanded .arrow {
+  transform: rotate(-135deg);
+}
+
+.steps-container {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(-10rpx);
+}
+
+.steps-container.expanded {
+  padding-bottom: 16rpx;
+  max-height: 2000rpx;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.step-item {
+  padding: 24rpx;
+  border-bottom: 1rpx solid #eee;
+  transition: background-color 0.3s ease;
+}
+
+.step-item:last-child {
+  border-bottom: none;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.step-number {
+  background: #f0f0f0;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 16rpx;
+  transition: background-color 0.3s ease;
+}
+
+.step-item:hover .step-number {
+  background: #e0e0e0;
+}
+
+.step-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.step-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.step-item:hover .step-content {
+  color: #333;
+} 

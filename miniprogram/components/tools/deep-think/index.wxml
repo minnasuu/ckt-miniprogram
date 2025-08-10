@@ -1,0 +1,23 @@
+<!--components/tools/deep-think/index.wxml-->
+<view class="deep-think">
+  <view class="header" bindtap="toggleExpand">
+    <text class="title">深度思考</text>
+    <view class="expand-icon {{isExpanded ? 'expanded' : ''}}">
+      <view class="arrow"></view>
+    </view>
+  </view>
+  
+  <view class="steps-container {{isExpanded ? 'expanded' : ''}}">
+    <block wx:for="{{steps}}" wx:key="index">
+      <view class="step-item">
+        <view class="step-header">
+          <text class="step-number">步骤 {{index + 1}}</text>
+          <text class="step-title">{{item.title}}</text>
+        </view>
+        <view class="step-content">
+          <text>{{item.content}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

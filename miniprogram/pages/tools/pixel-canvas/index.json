@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "color-picker": "/components/common/color-picker/index",
+    "custom-number-input":"/components/common/number-input/index",
+    "alert-message": "/components/common/alert-message/index",
+    "custom-switch":"/components/common/switch/index"
+  },
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "像素画板"
+}

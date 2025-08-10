@@ -1,0 +1,6 @@
+<view class="upload-box" style="width: {{width}}; height: {{height}};" bind:tap="chooseImage">
+  <block wx:if="{{!imageUrl}}">
+    <view class="upload-text">{{placeholderText}}</view>
+  </block>
+  <image wx:else class="preview-image" src="{{imageUrl}}" mode="aspectFit"></image>
+</view>

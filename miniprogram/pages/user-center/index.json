@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "custom-tabbar": "/components/custom-tabbar/index",
+    "nav": "/components/common/nav/index",
+    "close-icon": "/components/icon/close-icon/index",
+    "arrow":"/components/icon/arrow/index"
+  },
+  "navigationBarBackgroundColor": "#f5f5f5"
+}

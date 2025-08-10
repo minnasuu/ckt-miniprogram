@@ -1,0 +1,4 @@
+<view class="publish-container">
+  <custom-header title="我的创作" showBack back-url="/pages/user-center/index"></custom-header>
+  <content-grid list="{{list}}" bind:itemDeleteTap="onItemDeleteTap"></content-grid>
+</view>

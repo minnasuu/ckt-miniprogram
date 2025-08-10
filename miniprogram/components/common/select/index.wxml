@@ -1,0 +1,22 @@
+<view class="select-container" style="width: {{width}}">
+  <view class="select-trigger {{border?'border':''}}" bindtap="toggleDropdown">
+    <!-- 这里应该显示选中的选项文本 -->
+    <text>{{selectedLabel || '请选择'}}</text>
+    <view class="arrow {{isOpen ? 'open' : ''}}">
+    </view>
+  </view>
+  
+  <view class="select-dropdown {{isOpen ? 'show' : ''}}">
+    <view 
+      wx:for="{{data}}" 
+      wx:key="value" 
+      class="select-option {{item.value === selected ? 'selected' : ''}} {{item.disabled ? 'disabled' : ''}}"
+      data-value="{{item.value}}"
+      data-label="{{item.label}}"
+      bindtap="handleSelect"
+    >
+      {{item.label}}
+    </view>
+  </view>
+</view>
+<view wx:if="{{isOpen}}" class="mask" bindtap="closeDropdown"></view>

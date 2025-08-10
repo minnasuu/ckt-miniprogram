@@ -1,0 +1,4 @@
+<!--components/icon/close-icon/index.wxml-->
+<view class="arrow-button" bindtap="onArrowTap">
+    <view class="arrow-icon" style="background-color:{{color}};transform: rotate({{rotate}}deg);"></view>
+</view>

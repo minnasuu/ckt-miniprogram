@@ -1,0 +1,114 @@
+/* pages/tools/index.wxss */
+.tools-view{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 内容区域 */
+.tools-content {
+  flex: 1;
+  height: 1%;
+  width: 100%;
+  padding: 10px 12px;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.tools-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
+  gap: 12px;
+  height: fit-content;
+}
+
+.tool-card {
+  position: relative;
+  border-radius: 12px;
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  height: fit-content;
+  background-color: var(--ckt-gray-1);
+  transition: transform 0.2s;
+  box-sizing: border-box;
+}
+
+.tool-card:active {
+  transform: scale(0.98);
+}
+
+.tool-card-text{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.new-tag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: var(--ckt-theme-1);
+  color: var(--ckt-theme-6);
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.tool-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--ckt-gray-2);
+  border-radius: 12px;
+}
+
+.tool-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+}
+
+.tool-description {
+  width: 100%;
+  font-size: 12px;
+  color: var(--ckt-gray-8);
+  text-align: center;
+}
+
+/* 在index.wxss中添加 */
+.ai-tools-swiper {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 16px;
+}
+
+.ai-tool-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.ai-tool-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.ai-tool-description {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}

@@ -1,0 +1,34 @@
+<!-- pages/tools/ai-ck-style/index.wxml -->
+<view class="ai-text-img-container">
+  <custom-header title="AI 小助手" showBack background="transparent"></custom-header>
+  <view class="content" style="padding-top: {{statusBarHeight+44}}px;">
+    <view class="dialogue-container">
+      <scroll-view scroll-y="{{true}}" scroll-top="{{scrollTop}}" enhanced id="dialogue-scroll-container" class="dialogue-scroll-container" show-scrollbar="{{false}}" scroll-with-animation="{{false}}" binddragstart="onDragStart" binddragend="onDragEnd" bind:dragging="onDragging">
+        <view id="dialogue-scroll-inner" class="dialogue-scroll-inner">
+          <view wx:for="{{messagesWxml}}" wx:key="id" id="message-{{item.id}}" class="message-item {{item.role === 'user' ? 'user-message' : 'ai-message'}}">
+            <view class="message-content">
+              <think-content wx:if="{{messages[index].thinkContent}}" content="{{item.thinkContent}}" thinking="{{messageId === item.id && thinking}}" messageId="{{item.id}}" />
+              <towxml nodes="{{item.content}}" />
+              <loading-spine wx:if="{{messageId===item.id&&loading}}"></loading-spine>
+            </view>
+          </view>
+        </view>
+        <view class="mask"></view>
+      </scroll-view>
+    </view>
+    <view class="input-container" style="padding-bottom: {{keyboardHeight<=0?'env(safe-area-inset-bottom,12px)': 'calc('+keyboardHeight+'px'+' + 12px)'}}">
+      <view class="input-area">
+        <textarea maxlength="100" placeholder="请输入..." disabled="{{loading||thinking}}" value="{{inputValue}}" bindinput="onInputChange" bind:keyboardheightchange="onKeyboardHeightChange" adjust-position="{{false}}" auto-height="{{false}}" show-confirm-bar />
+        <view class="operation-container">
+          <view class="deep-think-button {{deepThink?'active':''}}" bind:tap="onDeepThinkChange">
+            深度思考（R1）
+          </view>
+          <button class="submit-button {{(loading||thinking)?'generating':''}}" bindtap="sendMessage" disabled="{{!inputValue}}">
+            <view class="button-icon"></view>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+</view>

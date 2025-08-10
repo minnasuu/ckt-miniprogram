@@ -1,0 +1,28 @@
+.color-container {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.color-item {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+}
+
+.skeleton {
+  background: var(--ckt-gray-3);
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

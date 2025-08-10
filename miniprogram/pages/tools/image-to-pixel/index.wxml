@@ -1,0 +1,65 @@
+<view class="tools-view" style="padding-top: {{statusBarHeight + 44}}px">
+  <custom-header title="图片转像素" showBack></custom-header>
+    <!-- 上传框 -->
+    <view class="tools-step-container">
+      <part-title
+        title="Step 01：上传图片"
+        subTitle="点击上传图片，以图片大小为基础自动调整像素格范围"
+      ></part-title>
+      <view class="upload-section">
+        <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" bind:imageSelected="onImageSelected"></image-uploader>
+      </view>
+    </view>
+
+    <view class="tools-step-container">
+      <view class="filter-panel">
+         <view class="filter-left">
+         程度
+          <slider 
+            value="{{pixelSize}}"
+            min="{{1}}" 
+            max="{{pixelMax}}" 
+            step="{{1}}" 
+            disabled="{{!imageUrl||loading}}"
+            class="range-slider"
+            activeColor="var(--ckt-theme-6)"
+            backgroundColor="var(--ckt-gray-2)"
+            block-size="24"
+            block-color="var(--ckt-gray-0)"
+            bindchange="onSliderChange"
+        />
+        </view>
+        <view class="filter-right">
+          <custom-checkbox text="网格" checked="{{showGrid}}" catch:change="onCheckboxChange"></custom-checkbox>
+          <button 
+            class="start-button"
+            bind:tap="onPixelate" 
+            disabled="{{loading || !imageUrl || finished}}"
+            >确定</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="tools-step-container">
+      <view id="img-to-pixel-result-puzzle" class="img-to-pixel-result-puzzle" style="grid-template-columns: 'repeat(auto-fit, minmax(200px,1fr))'">
+        <view class="img-to-pixel-result-card" >
+          <canvas id="canvasRef" canvas-id="canvasRef" type="2d" style="display: none" ></canvas>
+          <canvas canvas-id="pixelatedCanvasRef" id="pixelatedCanvasRef" type="2d" style="display:none;background-color:white" ></canvas>
+          <view class="pixel-card">
+            <image wx:if="{{pixelatedImageSrc}}" src="{{pixelatedImageSrc}}" style="width: {{resultWidth}}px;height:{{resultWidth*imgSize.w/imgSize.h}}px;" mode="aspectFit"/>
+            <view
+              class="pixel-loading {{loading ? '':'hide'}}">
+              <loading></loading>
+            </view>
+          </view>
+          <!-- <text>合并算法</text> -->
+          <view wx:if="{{pixelatedImageSrc}}" class="bottom-buttons">
+            <button bind:tap="onDownload" data-type="merge" class="download">下载</button>
+            <button bind:tap="onSave" data-type="merge" class="save" disabled="{{saveLoading}}">{{saveLoading?'保存中...':'保存到仓库'}}</button>
+          </view>
+        </view>
+      </view>
+    </view>
+    <text class="alert-text">温馨提示：由于不同设备对canvas兼容性不同，转换效果可能存在差异，可以更换设备再次尝试。</text>
+     <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+</view>

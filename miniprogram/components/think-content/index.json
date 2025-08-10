@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "towxml": "../../towxml/towxml",
+    "loading-spine": "../../components/common/loading-spine/index",
+    "arrow": "../../components/icon/arrow/index"
+  }
+}

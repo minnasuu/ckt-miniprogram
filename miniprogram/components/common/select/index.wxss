@@ -1,0 +1,84 @@
+.select-container {
+  position: relative;
+}
+
+.select-trigger {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 28rpx;
+  color: var(--ckt-gray-11);
+}
+
+.select-trigger.border{
+  justify-content: space-between;
+  padding-inline: 12px;
+  border: 1px solid var(--ckt-gray-4);
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+.arrow {
+  width: 16px;
+  height: 16px;
+  clip-path: path('M11.5287 5.52866C11.789 5.26831 12.211 5.26831 12.4714 5.52866C12.7317 5.78901 12.7317 6.21102 12.4714 6.47137L8.47137 10.4714C8.21102 10.7317 7.78901 10.7317 7.52866 10.4714L3.52866 6.47137L3.44272 6.3672C3.27183 6.10843 3.30084 5.75648 3.52866 5.52866C3.75648 5.30084 4.10843 5.27183 4.3672 5.44272L4.47137 5.52866L8.00001 9.0573L11.5287 5.52866Z');
+  background-color: var(--ckt-gray-11);
+  transition: transform 0.2s;
+  transform-origin: center;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+.select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: -8px;
+  padding: 4px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--ckt-gray-2);
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.select-dropdown.show {
+  display: block;
+}
+
+.select-option {
+  padding: 8px 12px;
+  font-size: 28rpx;
+  color: var(--ckt-gray-10);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.select-option.selected {
+  background: var(--ckt-gray-1);
+}
+
+.select-option.disabled {
+  color: #999;
+  background: #F5F5F5;
+  cursor: not-allowed;
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0); /* 透明背景 */
+  z-index: 998; /* 确保遮罩层在下拉框之下，可根据实际调整 */
+}

@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "custom-header":"/components/custom-header/index",
+    "image-uploader":"/components/common/image-uploader/index",
+    "alert-message":"/components/common/alert-message/index",
+    "color-picker":"/components/common/color-picker/index"
+  }
+}

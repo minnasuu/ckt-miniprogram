@@ -1,0 +1,179 @@
+<!-- index.wxml -->
+<view class="idea-container" >
+  <view class="idea-header-filter-list" style="padding-top: {{statusBarHeight}}px">
+    <!-- 顶部筛选 -->
+    <custom-select 
+      data="{{selectData}}" 
+      selected="{{selected}}" 
+      width="100px"
+      bind:change="handleSelectChange"
+    ></custom-select>
+  </view>
+    <scroll-view 
+        class="waterfall-scroll-view"
+        scroll-y="true"
+        enable-flex="true"
+        refresher-enabled="{{true}}"
+        refresher-threshold="{{80}}"
+        refresher-triggered="{{isRefreshing}}"
+        bindrefresherrefresh="onRefresh"
+        bindscrolltolower="onLoadMore"
+      >
+        <view class="waterfall-container" style=" padding-top:{{statusBarHeight+56}}px">
+            <!-- 左列和右列使用相同的模板，只是筛选条件不同 -->
+            <block wx:for="{{[0, 1]}}" wx:for-item="columnIndex" wx:key="columnIndex">
+              <view class="waterfall-column">
+                <view wx:for="{{ideaList}}" wx:key="id" wx:if="{{index % 2 === columnIndex}}" class="waterfall-item" bindtap="showDetail" data-item="{{item}}" data-index="{{index}}">
+                  <view wx:if="{{item.isCrochet}}" class="waterfall-item-tag">C</view>
+                  <view wx:if="{{item.isKnit}}" class="waterfall-item-tag">K</view>
+                  <!-- 单图展示 -->
+                  <view wx:if="{{item.imgUrl}}" class="image-container" style="aspect-ratio: {{item.ratio || 1}}">
+                    <view class="skeleton-image" wx:if="{{!item.imageLoaded}}"></view>
+                    <image 
+                      src="{{item.imgUrl.value}}" 
+                      mode="widthFix" 
+                      lazy-load="true" 
+                      class="waterfall-image {{item.imageLoaded ? 'image-loaded' : ''}}"
+                      bindload="onImageLoad"
+                      data-index="{{index}}"
+                    ></image>
+                  </view>
+                  
+                  <!-- 多图展示 -->
+                  <view wx:if="{{item.imgUrls}}" class="waterfall-image-list" style="aspect-ratio:{{item.ratio || 1}}">
+                    <view 
+                      wx:for="{{item.imgUrls}}" 
+                      wx:for-item="imgUrl" 
+                      wx:for-index="imgIndex" 
+                      wx:key="imgIndex"
+                      wx:if="{{imgIndex<3}}" 
+                      class="waterfall-image-item" 
+                      style="transform: {{item.imgUrls.length <= 2 ? (imgIndex === 0 ? 'rotate(-5deg) translateX(-12px)' : 'rotate(5deg) translateX(12px)') : item.imgUrls.length>3 ? (imgIndex === 0 ? 'rotate(-12deg) translateX(-18px)' : imgIndex === 1 ? 'rotate(-4deg) translateX(-6px)' : imgIndex === 2 ? 'rotate(4deg) translateX(6px)'  : 'rotate(0deg) translateX(0px)') : (imgIndex === 0 ? 'rotate(-6deg) translateX(-15px)':imgIndex === 2 ?'rotate(6deg) translateX(15px)':'rotate(0deg) translateX(0px)')}}; z-index: {{4 - imgIndex}};"
+                    >
+                      <view 
+                      class="skeleton-image" 
+                      wx:if="{{!item['image'+imgIndex+'Loaded']}}" 
+                      style="z-index: {{4-imgIndex}}"
+                      ></view>
+                      <image 
+                        src="{{imgUrl.value}}"
+                        bindload="onMultiImageLoad"
+                        data-index="{{index}}"
+                        data-img-index="{{imgIndex}}"
+                        data-total="{{item.imgUrls.length>3? 3 : item.imgUrls.length}}"
+                      ></image>
+                    </view>
+                    <view wx:if="{{item.imgUrls.length>3}}" class="image-empty" style="transform: rotate(12deg) translateX(18px);z-index:1"></view>
+                  </view>
+                  
+                  <view class="waterfall-title">{{item.name}}</view>
+                  <!-- 修改颜色显示组件的属性值 -->
+                  <color-display
+                    mainColors="{{item.imgUrl ? item.imgUrl.mainColors : item.imgUrls[0].mainColors}}" 
+                    colorNum="{{item.imgUrl.mainColors.length||item.imgUrls[0].mainColors.length}} "
+                  ></color-display>
+                </view>
+              </view>
+            </block>
+        </view>
+    </scroll-view>
+  <custom-tabbar selected="{{0}}"></custom-tabbar>
+  
+  <!-- 详情预览窗口 -->
+  <view class="detail-modal {{showDetail ? 'show' : ''}}" catchtap="hideDetail">
+    <swiper 
+      class="detail-page-swiper" 
+      vertical="true" 
+      current="{{currentItemIndex}}" 
+      bindchange="handleDetailSwiperChange"
+      duration="300"
+      circular="{{false}}"
+      easing-function="easeInOutCubic"
+    >
+      <swiper-item wx:for="{{ideaList}}" wx:key="id" class="detail-page-swiper-item">
+        <view class="detail-content" style="padding-top: {{statusBarHeight+44}}px">
+          <view class="detail-header" style="opacity: {{isZoomMode? 0:1}}">
+            <text class="detail-title">{{item.name}}</text>
+            <!-- 修改颜色显示组件的属性值 -->
+            <color-display
+              mainColors="{{item.imgUrls ? item.imgUrls[currentSwiperIndex].mainColors : (item.imgUrl ? item.imgUrl.mainColors : [])}}" 
+              colorNum="{{item.imgUrls ? item.imgUrls[currentSwiperIndex].mainColors.length : (item.imgUrl ? item.imgUrl.mainColors.length : 0)}}"
+            ></color-display>
+          </view>
+          
+          <view class="image-container">
+            <!-- 添加图片数量指示器 -->
+              <view class="image-counter" wx:if="{{item.imgUrls.length > 1 && !isZoomMode}}">
+                {{(item.id === currentItem.id ? currentSwiperIndex : 0) + 1}}/{{item.imgUrls.length}}
+              </view>
+            <!-- 图片展示区域 -->
+            <swiper class="detail-swiper" bindchange="swiperChange" current="{{item.id === currentItem.id ? currentSwiperIndex : 0}}" wx:if="{{item.imgUrls}}">
+              
+              <swiper-item wx:for="{{item.imgUrls}}" wx:for-item="imgUrl" wx:for-index="imgIndex" wx:key="imgIndex" class="detail-swiper-item">
+                <movable-area class="movable-area">
+                  <movable-view 
+                    class="movable-view" 
+                    direction="all" 
+                    scale="{{true}}" 
+                    scale-min="1" 
+                    scale-max="4" 
+                    scale-value="{{item.id === currentItem.id ? scaleValue : 1}}"
+                    bindscale="onScale"
+                    bindtap="onImageTap"
+                    data-index="{{imgIndex}}"
+                  >
+                    <image 
+                      src="{{imgUrl.value}}" 
+                      class="detail-image"
+                      bindload="onDetailImageLoad"
+                      data-index="{{imgIndex}}"
+                      style="aspect-ratio: {{item.ratio}};width: {{item.ratio>0.75 ? '100%':'auto'}};height: {{item.ratio>0.75 ? 'auto':'100%'}}"
+                      catchtap="onImageDoubleTap"
+                      data-index="{{imgIndex}}"
+                    ></image>
+                  </movable-view>
+                </movable-area>
+              </swiper-item>
+            </swiper>
+            
+            <movable-area class="movable-area" wx:if="{{item.imgUrl}}">
+              <movable-view 
+                class="movable-view" 
+                direction="all" 
+                scale="{{true}}" 
+                scale-min="1" 
+                scale-max="4" 
+                scale-value="{{item.id === currentItem.id ? scaleValue : 1}}"
+                bindscale="onScale"
+                bindtap="onImageTap"
+              >
+                <image 
+                  src="{{item.imgUrl.value}}" 
+                  class="detail-image"
+                  bindload="onDetailImageLoad"
+                  style="aspect-ratio: {{item.ratio}};width: {{item.ratio>0.75 ? '100%':'auto'}};height: {{item.ratio>0.75 ? 'auto':'100%'}}"
+                  catchtap="onImageDoubleTap"
+                ></image>
+              </movable-view>
+            </movable-area>
+          </view>
+          
+          <!-- 操作按钮 -->
+          <view class="detail-actions" style="opacity: {{isZoomMode?0:1}}">
+            <view wx:if="{{item.imgUrls}}" class="action-btn {{(item.imgUrls && currentSwiperIndex === 0) || !item.imgUrls ? 'disabled' : ''}}" catchtap="{{(item.imgUrls && currentSwiperIndex > 0) ? 'prevImage' : ''}}" data-item-index="{{index}}">
+              <view class="icon last-icon"></view>
+            </view>
+            <view class="action-btn-center-list">
+                <view class="action-btn" catchtap="shareItem"><view class="icon like-icon"></view></view>
+                <view class="action-btn" catchtap="shareItem"><view class="icon star-icon"></view></view>
+                <view class="action-btn" catchtap="shareItem"><view class="icon share-icon"></view></view>
+            </view>
+             <view wx:if="{{item.imgUrls}}" class="action-btn {{(item.imgUrls && currentSwiperIndex === item.imgUrls.length - 1) || !item.imgUrls ? 'disabled' : ''}}" catchtap="{{(item.imgUrls && currentSwiperIndex < item.imgUrls.length - 1) ? 'nextImage' : ''}}" data-item-index="{{index}}">
+              <view class="icon next-icon"></view>
+            </view>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+</view>

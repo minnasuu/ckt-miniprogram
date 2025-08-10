@@ -1,0 +1,14 @@
+<view class="dropdown {{active ? 'active' : ''}}">
+  <view class="dropdown-header" bindtap="closeDropdown">
+    <text class="title">{{title}}</text>
+    <image class="arrow" src="/images/arrow-down.png" mode="aspectFit"></image>
+  </view>
+  <view class="dropdown-content" wx:if="{{active}}">
+    <view class="dropdown-mask" bindtap="closeDropdown"></view>
+    <view class="dropdown-list">
+      <view class="dropdown-item {{currentIndex === index ? 'active' : ''}}" wx:for="{{options}}" wx:key="index" data-index="{{index}}" bindtap="onSelect">
+        {{item}}
+      </view>
+    </view>
+  </view>
+</view>

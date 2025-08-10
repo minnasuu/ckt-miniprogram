@@ -1,0 +1,26 @@
+<!--pages/tools/color-change/index.wxml-->
+<view class="color-change-container">
+  <custom-header title="" showBack background="transparent"></custom-header>
+  <view class="content" style="padding-top: {{statusBarHeight+44}}px;">
+    <view class="step-container">
+        <part-title title="Step 01：上传图片"></part-title>
+        <view class="upload-section">
+            <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" bind:imageSelected="onImageSelected"></image-uploader>
+        </view>
+        <view class="color-list" wx:if="{{colorArr.length>0}}">
+           <span>原色: </span><view wx:for="{{colorArr}}" class="color-item" style="background-color:{{item}};width:20px;height:20px"></view>
+        </view>
+        <view class="color-list" wx:if="{{colorArr.length>0}}">
+            <span>新色: </span><color-picker wx:for="{{newColorArr}}" class="color-item" value="{{item}}" width="20px" height="20px"></color-picker>
+        </view>
+    </view>
+    <view class="buttons-container">
+      <button class="generate-button" bind:tap="generate">{{generateLoading?'转换中...':'开始转换'}}</button>
+      <button disabled="{{!finished}}" class="clear-button" bind:tap="generate">清除效果</button>
+    </view>
+    <view class="canvas-container">
+      <canvas canvas-id="result-canvas" id="result-canvas" type="2d"></canvas>
+    </view>
+  </view>
+  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+</view>

@@ -1,0 +1,90 @@
+<block>
+  <!-- 颜色显示区域 -->
+  <view 
+    class="color-display {{disabled ? 'disabled' : ''}}" 
+    style="width: {{width}}; height: {{height}}; background-color: {{currentColor}};" 
+    bindtap="toggleColorPanel"
+  >{{text}}</view>
+  
+  <!-- 颜色选择面板 -->
+  <view class="color-panel-container" wx:if="{{showColorPanel}}">
+    <!-- 遮罩层 -->
+    <view class="mask" bindtap="closeColorPanel"></view>
+    
+    <!-- 颜色面板 -->
+    <view class="color-panel" catchtap="preventBubble">
+      <!-- 当前颜色预览 -->
+      <view class="color-preview">
+        <view class="color-preview-box" style="background-color: {{currentColor}};"></view>
+        <view class="color-preview-text">{{currentColor}}</view>
+      </view>
+      
+      <!-- 预设颜色 -->
+      <view class="preset-colors">
+        <view 
+          class="preset-color" 
+          wx:for="{{['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#8B00FF', '#000000', '#FFFFFF']}}" 
+          wx:key="index" 
+          style="background-color: {{item}};" 
+          data-color="{{item}}" 
+          bindtap="onPresetColorTap"
+        ></view>
+      </view>
+      
+      <!-- 色相滑块 -->
+      <view class="slider-container">
+        <text class="slider-label">色相</text>
+        <view class="hue-slider-bg">
+          <slider 
+            value="{{hue}}" 
+            min="0" 
+            max="360" 
+            activeColor="transparent" 
+            backgroundColor="transparent" 
+            block-size="28" 
+            bindchange="onHueChange"
+          />
+        </view>
+      </view>
+      
+      <!-- 饱和度滑块 -->
+      <view class="slider-container">
+        <text class="slider-label">饱和度</text>
+        <slider 
+          value="{{saturation}}" 
+          min="0" 
+          max="100" 
+          activeColor="#1aad19" 
+          block-size="28" 
+          bindchange="onSaturationChange"
+        />
+      </view>
+      
+      <!-- 亮度滑块 -->
+      <view class="slider-container">
+        <text class="slider-label">亮度</text>
+        <slider 
+          value="{{lightness}}" 
+          min="0" 
+          max="100" 
+          activeColor="#1aad19" 
+          block-size="28" 
+          bindchange="onLightnessChange"
+        />
+      </view>
+      
+      <!-- 不透明度滑块 -->
+      <view class="slider-container">
+        <text class="slider-label">不透明度</text>
+        <slider 
+          value="{{opacity}}" 
+          min="0" 
+          max="100" 
+          activeColor="#1aad19" 
+          block-size="28" 
+          bindchange="onOpacityChange"
+        />
+      </view>
+    </view>
+  </view>
+</block>

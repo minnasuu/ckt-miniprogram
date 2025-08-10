@@ -1,0 +1,3 @@
+<view class="alert-message {{type}} {{show ? 'show' : ''}}">
+  <view class="alert-content">{{message}}</view>
+</view>

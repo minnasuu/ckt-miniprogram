@@ -1,0 +1,70 @@
+<view class="extract-color-view" style="padding-top: {{statusBarHeight + 44}}px">
+  <custom-header title="提取图片主色" showBack></custom-header>
+  <!-- 上传框 -->
+  <view class="extract-color-step-container">
+    <part-title title="Step 01：上传图片" subTitle="点击来上传图片，以像素为单位对颜色计数"></part-title>
+    <view class="upload-section">
+      <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" bind:imageSelected="onImageSelected"></image-uploader>
+    </view>
+  </view>
+  <!-- 颜色 -->
+  <view class="extract-color-step-container">
+    <!-- 取色配置 -->
+    <part-title title="Step 02：取色配置"></part-title>
+    <view class="step-desc-list">
+      <view>【过滤颜色】设置过滤中性色的范围</view>
+      <view>【提取数量】可一次提取6、8、10个颜色</view>
+      <view>【编辑颜色】支持删除、添加、修改提取的颜色列表</view>
+    </view>
+    <view class="filter-list {{imageUrl?'':'disabled'}}">
+      <custom-checkbox text="过滤中性色" checked="{{filterChecked}}" bind:change="onCheckboxChange" />
+      <number-input value="{{filter}}" min="0" max="35" step="1" bind:change="onFilterNumberChange" />
+      <custom-select border="{{true}}" width="160rpx" data="{{numberSelectData}}" selected="{{selectedNumber}}" bind:change="onSelectNumberChange"></custom-select>
+    </view>
+    <!-- 颜色列表 -->
+    <view class="color-list-container">
+      <!-- 颜色提取按钮 -->
+      <view wx:if="{{colorArr.length<=0}}" class="default-content {{(!colorArr || colorArr.length === 0) ? '' : 'disabled'}}">
+        <block wx:if="{{picking}}">
+          <view class="color-pick-loading">
+            <loading />
+          </view>
+        </block>
+        <block wx:else>
+          <button class="color-pick-submit-btn" disabled="{{!imageUrl}}" bind:tap="getImgColor">
+            提取颜色
+          </button>
+        </block>
+      </view>
+      <!-- 颜色列表展示 -->
+      <block wx:if="{{colorArr.length > 0}}">
+        <view wx:for="{{colorArr}}" wx:key="id" bind:tap="handleDeleteColor" bind:longpress="handleCopyColor" data-color="{{item.value}}" class="color-card-with-icon">
+          <view class="color-item">
+            <color-picker color="{{item.value}}" width="40px" height="40px" bind:change="handleColorChange" />
+            <view class="color-card-value">{{item.value}}</view>
+          </view>
+        </view>
+        <!-- 添加颜色按钮 -->
+        <view wx:if="{{colorArr.length < 8}}" class="color-add-button" bind:tap="handlePick">
+          <view class="color-picker-icon"></view>
+        </view>
+      </block>
+    </view>
+    <!-- 色卡 -->
+    <view class="extract-color-step-container">
+      <part-title title="Step 03：下载、保存色卡" subTitle="调整颜色至满意值后，即可下载色卡到本地，也支持保存色卡至仓库。"></part-title>
+      <!-- 添加 canvas-id 属性并设置样式 -->
+      <canvas canvas-id="colorCardCanvas" style="width: 100%; height: {{totalCanvasHeight}}px;"></canvas>
+      <view wx:if="{{colorArr.length>0}}" class="color-result-button-container">
+        <button class="color-card-btn download" data-index="{{index}}" disabled="{{!imageUrl}}" bind:tap="downloadColorCard">
+          下载
+        </button>
+        <button class="color-card-btn save" bind:tap="saveColorCard">
+          <Icon name="download" />
+          保存
+        </button>
+      </view>
+    </view>
+  </view>
+  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+</view>

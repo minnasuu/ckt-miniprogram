@@ -1,0 +1,96 @@
+<view class="pixel-canvas-container">
+  <custom-header title="像素画板" showBack></custom-header>
+  <view class="content" style="padding-top: {{statusBarHeight + 44 + 12}}px;">
+    <!-- 画布区域 -->
+    <view class="canvas-container">
+      <view class="pixel-canvas" style="width: 100%;height:{{canvasHeight*Math.min(screenWidth/canvasWidth,24)}}px">
+        <view class="canvas-row" wx:for="{{canvasData}}" wx:for-item="row" wx:for-index="y" wx:key="y">
+          <view class="pixel" wx:for="{{row}}" wx:for-item="pixel" wx:for-index="x" wx:key="x" 
+              style="background-color: {{pixel}}; width: {{screenWidth/canvasWidth}}px; max-width:24px;border-color:{{borderStyle === '1'?'transparent':borderStyle ==='2'?canvasColor:'var(--ckt-gray-4)'}};" 
+              bindtap="drawPixel" 
+              data-x="{{x}}" 
+              data-y="{{y}}"
+            ></view>
+        </view>
+      </view>
+    </view>
+
+  <view class="option-item">
+      <text class="title">设置画布大小</text>
+      <view style="display:flex;align-items:center;gap:40rpx;font-size:28rpx;color:var(--ckt-gray-8)">
+        <view style="display:flex;align-items:center;">
+        宽：<custom-number-input
+        value="{{canvasWidth}}"
+        min="4"
+        max="60"
+        step="2"
+        disabledInput
+        bind:change="onCanvasWidthInput"
+      ></custom-number-input>
+      </view>
+      <view style="display:flex;align-items:center;">
+        高：<custom-number-input
+        value="{{canvasHeight}}"
+        min="4"
+        max="60"
+        step="2"
+        disabledInput
+        bind:change="onCanvasHeightInput"
+      ></custom-number-input>
+      </view>
+      <button class="fullscreen-button" style="width: 34px" bind:tap="onFullCanvas"><view class="fullscreen-icon"></view></button>
+      </view>
+    </view>
+
+    <view class="option-item">
+      <text class="title">画笔颜色</text>
+      <view class="option-content">
+        <view style="width:100%"><color-picker value="{{brushColor}}" hueColors="{{colorPalette}}" width="100%" height="80rpx" bind:change="onBrushColorChange" /></view>
+        <button class="eraser-button"><view class="eraser-icon"></view></button>
+      </view>
+    </view>
+
+    <view class="option-item">
+      <text class="title">画笔图样</text>
+        <view class="brush-pattern-list">
+          <view class="brush-pattern-item empty"></view>
+          <view wx:for="{{brushPatternData}}" class="brush-pattern-item"></view>
+        </view>
+    </view>
+
+      <view style="display:flex;gap:24px;width:100%">
+        <view class="option-item" style="flex:1">
+          <text class="title">画布颜色</text>
+          <view style="width:100%"><color-picker value="{{canvasColor}}" hueColors="{{colorPalette}}" width="100%" height="80rpx" bind:change="onCanvasColorChange" /></view>
+        </view>
+        <view class="option-item" style="flex:1">
+          <text class="title">网格线颜色</text>
+          <view class="grid-style-select-list">
+            <view wx:for="{{gridStyleList}}" bind:tap="onGridShowChange" data-type="{{item}}" class="grid-style-select-item {{item === '1'?'transparent':''}} {{borderStyle === item ? 'active':''}}" style="background-color: {{item === '1' ? '' : item === '2' ? canvasColor:'var(--ckt-gray-2)'}}"></view>
+          </view>
+        </view>
+      </view>
+
+    <!-- 工具栏 -->
+    <view class="toolbar">
+      <button class="tool-button" bindtap="clearCanvas">清除画布</button>
+      <button class="tool-button" bindtap="downloadCanvas">下载图片</button>
+       <button class="tool-button primary" bindtap="saveCanvas">保存图片</button>
+    </view>
+  </view>
+  <movable-area scale-area class="full-pixel-canvas-container {{fullCanvas?'fullCanvas':''}}" style="padding-top: {{statusBarHeight + 44 + 12}}px;width:100vw;height:100vh;">
+    <movable-view direction="all" class="pixel-canvas" x="{{(screenWidth + 48 - canvasWidth * 32)/2}}" y="{{(screenHeight+statusBarHeight - canvasHeight * 32)/2}}" style="width: {{canvasWidth*32}}px;height:{{canvasHeight*32}}px;">
+        <view class="canvas-row" wx:for="{{canvasData}}" wx:for-item="row" wx:for-index="y" wx:key="y">
+          <view class="pixel" wx:for="{{row}}" wx:for-item="pixel" wx:for-index="x" wx:key="x" 
+              style="background-color: {{pixel}}; width: 32px;border-color:{{borderStyle === 1 ?'transparent':borderStyle==='2'? canvasColor:'var(--ckt-gray-4)'}};"
+              bindtap="drawPixel" 
+              data-x="{{x}}" 
+              data-y="{{y}}"
+            ></view>
+        </view>
+      </movable-view>
+      <button class="zoom-out-button" style="width: 34px" bind:tap="onZoomOutCanvas"><view class="zoom-out-icon"></view></button>
+  </movable-area>
+  <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="display:none;width: {{canvasWidth*32}}px;height:{{canvasHeight*32}}px;"></canvas>
+  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+</view>

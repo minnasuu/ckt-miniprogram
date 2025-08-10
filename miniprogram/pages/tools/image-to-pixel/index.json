@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "image-uploader": "/components/common/image-uploader/index",
+    "loading": "/components/common/loading/index",
+    "custom-checkbox":"/components/common/checkbox/index",
+    "alert-message": "/components/common/alert-message/index"
+  },
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "图片转像素"
+}

@@ -1,0 +1,64 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/tutorial/index",
+    "pages/idea/index",
+    "pages/tools/index",
+    "pages/user-center/index",
+    "pages/user-center/create/index",
+    "pages/user-center/favorite/index",
+    "pages/tools/extract-color/index",
+    "pages/tools/color-palette/index",
+    "pages/tools/pixel-canvas/index",
+    "pages/tools/image-to-pixel/index",
+    "pages/tools/pattern-note/index",
+    "pages/management/index",
+    "pages/tools/ai-ck-style/index",
+    "pages/tools/ai-chat/index",
+    "pages/tools/color-change/index"
+  ],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "CKT",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#000000",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/idea/index",
+        "text": "灵感"
+      },
+      {
+        "pagePath": "pages/tutorial/index",
+        "text": "教程"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "CKT"
+      },
+      {
+        "pagePath": "pages/tools/index",
+        "text": "工具"
+      },
+      {
+        "pagePath": "pages/user-center/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.writePhotosAlbum": {
+      "desc": "需要您的授权以保存图片到相册"
+    }
+  }
+}

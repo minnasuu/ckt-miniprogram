@@ -1,0 +1,175 @@
+/* pages/tools/ai-ck-style/index.wxss */
+.ai-text-img-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    flex: 1;
+    overflow: hidden;
+  }
+  .dialogue-container {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .dialogue-container .dialogue-scroll-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding-inline: 24rpx;
+    box-sizing: border-box;
+  }
+  #dialogue-scroll-inner{
+    width: 100%;
+    height: fit-content;
+    .alternate-history{
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: fit-content;
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  .input-container {
+    width: 100%;
+    padding-inline: 48rpx;
+    box-sizing: border-box;
+    background-color: white;
+  }
+  .input-container .input-area {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 24rpx;
+    background-color: var(--ckt-gray-1);
+    border-radius: 24rpx;
+    box-sizing: border-box;
+  }
+  .input-container textarea {
+    flex: 1;
+    width: 1%;
+    font-size: 28rpx;
+    height: 80px;
+    line-height: 44rpx;
+    caret-color: var(--ckt-theme-6);
+  }
+  .input-container .submit-button {
+    width: auto;
+    height: 42px;
+    aspect-ratio: 1;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    border-radius: 40rpx;
+    background-color: var(--ckt-gray-11);
+    color: var(--ckt-gray-0);
+    .button-icon{
+        width: 20px;
+        height: 20px;
+        clip-path: path('M9.13415 4.5C9.51905 3.83333 10.4813 3.83333 10.8662 4.5C13.0764 8.32815 14.3155 10.4744 16.5257 14.3026C17.0119 15.1446 16.132 16.1149 15.2466 15.7133C13.3591 14.857 12.3008 14.377 10.4133 13.5207C10.1508 13.4016 9.84959 13.4016 9.58706 13.5207C7.69953 14.377 6.64128 14.857 4.75375 15.7133C3.86831 16.1149 2.98847 15.1446 3.47461 14.3026C5.6848 10.4744 6.92396 8.32815 9.13415 4.5Z');
+        background-color: var(--ckt-gray-0);
+        transition: all 0.3s ease-in-out;
+        transform: scale(1.2);
+    }
+    &.generating{
+        .button-icon{
+            // clip-path: path('M16 10C16 11.6383 15.3434 13.1233 14.2789 14.206C13.1904 15.3133 11.6754 16 10 16C8.3246 16 6.80959 15.3133 5.72106 14.206C4.65662 13.1233 4 11.6383 4 10C4 8.36169 4.65662 6.87674 5.72106 5.79397C6.80959 4.68669 8.3246 4 10 4C11.6754 4 13.1904 4.68669 14.2789 5.79397C15.3434 6.87674 16 8.36169 16 10Z');
+            clip-path: path('M5 7C5 5.89543 5.89543 5 7 5C9.34315 5 10.6569 5 13 5C14.1046 5 15 5.89543 15 7C15 9.34315 15 10.6569 15 13C15 14.1046 14.1046 15 13 15C10.6569 15 9.34315 15 7 15C5.89543 15 5 14.1046 5 13C5 10.6569 5 9.34315 5 7Z');
+        }
+    }
+  }
+  .input-container .submit-button[disabled] {
+    background-color: var(--ckt-gray-3);
+    color: var(--ckt-gray-6);
+  }
+  
+  /* 消息样式 */
+  .message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32rpx;
+    width: 100%;
+  }
+  .message-item {
+    display: flex;
+    max-width: 100%;
+  }
+  .user-message {
+    flex-direction: row-reverse;
+  }
+  .ai-message {
+    flex-direction: row;
+  }
+  .message-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .message-avatar image {
+    width: 100%;
+    height: 100%;
+  }
+  .message-content {
+    max-width: 100%;
+    min-width: 80rpx;
+    padding: 20rpx;
+    border-radius: 16rpx;
+    font-size: 28rpx;
+    word-break: break-word;
+    .message-text{
+      display: inline;
+    }
+  }
+  .user-message .message-content {
+    background-color: var(--ckt-theme-1);
+    color: var(--ckt-gray-12);
+  }
+  .ai-message .message-content {
+    background-color: var(--ckt-gray-1);
+    color: var(--ckt-gray-9);
+  }
+  .message-image-container {
+    margin-top: 16rpx;
+    width: 100%;
+  }
+  .message-image {
+    width: 100%;
+    max-width: 400rpx;
+    border-radius: 8rpx;
+  }
+  
+  /* 生成中动画 */
+  .generating-indicator {
+    display: inline-block;
+    animation: blink .6s step-end infinite;
+    background-color: var(--ckt-theme-6);
+    width: 2rpx;
+    height: 36rpx;
+    vertical-align: bottom;
+    @keyframes blink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+    }
+  }
+
+  

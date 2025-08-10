@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "custom-header":"/components/custom-header/index",
+    "drawer-layout":"/components/common/drawer-layout/index",
+    "image-uploader":"/components/common/image-uploader/index"
+  }
+}

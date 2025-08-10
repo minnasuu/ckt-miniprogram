@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "close-icon":"/components/icon/close-icon/index"
+  }
+}

@@ -1,0 +1,24 @@
+<view class="content-grid" bind:tap="onContianerTap">
+    <view class="grid-column" wx:for="{{[0,1]}}" wx:for-index="columnIndex">
+      <view class="grid-item" wx:for="{{list}}" wx:key="id" wx:if="{{index % 2 === columnIndex}}" data-id="{{item._id}}" catchtap="onItemTap" catch:longtap="onItemLongTap">
+        <view class="item-image">
+          <image src="{{item.image}}" style="width:{{screenWidth/2-42}}px;height:{{(screenWidth/2-42)/(item.width/item.height)}}px" mode="aspectFit"></image>
+        </view>
+        <view class="item-info">
+          <view wx:if="{{item.title}}" class="item-title">{{item.title}}</view>
+          <view class="item-meta">
+            <view class="author">
+              <image class="author-avatar" src="{{item.author.avatar}}" mode="aspectFill"></image>
+              <text class="author-name">{{item.author.username}}</text>
+            </view>
+            <view class="tag">{{item.tag}}</view>
+          </view>
+        </view>
+        <view class="button-mask" wx:if="{{showMask === item._id}}">
+          <view class="btn" bind:tap="onDownload" data-id="{{item._id}}">下载</view>
+          <view class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>
+          <view class="btn" bind:tap="onPublish" data-id="{{item._id}}">发布</view>
+        </view>
+    </view>
+    </view>
+</view>

@@ -1,0 +1,15 @@
+/* components/icon/close-icon/index.wxss */
+.arrow-button{
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-icon{
+  width: 20px;
+  height: 20px;
+  clip-path: path('M7.20891 4.29273C7.57502 3.92662 8.15403 3.90402 8.5468 4.22437L8.62297 4.29273L13.623 9.29273C14.0135 9.68326 14.0135 10.3163 13.623 10.7068L8.62297 15.7068C8.23245 16.0973 7.59943 16.0973 7.20891 15.7068C6.81838 15.3163 6.81838 14.6833 7.20891 14.2927L11.5019 9.99977L7.20891 5.7068L7.14055 5.63063C6.8202 5.23785 6.84279 4.65885 7.20891 4.29273Z');
+  transition: transform 0.2s ease;
+}

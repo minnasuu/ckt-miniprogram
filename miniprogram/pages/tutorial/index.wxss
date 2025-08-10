@@ -1,0 +1,28 @@
+/* pages/tutorial/index.wxss */
+.tutorial-view{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.tutorial-nav{
+  padding-inline: 40rpx;
+  width: calc(100% - 108px);
+  height: 44px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.tutorial-nav::-webkit-scrollbar{
+  width: 0;
+  display: none;
+}
+
+.tutorial-content{
+  flex: 1;
+  height: 1%;
+  overflow: auto;
+}

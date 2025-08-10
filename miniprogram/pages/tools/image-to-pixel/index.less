@@ -1,0 +1,143 @@
+.tools-view{
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40rpx;
+  padding: 64rpx 48rpx 48rpx;
+  box-sizing: border-box;
+  overflow: auto;
+  padding-bottom: env(safe-area-inset-bottom,12px);
+}
+
+.tools-step-container{
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.filter-panel{
+  display: flex;
+  align-items: center;
+  gap: 40rpx;
+  width: 100%;
+  .filter-left{
+    flex: 1;
+    width: 1%;
+    display: flex;
+    gap: 8rpx;
+    align-items: center;
+    font-size: 24rpx;
+    color: var(--ckt-geay-12);
+    white-space: nowrap;
+    .range-slider{
+       flex: 1;
+       width: 1%;
+    }
+  }
+  .filter-right{
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    font-size: 24rpx;
+    color: var(--ckt-geay-12);
+    button.start-button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 36px;
+        padding: 0;
+        margin: 0;
+        font-size: 28rpx;
+        background-color: var(--ckt-theme-6);
+        color: var(--ckt-gray-0);
+        border-radius: 16rpx;
+        &[disabled]{
+            background-color: var(--ckt-gray-2);
+            color: var(--ckt-gray-5);
+        }
+    }
+  }
+}
+
+.img-to-pixel-result-puzzle{
+  display: flex;
+  flex-direction: column;
+  gap: 40rpx;
+}
+.img-to-pixel-result-card{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  align-items: center;
+  font-size: 24rpx;
+  color: var(--ckt-gray-10);
+  .pixel-card{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: var(--ckt-gray-1);
+    border-radius: 24rpx;
+    image{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .pixel-loading{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s linear;
+      z-index: 1;
+      &.hide{
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+  .bottom-buttons{
+    display: flex;
+    align-items: center;
+    gap: 24rpx;
+    width: 100%;
+    button{
+      width: fit-content;
+      border-radius: 16rpx;
+      height: 72rpx;
+      padding-inline: 48rpx;
+      font-size: 28rpx;
+      &.download{
+        width: fit-content;
+        background-color: var(--ckt-gray-1);
+        color: var(--ckt-gray-10);
+      }
+      &.save{
+        flex: 1;
+        background-color: var(--ckt-theme-6);
+        color: var(--ckt-gray-0);
+        &[disabled]{
+            background-color: var(--ckt-gray-2);
+            color: var(--ckt-gray-5);
+        }
+      }
+    }
+  }
+}
+
+.alert-text{
+  font-size: 24rpx;
+  color: var(--ckt-gray-6);
+  text-align: center;
+  margin-top: auto;
+}

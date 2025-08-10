@@ -1,0 +1,24 @@
+.alert-message {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 24rpx 32rpx;
+  border-radius: 8rpx;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  max-width: 80%;
+  pointer-events: none;
+  background-color: var(--ckt-gray-12);
+  color: var(--ckt-gray-0);
+}
+
+.alert-message.show {
+  opacity: 1;
+}
+
+.alert-content {
+  font-size: 28rpx;
+  line-height: 1.5;
+}

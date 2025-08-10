@@ -1,0 +1,17 @@
+/* components/tools/part-title/index.wxss */
+.part-title {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.part-title .main-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+}
+
+.part-title .sub-title {
+  font-size: 14px;
+  color: var(--ckt-gray-8);
+}
+

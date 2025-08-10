@@ -1,0 +1,12 @@
+/* pages/idea/index.wxss */
+.ckt-view{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ckt-content{
+  flex: 1;
+  height: 1%;
+}

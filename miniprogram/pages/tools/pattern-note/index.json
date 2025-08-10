@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "custom-checkbox": "/components/common/checkbox/index",
+    "alert-message": "/components/common/alert-message/index"
+  },
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "图解笔记本"
+}

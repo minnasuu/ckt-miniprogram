@@ -1,0 +1,7 @@
+<!-- idea.wxml -->
+<view class="ckt-view">
+  <view class="ckt-content" style="padding-top: {{statusBarHeight + 44}}px; padding-bottom: 96rpx;">
+    <!-- 页面内容 -->
+  </view>
+  <custom-tabbar selected="{{2}}"></custom-tabbar>
+</view>

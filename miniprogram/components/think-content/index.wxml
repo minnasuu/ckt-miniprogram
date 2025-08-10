@@ -1,0 +1,12 @@
+<view class="think-content">
+  <view class="think-content-header" bindtap="toggleExpand">
+    <view class="think-content-title">{{thinking?'思考中':'思考完成'}}，用时 {{thinkTime}} 秒</view>
+    <view class="expand-icon {{isExpanded ? 'expanded' : ''}}">
+      <arrow rotate="{{isExpanded ? '-90' : '90'}}"></arrow>
+    </view>
+  </view>
+  <view class="think-content-body {{isExpanded ? 'expanded' : ''}}">
+    <towxml nodes="{{content}}" />
+    <loading-spine wx:if="{{thinking}}"></loading-spine>
+  </view>
+</view>

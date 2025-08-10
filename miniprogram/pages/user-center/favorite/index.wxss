@@ -1,0 +1,4 @@
+.favorite-container {
+  min-height: 100vh;
+  background: var(--ckt-gray-0);
+} 

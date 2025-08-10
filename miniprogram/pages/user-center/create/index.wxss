@@ -1,0 +1,7 @@
+.publish-container {
+  min-height: 100vh;
+  background: var(--ckt-gray-0);
+  padding-top: 176rpx;
+  box-sizing: border-box;
+  overflow: auto;
+} 

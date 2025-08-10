@@ -1,0 +1,498 @@
+/**index.wxss**/
+
+page{
+  background-color: var(--ckt-gray-0);
+  height: 100%;
+}
+.idea-container{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.idea-header-filter-list{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-inline: 20px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+/* 瀑布流列 */
+.waterfall-column {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 瀑布流项目 */
+.waterfall-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-inline: 12px;
+  padding-bottom: 16px;
+  padding-top: 24px;
+  background-color: var(--ckt-gray-1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 瀑布流图片 */
+.waterfall-image {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+}
+
+/* 瀑布流多图列表*/
+.waterfall-image-list {
+  position: relative;
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.more-images-text {
+  font-size: 16px;
+  color: #999999;
+  font-weight: bold;
+}
+
+/* 调整图片项的样式，移除之前的top和left设置 */
+.waterfall-image-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  transform-origin: bottom center;
+  transition: all 0.3s ease;
+}
+
+.image-empty{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--ckt-gray-2);
+  transform-origin: bottom center;
+  border-radius: 8px;
+}
+
+.waterfall-image-item image{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+/* 瀑布流标题 */
+.waterfall-title {
+  font-size: 14px;
+  color: var(--ckt-gray-11);
+  line-height: 22px;
+  font-weight: bold;
+}
+
+
+.waterfall-scroll-view {
+  width: 100%;
+  flex: 1;
+  height: 1%;
+}
+.waterfall-container{
+  width: 100%;
+  display: inline-flex;
+  padding-inline: 10px;
+  padding-bottom: 12px;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+/* 加载更多提示 */
+.loading-more {
+  text-align: center;
+  padding: 10px 0;
+  color: var(--ckt-gray-6);
+  font-size: 12px;
+}
+
+
+/* 图片容器 */
+.waterfall-container .image-container {
+  width: 60%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 骨架屏 */
+.skeleton-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #f1f1f1 25%, #ededed 50%, #f1f1f1 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 图片加载完成后的样式 */
+.waterfall-image, .waterfall-image-item {
+  transition: opacity 0.3s ease;
+}
+
+.image-loaded {
+  z-index: 2;
+}
+
+.waterfall-item-tag{
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  line-height: 20px;
+  text-align: center;
+  font-weight: bold;
+  background-color: var(--ckt-gray-2);
+  border-radius: 100%;
+  color: var(--ckt-gray-6);
+}
+
+/* 详情预览窗口样式 */
+.detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.detail-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.detail-content {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  padding-inline: 10px;
+  font-size: 14px;
+  pointer-events: none;
+  transition: opacity 0.2s linear;
+}
+
+.detail-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--ckt-gray-12);
+}
+
+.detail-desc {
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--ckt-gray-8);
+}
+
+.close-btn {
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.detail-modal .image-container{
+  position: relative;
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 10px;
+  box-sizing: border-box;
+}
+
+.detail-swiper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.detail-image{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  overflow: visible !important;
+}
+
+.detail-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 10px;
+  margin-top: 12px;
+  transition: opacity 0.2s linear;
+}
+
+.action-btn {
+  appearance: none;
+  padding: 0;
+  border-radius: 20px;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+}
+
+.action-btn-center-list{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.action-btn .icon{
+  width: 100%;
+  height: 100%;
+  background-color: var(--ckt-gray-11);
+}
+.share-icon{
+  clip-path: path('M10.0324 1.07865C10.4029 0.922365 10.8309 1.00319 11.1189 1.2838L18.6979 8.66841C18.8946 8.8601 19.0038 9.12426 18.9999 9.39891C18.996 9.67355 18.8793 9.9345 18.6771 10.1205L11.0982 17.0948C10.8061 17.3636 10.3827 17.4342 10.0193 17.2747C9.6558 17.1153 9.42105 16.7559 9.42105 16.359V12.9159C7.36842 13.2067 5.83409 14.3658 4.74719 15.5877C4.12035 16.2924 3.65937 17.001 3.35555 17.5338C3.20423 17.7992 3.09349 18.0182 3.02196 18.1676C2.98623 18.2422 2.96041 18.2991 2.9443 18.3355C2.93624 18.3537 2.93063 18.3668 2.92743 18.3743L2.92508 18.3798L2.92481 18.3805C2.7432 18.8219 2.27485 19.0735 1.80646 18.9811C1.33782 18.8887 1 18.4777 1 18C1 14.4491 1.52885 11.3378 3.00669 9.09144C4.38542 6.99576 6.50709 5.7735 9.42105 5.55013V2.00003C9.42105 1.59793 9.66189 1.23494 10.0324 1.07865ZM3.26298 14.2471C4.74378 12.5864 7.09636 10.8462 10.4211 10.8462C10.9733 10.8462 11.4211 11.2939 11.4211 11.8462V14.0798L16.5458 9.36389L11.4211 4.37059V6.51285C11.4211 7.06513 10.9733 7.51285 10.4211 7.51285C7.53892 7.51285 5.77729 8.51903 4.67752 10.1907C3.98947 11.2365 3.52546 12.5948 3.26298 14.2471Z');
+}
+
+.star-icon{
+  clip-path: path('M9.99688 1C10.3757 0.999022 10.7226 1.21223 10.8928 1.5507L13.1355 6.00989L18.1425 6.73037C18.5202 6.78473 18.8341 7.04938 18.9515 7.41253C19.0689 7.77568 18.9694 8.174 18.695 8.43923L15.0608 11.9515L15.9229 16.8258C15.9894 17.2016 15.8362 17.5825 15.528 17.8075C15.2198 18.0326 14.8104 18.0627 14.4727 17.885L9.99952 15.5322L5.52738 17.885C5.18944 18.0628 4.77974 18.0326 4.47151 17.8072C4.16327 17.5818 4.01031 17.2005 4.0773 16.8246L4.94557 11.9515L1.30571 8.43984C1.03083 8.17464 0.931023 7.77601 1.04851 7.41257C1.16601 7.04913 1.48027 6.78436 1.85837 6.73026L6.8923 6.00991L9.10377 1.55533C9.27224 1.21599 9.61802 1.00098 9.99688 1ZM10.0053 4.2372L8.44997 7.37004C8.30364 7.66478 8.02167 7.86867 7.69593 7.91528L4.16608 8.4204L6.71791 10.8823C6.95773 11.1137 7.06654 11.4494 7.00808 11.7774L6.40476 15.1635L9.53388 13.5173C9.82531 13.364 10.1735 13.364 10.465 13.5173L13.5982 15.1653L12.9988 11.7762C12.9408 11.4488 13.0494 11.114 13.2885 10.883L15.8377 8.41932L12.3341 7.91517C12.0105 7.86861 11.7301 7.66677 11.5832 7.37467L10.0053 4.2372Z');
+}
+
+.like-icon{
+  clip-path: path('M1 7.48637C1 4.47476 3.39942 2 6.4 2C7.78646 2 9.04721 2.53091 10 3.39714C10.9528 2.53091 12.2135 2 13.6 2C16.6006 2 19 4.47476 19 7.48637C19 10.1064 17.4966 12.4859 15.7674 14.2665C14.0303 16.0551 11.8999 17.4121 10.3209 17.9471C10.1128 18.0176 9.88722 18.0176 9.67908 17.9471C8.10007 17.4121 5.96966 16.0551 4.23262 14.2665C2.50339 12.4859 1 10.1064 1 7.48637ZM6.4 4C4.54047 4 3 5.5425 3 7.48637C3 9.35269 4.09661 11.2557 5.66738 12.8731C7.09903 14.3473 8.78794 15.4416 10 15.9331C11.2121 15.4416 12.901 14.3473 14.3326 12.8731C15.9034 11.2557 17 9.35269 17 7.48637C17 5.5425 15.4595 4 13.6 4C12.4594 4 11.4434 4.57591 10.8228 5.4745C10.6361 5.74484 10.3285 5.90622 10 5.90622C9.67146 5.90622 9.36387 5.74484 9.17717 5.4745C8.55656 4.57591 7.54063 4 6.4 4Z');
+}
+
+.last-icon,
+.next-icon{
+  clip-path: path('M10 2.15607C14.8783 2.15625 18.8338 6.11082 18.834 10.9891C18.8338 15.8673 14.8783 19.8229 10 19.8231C5.12173 19.8229 1.16716 15.8673 1.16699 10.9891C1.16717 6.11082 5.12174 2.15624 10 2.15607ZM10 3.15607C5.67403 3.15624 2.16717 6.6631 2.16699 10.9891C2.16716 15.3151 5.67402 18.8229 10 18.8231C14.326 18.8229 17.8338 15.3151 17.834 10.9891C17.8338 6.6631 14.326 3.15625 10 3.15607ZM9.43457 7.09357C9.62977 6.89847 9.94635 6.89855 10.1416 7.09357C10.3368 7.2888 10.3368 7.60533 10.1416 7.8006L7.24512 10.6971H13.5381C13.8141 10.6971 14.0379 10.9211 14.0381 11.1971C14.0381 11.4732 13.8142 11.6971 13.5381 11.6971H7.24512L10.1416 14.5936L10.2061 14.6717C10.3342 14.8657 10.3124 15.1297 10.1416 15.3006C9.97074 15.4715 9.70677 15.4932 9.5127 15.3651L9.43457 15.3006L5.68457 11.5506C5.59421 11.4601 5.53809 11.335 5.53809 11.1971C5.53817 11.0591 5.5941 10.934 5.68457 10.8436L9.43457 7.09357Z');
+}
+.next-icon{
+  transform: rotate(180deg);
+}
+
+.save-btn {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+/* 缩放相关样式 */
+.movable-area {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.movable-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 去除swiper-item的overflow-hidden样式 */
+.detail-swiper-item {
+  overflow: visible !important;
+  position: relative;
+}
+
+/* 确保movable-area可以超出容器 */
+.movable-area {
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
+}
+
+/* 确保movable-view可以超出容器 */
+.movable-view {
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
+}
+
+/* 滑动指示器样式 */
+.slide-indicator {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.slide-indicator.active {
+  opacity: 1;
+}
+
+.slide-up-indicator {
+  top: 10px;
+}
+
+.slide-down-indicator {
+  bottom: 10px;
+}
+
+.indicator-arrow {
+  width: 6px;
+  height: 6px;
+  border-left: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.slide-up-indicator .indicator-arrow {
+  transform: rotate(135deg);
+}
+
+.slide-down-indicator .indicator-arrow {
+  transform: rotate(-45deg);
+}
+
+/* 确保详情内容可以滑动 */
+/* 修改详情内容的过渡效果 */
+.detail-content {
+  position: relative;
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 添加滑动过渡效果的类 */
+.sliding-prev {
+  transform: translateY(30%);
+  opacity: 0.2;
+}
+
+.sliding-next {
+  transform: translateY(-30%);
+  opacity: 0.2;
+}
+
+/* 滑动指示器样式优化 */
+.slide-indicator {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
+}
+
+.slide-indicator.active {
+  opacity: 0.7;
+}
+
+.slide-indicator.active:hover {
+  opacity: 1;
+}
+
+/* 详情页swiper样式 */
+.detail-page-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.detail-page-swiper-item {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 图片数量指示器样式 */
+.image-counter {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 10;
+  transition: opacity 0.2s linear;
+}
+
+.action-btn.disabled {
+  opacity: 0.3;
+}
+
+.color-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.color-item {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}

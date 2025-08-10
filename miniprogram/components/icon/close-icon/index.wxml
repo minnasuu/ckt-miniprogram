@@ -1,0 +1,4 @@
+<!--components/icon/close-icon/index.wxml-->
+<view class="close-button" style="top: {{top}}px;right:{{right}}px" bindtap="onCloseTap">
+    <view class="close-icon"></view>
+</view>

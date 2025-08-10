@@ -1,0 +1,2 @@
+<!--components/common/loading-spine/index.wxml-->
+<view class="generating-indicator"></view>

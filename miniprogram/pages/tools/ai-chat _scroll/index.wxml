@@ -1,0 +1,62 @@
+<!--pages/tools/ai-ck-style/index.wxml-->
+<view class="ai-text-img-container">
+  <custom-header title="AI 小助手" showBack background="transparent"></custom-header>
+  <view class="content" style="padding-top: {{statusBarHeight+44}}px;">
+    <view class="dialogue-container">
+      <scroll-view 
+        scroll-y="{{true}}" 
+        scroll-top="{{scrollTop}}" 
+        enhanced 
+        id="dialogue-scroll-container" 
+        class="dialogue-scroll-container"
+        show-scrollbar="{{false}}"
+        scroll-with-animation="{{false}}"
+        binddragstart="onDragStart"
+        binddragend="onDragEnd"
+        bind:dragging="onDragging"
+      >
+      <view id="dialogue-scroll-inner" class="dialogue-scroll-inner">
+        <view class="alternate-history" style="position:absolute">
+        <view wx:for="{{hisMessages}}" wx:key="id" id="message-{{item.id}}" class="message-item {{item.role === 'user' ? 'user-message' : 'ai-message'}}">
+            <view class="message-content">
+              <view class="message-text">{{item.content}}</view>
+              <view wx:if="{{item.imageUrl}}" class="message-image-container">
+                <image src="{{item.imageUrl}}" mode="widthFix" class="message-image" bindtap="previewImage" data-url="{{item.imageUrl}}"></image>
+              </view>
+              <view wx:if="{{item.generating}}" style="display:inline">正在思考中...</view>
+              <view wx:if="{{messageId===item.id&&generating}}" class="generating-indicator">
+              </view>
+            </view>
+          </view>
+        </view>
+        <view wx:for="{{messages}}" wx:key="id" id="message-{{item.id}}" class="message-item {{item.role === 'user' ? 'user-message' : 'ai-message'}}">
+          <view class="message-content">
+            <view class="message-text">{{item.content}}</view>
+            <view wx:if="{{item.imageUrl}}" class="message-image-container">
+              <image src="{{item.imageUrl}}" mode="widthFix" class="message-image" bindtap="previewImage" data-url="{{item.imageUrl}}"></image>
+            </view>
+            <view wx:if="{{item.generating}}" style="display:inline">正在思考中...</view>
+            <view wx:if="{{messageId===item.id&&generating}}" class="generating-indicator">
+            </view>
+          </view>
+        </view>
+      </view>
+      </scroll-view>
+    </view>
+    <view class="input-container" style="padding-bottom: {{keyboardHeight<=0?'env(safe-area-inset-bottom,12px)': 'calc('+keyboardHeight+'px'+' + 12px)'}}">
+      <view class="input-area">
+        <textarea
+          placeholder="请输入..."
+          value="{{inputValue}}"
+          bindinput="onInputChange"
+          bind:keyboardheightchange="onKeyboardHeightChange"
+          adjust-position="{{false}}"
+          auto-height="{{false}}"
+          show-confirm-bar
+        />
+        <button class="submit-button {{generating?'generating':''}}" bindtap="sendMessage" disabled="{{!inputValue}}"><view class="button-icon"></view></button>
+      </view>
+    </view>
+  </view>
+  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+</view>

@@ -1,0 +1,45 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+
+.header-content {
+  height: 44px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32rpx;
+  position: relative;
+}
+
+.back {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 32rpx;
+}
+
+.back .back-icon {
+  width: 32rpx;
+  height: 32rpx;
+  clip-path: path('M4.70756 8.36479L4.70696 8.36418C4.31643 7.97366 4.31643 7.34049 4.70696 6.94997C4.71684 6.94009 4.72687 6.93046 4.73706 6.92107L8.9502 2.70793C9.34072 2.31741 9.97389 2.31741 10.3644 2.70793C10.7549 3.09846 10.7549 3.73162 10.3644 4.12215L6.82888 7.65768L10.3638 11.1926C10.7543 11.5831 10.7543 12.2163 10.3638 12.6068C9.97329 12.9973 9.34012 12.9973 8.9496 12.6068L4.70756 8.36479Z');
+  background-color: var(--ckt-gray-12);
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  line-height: 44rpx;
+  font-weight: 500;
+  color: var(--ckt-gray-12);
+} 

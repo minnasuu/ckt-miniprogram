@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "custom-tabbar": "/components/custom-tabbar/index",
+    "custom-select": "/components/common/select/index",
+    "color-display": "/components/color-display/index"
+  },
+  "navigationBarBackgroundColor": "#fff"
+}

@@ -1,0 +1,31 @@
+<!-- tutorial.wxml -->
+<view class="tutorial-view" style="padding-top: {{statusBarHeight}}px;">
+  <view class="tutorial-nav">
+    <!-- 给 nav 组件添加点击事件 -->
+    <nav navList="{{navList}}" bind:navChange="onNavClick" currentNav="{{currentSwiperIndex}}"></nav>
+  </view>
+  <view class="tutorial-content">
+    <!-- 添加 swiper 组件 -->
+    <swiper current="{{currentSwiperIndex}}">
+      <swiper-item>
+        <view>1</view>
+      </swiper-item>
+      <swiper-item>
+        <view>2</view>
+      </swiper-item>
+      <swiper-item>
+        <view>3</view>
+      </swiper-item>
+      <swiper-item>
+        <view>4</view>
+      </swiper-item>
+      <swiper-item>
+        <view>5</view>
+      </swiper-item>
+      <swiper-item>
+        <view>6</view>
+      </swiper-item>
+    </swiper>
+  </view>
+  <custom-tabbar selected="{{1}}"></custom-tabbar>
+</view>

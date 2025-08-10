@@ -1,0 +1,79 @@
+<view class="color-palette-container">
+  <custom-header title="配色" showBack background="transparent"></custom-header>
+  <view class="content" style="padding-top: {{statusBarHeight+44+12}}px;">
+      <view class="canvas-container">
+           <view class="canvas-area" bind:tap="onCanvasAreaTap">
+              <view style="width: 220px;height: 220px;position: relative;">
+                <block wx:for="{{curPathData}}" key="{{index}}">
+                <view 
+                  class="canvas-path" 
+                  style="clip-path: path('{{item}}');background-color: {{colorList[index]}};"
+                  catch:tap="onCanvasPathTap"
+                  data-index="{{index}}"
+                ></view>
+                <text wx:if="{{currentPathId===index}}" class="path-number" style="top:{{numberTop}}px;left:{{numberLeft}}px">{{index+1}}</text>
+              </block>
+              </view>
+             </view>
+         </view>
+
+         <view class="options-panel">
+           <view class="options-nav-header">
+             <nav navList="{{menuData}}" currentNav="{{activeTab}}" bind:navChange="onTabChange"></nav>
+            <view style="display: flex;align-items: center;gap: 8px;">
+              <button class="options-button default" bindtap="onDownload">下载</button>
+              <button class="options-button primary" bindtap="onSave" disabled="{{saveLoading}}">{{saveLoading?'保存中':'保存'}}</button>
+            </view>
+           </view>
+           <view class="options-content-container">
+                <!-- 图样 -->
+                 <view
+                    wx:if="{{activeTab === 'style'}}"
+                     class="style-grid-container"
+                 >
+                  <view
+                      wx:for="{{pathData}}"
+                      wx:for-item="item3"
+                      wx:if="{{!item3.private}}"
+                      key="{{index3}}"
+                      bindtap="onStyleSelect"
+                      data-pathid="{{item3.id}}"
+                      class="style-grid-item {{currentStyleId === item3.id ? 'active' : ''}}"
+                  >
+                    <image src="{{item3.img}}" mode="aspectFit"/>
+                  </view >
+                 </view>
+
+                <!-- 颜色 -->
+                <view wx:if="{{activeTab === 'colors'}}" class="color-grid-container">
+                  <view class="loading-container {{colorLoading ? 'loading' : ''}} "><loading></loading></view>
+                  <view class="custom-color-button"><color-picker value="{{curColor}}" width="100%" height="80rpx" text="自定义颜色"></color-picker></view>
+                  <view style="flex:1;height:1%;display:flex;flex-direction:column">
+                    <view class="colors-menu-container">
+                      <nav navList="{{colorsData}}" currentNav="{{activeColorTab}}" bind:navChange="onColorMenuChange"></nav>
+                    </view>
+                    <view class="colors-grid">
+                        <view
+                           wx:for="{{curColorsData}}"
+                            wx:for-item="c"
+                            key="{{c.id}}"
+                            class="color-item"
+                        >
+                          <view
+                              class="color {{( c.value === 'white' || c.value === '#fff' || c.value === '#FFF' || c.value === '#ffffff' || c.value === '#FFFFFF') ? 'border' : ''}}"
+                              style="background-color: {{c.value}}"
+                              bindtap="onColorClick"
+                              data-color="{{c.value}}"
+                          ></view>
+                          <text>{{c.name}}</text>
+                        </view>
+                    </view>
+                  </view>
+                </view>
+          
+           </view >
+         </view >
+  </view>
+   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+   <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="width: 220px;height: 220px;position: fixed;top: 50%;left: 0;display:none;"></canvas>
+</view>

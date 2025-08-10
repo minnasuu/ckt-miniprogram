@@ -1,0 +1,13 @@
+<!--components/common/drawer-layout/index.wxml-->
+<view class="drawer-layout">
+    <view class="drawer-content">
+        <view class="drawer-header">{{title}}<close-icon right="{{12}}" bind:close="onClose"></close-icon></view>
+         <view class="drawer-body">
+            <slot></slot>
+         </view>
+        <view class="drawer-footer">
+            <button wx:if="{{showCancelBtn}}" class="default" bind:tap="onCancel">取消</button>
+            <button wx:if="{{showSubmitBtn}}" class="primary" bind:tap="onSubmit">确定</button>
+        </view>
+    </view>
+</view>
