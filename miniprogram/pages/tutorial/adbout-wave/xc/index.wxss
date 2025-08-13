@@ -1,0 +1,84 @@
+/* pages/tutorial/adbout-wave/xc/index.wxss */
+.xc-container {
+  width: 100vw;
+  height: 100vh;
+  padding-top: 88px;
+}
+.xc-content {
+  width: 100%;
+  height: calc(100vh - 88px);
+  display: flex;
+}
+/* 左侧导航样式 */
+.xc-menu {
+  width: 200px;
+  height: 100%;
+  background-color: #f8f9fa;
+  border-right: 1px solid #e9ecef;
+  overflow-y: auto;
+}
+.xc-menu-item {
+  width: 100%;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+.xc-menu-item-active {
+  background-color: #007bff;
+  color: white;
+}
+.xc-menu-item-active .xc-menu-item-title {
+  color: white;
+}
+.xc-menu-item-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+/* 右侧内容样式 */
+.xc-content-right {
+  flex: 1;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: white;
+}
+.xc-item {
+  width: 100%;
+}
+.xc-item-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #007bff;
+}
+.xc-item-desc {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.xc-details {
+  width: 100%;
+}
+.xc-details-item {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+.xc-details-item-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.xc-details-item-desc {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}

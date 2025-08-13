@@ -1,5 +1,5 @@
 .tab-bar {
-  height: 96rpx;
+  height: 48px;
   background: white;
   display: flex;
   align-items: center;

@@ -26,9 +26,9 @@
           <view class="tutorial-card-level">
             <text>{{item.level}}</text>
           </view>
-          <button type="primary" class="tutorial-card-button">
+          <navigator url="{{item.link}}" class="tutorial-card-button">
             <text>进入</text>
-          </button>
+          </navigator>
         </view>
       </view>
     </view>

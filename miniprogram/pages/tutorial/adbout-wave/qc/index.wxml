@@ -1,0 +1,35 @@
+<!--pages/tutorial/adbout-wave/xc/index.wxml-->
+<view class="xc-container">
+  <custom-header title="编织工具 & 配材" showBack showBorder></custom-header>
+  <view class="xc-content">
+    <!-- 左侧导航 -->
+    <view class="xc-menu">
+      <view 
+        class="xc-menu-item {{selectedIndex === index ? 'xc-menu-item-active' : ''}}" 
+        wx:for="{{list}}" 
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onMenuClick"
+      >
+        <view class="xc-menu-item-title">{{item.title}}</view>
+      </view>
+      <view class="xc-menu-indicator" style="transform: translateY({{selectedIndex*48+18}}px);"></view>
+    </view>
+    
+    <!-- 右侧内容 -->
+    <view class="xc-content-right">
+      <view class="xc-item" wx:if="{{list[selectedIndex]}}">
+        <view class="xc-item-title">{{list[selectedIndex].title}}</view>
+        <view class="xc-item-content">
+          <view class="xc-item-desc">{{list[selectedIndex].desc}}</view>
+        <view wx:if="{{list[selectedIndex].detailList.length}}" class="xc-details">
+          <view class="xc-details-item" wx:for="{{list[selectedIndex].detailList}}" wx:key="index" wx:for-item="detail">
+            <image wx:if="{{detail.img}}" class="xc-details-item-img" src="{{detail.img}}" mode="widthFix"></image>
+            <view wx:if="{{detail.desc}}" class="xc-details-item-desc">{{detail.desc}}</view>
+          </view>
+        </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

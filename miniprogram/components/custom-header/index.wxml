@@ -1,4 +1,4 @@
-<view class="header" style="height: {{statusBarHeight+44}}px;background-color:{{background}}">
+<view class="header" style="height: {{statusBarHeight+44}}px;background-color:{{background}};border: {{showBorder ? '1px solid var(--ckt-gray-3)':''}}">
   <view class="header-content">
     <view class="back" bindtap="onBack" wx:if="{{showBack}}">
       <view class="back-icon"></view>

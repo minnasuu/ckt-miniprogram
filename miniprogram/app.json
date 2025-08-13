@@ -13,7 +13,9 @@
     "pages/management/index",
     "pages/tools/ai-ck-style/index",
     "pages/tools/ai-chat/index",
-    "pages/tools/color-change/index"
+    "pages/tools/color-change/index",
+    "pages/tutorial/adbout-wave/xc/index",
+    "pages/tutorial/adbout-wave/qc/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

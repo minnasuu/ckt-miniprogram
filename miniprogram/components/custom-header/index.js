@@ -11,6 +11,10 @@ Component({
     background:{
       type: String,
       value: 'white'
+    },
+    showBorder: {
+      type: Boolean,
+      value: false,
     }
   },
   data: {

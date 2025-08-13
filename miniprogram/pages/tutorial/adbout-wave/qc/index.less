@@ -1,0 +1,121 @@
+/* pages/tutorial/adbout-wave/xc/index.wxss */
+.xc-container {
+  width: 100vw;
+  height: 100vh;
+  padding-top: 88px;
+  box-sizing: border-box;
+}
+
+.xc-content {
+  width: 100%;
+  height: calc(100vh - 88px);
+  display: flex;
+}
+
+/* 左侧导航样式 */
+.xc-menu {
+  position: relative;
+  width: 100px;
+  height: 100%;
+  border-right: 1px solid var(--ckt-gray-3);
+  padding-bottom: 24px;
+  padding-top: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.xc-menu-indicator{
+  position: absolute;
+  right:0;
+  top: 0;
+  width: 2px;
+  height: 36px;
+   border-radius: 1px;
+  background-color: var(--ckt-theme-6);
+  transition: transform 0.2s linear;
+}
+
+.xc-menu-item {
+  width: 100%;
+  height: 48px;
+  padding-inline: 16px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.xc-menu-item-active .xc-menu-item-title {
+  color: var(--ckt-theme-6);
+}
+
+.xc-menu-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: color 0.2s linear;
+}
+
+/* 右侧内容样式 */
+.xc-content-right {
+  flex: 1;
+  height: 100%;
+  padding-bottom: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.xc-item {
+  width: 100%;
+}
+
+.xc-item-title {
+  padding-inline: 20px;
+  padding-block: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+  border-bottom: 1px solid var(--ckt-gray-3);
+}
+
+.xc-item-content{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-inline: 20px;
+  padding-top: 20px;
+}
+
+.xc-item-desc {
+  padding: 12px;
+  font-size: 14px;
+  color: var(--ckt-gray-7);
+  line-height: 1.6;
+  background-color: var(--ckt-gray-1);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.xc-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.xc-details-item-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+}
+
+.xc-details-item-desc {
+  font-size: 14px;
+  color: var(--ckt-gray-10);
+  line-height: 1.5em;
+}
