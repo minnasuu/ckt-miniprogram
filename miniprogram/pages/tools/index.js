@@ -10,7 +10,7 @@ Page({
         data: [
           {
             id: 1,
-            icon: '/images/tools/export.png',
+            icon: '📖',
             title: '图解笔记本',
             description: '记录图解笔记、导出为图片',
             new: true,
@@ -24,7 +24,7 @@ Page({
         data: [
           {
             id: "iamge-1",
-            icon: '/images/tools/export.png',
+            icon: '◾️',
             title: '图片转像素',
             description: '图片一键转像素图、两种算法',
             new: true,
@@ -32,7 +32,7 @@ Page({
           },
           {
             id: "image-2",
-            icon: '/images/tools/design.png',
+            icon: '🫟',
             title: '提取图片主色',
             description: '一键提取图片主要颜色、生成色卡',
             new: false,
@@ -40,7 +40,7 @@ Page({
           },
           {
             id: "image-5",
-            icon: '/images/tools/template.png',
+            icon: '🏙️',
             title: '图片换色',
             description: '在线更换图片颜色，一键预览相同款式的其他颜色效果',
             new: false,
@@ -54,7 +54,7 @@ Page({
         data: [
           {
             id: "pattern-1",
-            icon: '/images/tools/template.png',
+            icon: '✏️',
             title: '像素画板',
             description: '在线绘制像素图、内置线材色卡',
             new: false,
@@ -62,7 +62,7 @@ Page({
           },
           {
             id: "pattern-2",
-            icon: '/images/tools/material.png',
+            icon: '🧩',
             title: '配色',
             description: '内置常用图样、线材色卡',
             new: false,

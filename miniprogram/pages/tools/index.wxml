@@ -34,7 +34,7 @@
         <view class="tools-grid">
           <view class="tool-card" wx:for="{{item.data}}" wx:key="id" wx:for-item="tool" bindtap="onToolTap" data-id="{{tool.id}}" data-path="{{tool.path}}">
             <view class="new-tag" wx:if="{{tool.new}}">NEW</view>
-            <view class="tool-icon" style="clip-path: path('{{tool.icon}}');"></view>
+            <view class="tool-icon">{{tool.icon}}</view>
             <view class="tool-card-text">
               <view class="tool-title">{{tool.title}}</view>
               <view class="tool-description">{{tool.description}}</view>

@@ -1,0 +1,36 @@
+<!--pages/tutorial/components/tutorial-card/index.wxml-->
+<view class="tutorial-card">
+  <!-- 书本容器 -->
+  <view class="book-container">
+    <!-- 左书页 -->
+    <view class="book-page-left">
+      <view class="page-content">
+        <view class="page-header">
+          <image src="{{item.image}}" mode="widthFix" class="tutorial-card-image"></image>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 右书页 -->
+    <view class="book-page-right">
+      <view class="page-content">
+        <view class="page-header">
+          <view class="tutorial-card-title">
+            <text>{{item.title}}</text>
+          </view>
+        </view>
+        <view class="page-body">
+          <view class="tutorial-card-content">
+            <text>{{item.content}}</text>
+          </view>
+          <view class="tutorial-card-level">
+            <text>{{item.level}}</text>
+          </view>
+          <button type="primary" class="tutorial-card-button">
+            <text>进入</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

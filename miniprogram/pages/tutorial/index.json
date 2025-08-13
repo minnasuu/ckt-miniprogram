@@ -2,6 +2,9 @@
   "usingComponents": {
     "custom-header": "/components/custom-header/index",
     "custom-tabbar": "/components/custom-tabbar/index",
-    "nav": "/components/common/nav/index"
+    "nav": "/components/common/nav/index",
+    "about-wave": "/pages/tutorial/adbout-wave/index",
+    "crochet-basic": "/pages/tutorial/crochet-basic/index",
+    "knit-basic": "/pages/tutorial/knit-basic/index"
   }
 }

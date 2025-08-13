@@ -6,24 +6,15 @@
   </view>
   <view class="tutorial-content">
     <!-- 添加 swiper 组件 -->
-    <swiper current="{{currentSwiperIndex}}">
-      <swiper-item>
-        <view>1</view>
+    <swiper current="{{currentSwiperIndex}}" class="tutorial-swiper">
+    <swiper-item>
+        <about-wave></about-wave>
       </swiper-item>
       <swiper-item>
-        <view>2</view>
+        <crochet-basic></crochet-basic>
       </swiper-item>
       <swiper-item>
-        <view>3</view>
-      </swiper-item>
-      <swiper-item>
-        <view>4</view>
-      </swiper-item>
-      <swiper-item>
-        <view>5</view>
-      </swiper-item>
-      <swiper-item>
-        <view>6</view>
+        <knit-basic></knit-basic>
       </swiper-item>
     </swiper>
   </view>

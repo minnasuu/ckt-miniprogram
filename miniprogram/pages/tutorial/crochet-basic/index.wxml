@@ -1,0 +1,4 @@
+<!--pages/tutorial/crochet-basic/index.wxml-->
+<view class="tutorial-container">
+  <tutorial-card wx:for="{{list}}" item="{{item}}"></tutorial-card>
+</view>
