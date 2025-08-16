@@ -1,4 +1,7 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "custom-number-input": "/components/common/number-input/index"
+  },
+  "styleIsolation": "isolated"
 }

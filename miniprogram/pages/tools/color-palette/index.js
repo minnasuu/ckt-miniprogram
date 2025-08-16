@@ -1384,7 +1384,13 @@ Page({
       activeColorTab: type,
       curColorsData: this.data.colorsData.filter(item => item.type === type)[0].colors
     })
-  },
+    },
+    onColorMenuColorsTab() {
+        this.setData({
+            activeColorTab: 'colors',
+            curColorsData: []
+        })
+    },
   onCanvasPathTap(e){
     const {index} = e.currentTarget.dataset;
     this.updateNumberPosition(index);
@@ -1418,6 +1424,28 @@ Page({
     })
     this.clearCanvasCache();
   },
+
+    // 颜色选择器变化事件处理
+    onColorChange(e) {
+        const { color } = e.detail;
+        // 更新当前选择的颜色
+        this.setData({
+            curColor: color
+        });
+
+        // 如果当前有选中的路径，则应用颜色到该路径
+        if (this.data.currentPathId >= 0) {
+            const resColorList = this.data.colorList.map((itm, idx) =>
+                idx === this.data.currentPathId ? color : itm
+            );
+            this.setData({
+                colorList: resColorList
+            });
+            this.clearCanvasCache();
+        }
+
+        console.log('颜色选择器变化:', color);
+    },
   updateNumberPosition(index){
     let top=0;
     let left=0;

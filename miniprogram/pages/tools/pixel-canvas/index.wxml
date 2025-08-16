@@ -53,13 +53,13 @@
       </view>
     </view>
 
-    <view class="option-item">
+    <!--<view class="option-item">
       <text class="title">画笔图样</text>
         <view class="brush-pattern-list">
           <view class="brush-pattern-item empty"></view>
           <view wx:for="{{brushPatternData}}" class="brush-pattern-item"></view>
         </view>
-    </view>
+    </view>-->
 
       <view style="display:flex;gap:24px;width:100%">
         <view class="option-item" style="flex:1">

@@ -1,90 +1,83 @@
-<block>
-  <!-- 颜色显示区域 -->
-  <view 
-    class="color-display {{disabled ? 'disabled' : ''}}" 
-    style="width: {{width}}; height: {{height}}; background-color: {{currentColor}};" 
-    bindtap="toggleColorPanel"
-  >{{text}}</view>
-  
-  <!-- 颜色选择面板 -->
-  <view class="color-panel-container" wx:if="{{showColorPanel}}">
-    <!-- 遮罩层 -->
-    <view class="mask" bindtap="closeColorPanel"></view>
-    
-    <!-- 颜色面板 -->
-    <view class="color-panel" catchtap="preventBubble">
-      <!-- 当前颜色预览 -->
-      <view class="color-preview">
-        <view class="color-preview-box" style="background-color: {{currentColor}};"></view>
-        <view class="color-preview-text">{{currentColor}}</view>
-      </view>
-      
-      <!-- 预设颜色 -->
-      <view class="preset-colors">
+<!--components/common/color-picker/index.wxml-->
+<view class="color-picker">
+        <!-- 1. 颜色选择面板 -->
+      <view class="color-selection-panel">
         <view 
-          class="preset-color" 
-          wx:for="{{['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#8B00FF', '#000000', '#FFFFFF']}}" 
-          wx:key="index" 
-          style="background-color: {{item}};" 
-          data-color="{{item}}" 
-          bindtap="onPresetColorTap"
-        ></view>
-      </view>
-      
-      <!-- 色相滑块 -->
-      <view class="slider-container">
-        <text class="slider-label">色相</text>
-        <view class="hue-slider-bg">
-          <slider 
-            value="{{hue}}" 
-            min="0" 
-            max="360" 
-            activeColor="transparent" 
-            backgroundColor="transparent" 
-            block-size="28" 
-            bindchange="onHueChange"
-          />
+          class="color-panel-bg"
+          style="width: {{colorPanelWidth}}px; height: {{colorPanelSize}}px; background: linear-gradient(to right, white, hsl({{hue}}, 100%, 50%)), linear-gradient(to bottom, transparent, black);"
+          bindtouchstart="onTouchStart"
+          bindtouchmove="onTouchMove"
+          bindtouchend="onTouchEnd"
+        >
+          <!-- 选择器手柄 -->
+          <view 
+            class="selector-handle"
+            style="left: {{selectorX}}px; top: {{selectorY}}px;"
+          ></view>
         </view>
       </view>
-      
-      <!-- 饱和度滑块 -->
-      <view class="slider-container">
-        <text class="slider-label">饱和度</text>
-        <slider 
-          value="{{saturation}}" 
-          min="0" 
-          max="100" 
-          activeColor="#1aad19" 
-          block-size="28" 
-          bindchange="onSaturationChange"
-        />
-      </view>
-      
-      <!-- 亮度滑块 -->
-      <view class="slider-container">
-        <text class="slider-label">亮度</text>
-        <slider 
-          value="{{lightness}}" 
-          min="0" 
-          max="100" 
-          activeColor="#1aad19" 
-          block-size="28" 
-          bindchange="onLightnessChange"
-        />
-      </view>
-      
-      <!-- 不透明度滑块 -->
-      <view class="slider-container">
-        <text class="slider-label">不透明度</text>
-        <slider 
-          value="{{opacity}}" 
-          min="0" 
-          max="100" 
-          activeColor="#1aad19" 
-          block-size="28" 
-          bindchange="onOpacityChange"
-        />
-      </view>
+
+<view class="color-picker-value">
+ <view class="current-color-display">
+    <view class="color-preview-box" style="background-color: {{currentColor}};"></view>
+  </view>
+  <view class="color-picker-value-slider">
+    <!-- 2. 色相滑块 -->
+  <view class="hue-slider-container">
+    <view class="hue-slider-bg">
+      <slider 
+        class="hue-slider"
+        value="{{hue}}" 
+        min="0" 
+        max="360" 
+        activeColor="transparent" 
+        backgroundColor="transparent" 
+        block-size="20" 
+        block-color="white"
+        bindchange="onHueChange"
+      />
     </view>
   </view>
-</block>
+
+  <!-- 3. 透明度滑块 -->
+  <view class="opacity-slider-container">
+    <view class="opacity-slider-bg">
+      <view 
+        class="opacity-overlay"
+        style="background: linear-gradient(to right, transparent, {{hexColor}});"
+      ></view>
+      <slider 
+        class="opacity-slider"
+        value="{{opacity}}" 
+        min="0" 
+        max="100" 
+        activeColor="transparent" 
+        backgroundColor="transparent" 
+        block-size="20" 
+        block-color="white"
+        bindchange="onOpacityChange"
+      />
+    </view>
+  </view>
+  </view>
+</view>
+
+  <!-- 5. HEX输入框 -->
+  <view class="hex-input-container">
+    <input 
+      class="hex-input"
+      type="text"
+      value="{{hexColor}}"
+      placeholder="#ffffff"
+      bindinput="onHexInput"
+    />
+     <custom-number-input
+      class="opacity-input"
+      value="{{opacity}}"
+      min="0"
+      max="100"
+      step="1"
+      bindchange="onOpacityChange"
+    />
+  </view>
+</view>

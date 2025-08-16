@@ -284,57 +284,63 @@ Page({
   // 在canvas上绘制像素数据
   drawCanvasFromPixelData(canvas, canvasData, canvasWidth, canvasHeight, pixelSize, borderStyle = '3', canvasColor = '#FFFFFF') {
     const ctx = canvas.getContext('2d');
-    
+
     // 设置画布尺寸
     canvas.width = canvasWidth * pixelSize;
     canvas.height = canvasHeight * pixelSize;
-    
+
     // 绘制每个像素
     for (let y = 0; y < canvasHeight; y++) {
       for (let x = 0; x < canvasWidth; x++) {
         const color = canvasData[y][x];
-        
+
         // 填充像素颜色
         ctx.fillStyle = color;
         ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-        
+
         // 根据borderStyle绘制边框
         if (borderStyle !== '1') { // 不是透明边框
-          ctx.strokeStyle = borderStyle === '2' ? canvasColor : 'var(--ckt-gray-4)';
+          ctx.strokeStyle = borderStyle === '2' ? canvasColor : '#DDDDDD';
           ctx.lineWidth = 1;
           ctx.strokeRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
         }
       }
     }
-    
+
     return canvas;
   },
   
   // 下载画布为图片
   downloadCanvas() {
     const { canvasData, canvasWidth, canvasHeight, borderStyle, canvasColor } = this.data;
-    const pixelSize = 32; // 每个像素的大小，与result-canvas的样式一致
-    
-    // 创建画布上下文
+    const basePixelSize = 32; // 基础像素大小
+    const scaleFactor = 2; // 2倍分辨率
+    const highResPixelSize = basePixelSize * scaleFactor; // 高分辨率像素大小
+
+    // 创建高分辨率画布上下文
     const query = wx.createSelectorQuery();
     query.select('#result-canvas')
       .fields({ node: true, size: true })
       .exec((res) => {
         const canvas = res[0].node;
         
-        // 调用绘制函数，传入borderStyle和canvasColor
-        this.drawCanvasFromPixelData(canvas, canvasData, canvasWidth, canvasHeight, pixelSize, borderStyle, canvasColor);
+        // 设置高分辨率画布尺寸
+        canvas.width = canvasWidth * highResPixelSize;
+        canvas.height = canvasHeight * highResPixelSize;
+
+        // 在高分辨率画布上绘制像素数据
+        this.drawCanvasFromPixelData(canvas, canvasData, canvasWidth, canvasHeight, highResPixelSize, borderStyle, canvasColor);
         
-        // 将画布转换为临时文件
+        // 将高分辨率画布转换为临时文件
         wx.canvasToTempFilePath({
           canvasId: 'result-canvas',
           canvas: canvas,
           success: (res) => {
-            // 保存图片到相册
+            // 保存高分辨率图片到相册
             wx.saveImageToPhotosAlbum({
               filePath: res.tempFilePath,
               success: () => {
-                this.showMessage('图片已保存到相册🎉');
+                this.showMessage('高分辨率图片已保存到相册🎉');
               },
               fail: (_err) => {
                 this.showMessage('保存失败，请检查权限');
@@ -342,7 +348,7 @@ Page({
             });
           },
           fail: (_err) => {
-            this.showMessage('生成图片失败');
+            this.showMessage('生成高分辨率图片失败');
           }
         });
       });

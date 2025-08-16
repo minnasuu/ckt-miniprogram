@@ -3,7 +3,8 @@
     "custom-header": "/components/custom-header/index",
     "alert-message": "/components/common/alert-message/index",
     "nav":"/components/common/nav/index",
-    "loading":"/components/common/loading/index"
+    "loading": "/components/common/loading/index",
+    "color-picker": "/components/common/color-picker/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "配色"

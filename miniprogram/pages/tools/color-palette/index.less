@@ -186,6 +186,16 @@
     flex-shrink: 0;
     overflow-x: auto;
     padding-inline: 24px;
+    .colors-menu-custom{
+      font-size: 28rpx;
+      color: var(--ckt-gray-6);
+      font-weight: 500;
+      margin-right: 12px;
+      white-space: nowrap;
+      &.active{
+        color: var(--ckt-gray-11);
+      }
+    }
     &::-webkit-scrollbar{
       display: none;
     }
@@ -224,4 +234,17 @@
       }
     }
   }
+}
+
+.colors-custom-container{
+  display: inline-flex;
+    flex-wrap: wrap;
+    gap: 24rpx;
+    width: 100%;
+    height: fit-content;
+    max-height: 100%;
+    overflow: auto;
+    padding-inline: 20px;
+    box-sizing: border-box;
+    padding-bottom: env(safe-area-inset-bottom, 12px);
 }

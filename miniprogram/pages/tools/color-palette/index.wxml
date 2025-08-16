@@ -52,9 +52,10 @@
                   </view>
                   <view style="flex:1;height:1%;display:flex;flex-direction:column">
                     <view class="colors-menu-container">
+                     <view class="colors-menu-custom {{activeColorTab === 'colors' ? 'active' : ''}}" bind:tap="onColorMenuColorsTab">自定义色盘</view>
                       <nav navList="{{colorsData}}" currentNav="{{activeColorTab}}" bind:navChange="onColorMenuChange"></nav>
                     </view>
-                    <view class="colors-grid">
+                    <view wx:if="{{activeColorTab !== 'colors'}}" class="colors-grid">
                         <view
                            wx:for="{{curColorsData}}"
                             wx:for-item="c"
@@ -69,6 +70,9 @@
                           ></view>
                           <text>{{c.name}}</text>
                         </view>
+                    </view>
+                    <view wx:else class="colors-custom-container">
+                      <color-picker value="{{curColor}}" bind:change="onColorChange" ></color-picker>
                     </view>
                   </view>
                 </view>
