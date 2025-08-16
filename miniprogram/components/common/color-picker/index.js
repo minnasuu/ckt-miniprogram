@@ -1,8 +1,8 @@
 Component({
   properties: {
-    s: {
+    value: {
       type: String,
-      value: '#FFFFFFFF' // 默认红色，完全不透明
+      value: '#202020' // 默认红色，完全不透明
     },
     width: {
       type: String,
@@ -36,8 +36,8 @@ Component({
     lightness: 50,
     opacity: 100,
     rgbColor: 'rgb(255, 0, 0)',
-    hexColor: '#FF0000',
-    currentColor: '#FF0000FF'
+    hexColor: '#202020',
+    currentColor: '#202020FF'
   },
 
   lifetimes: {

@@ -1,7 +1,7 @@
 <!-- tools.wxml -->
-<view class="tools-view" style="padding-top: {{statusBarHeight + 44}}px;">
+<view class="tools-view">
   <!-- 页面内容 -->
-  <view class="tools-content">
+  <view class="tools-content" style="padding-top: {{statusBarHeight + 44}}px;">
     <view wx:if="{{showAiTools}}" class="tools-top-container">
       <swiper 
         autoplay="{{true}}" 

@@ -1676,6 +1676,20 @@ Page({
         }
       });
     });
+    },
+
+    // 清除所有配好的颜色
+    onClearColors() {
+        // 重置颜色列表为默认的透明颜色
+        const defaultColors = Array.from({ length: this.data.curPathData.length }).map((_i, idx) => `rgba(0,0,0,${(idx + 1) / 20})`);
+
+        this.setData({
+            colorList: defaultColors,
+            currentPathId: -1 // 清除当前选中的路径
+        });
+
+        // 清除canvas缓存
+        this.clearCanvasCache();
   }
   
 });

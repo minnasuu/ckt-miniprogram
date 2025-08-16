@@ -1,5 +1,5 @@
 <view class="color-palette-container">
-  <custom-header title="配色" showBack background="transparent"></custom-header>
+  <custom-header title="图案配色" showBack background="transparent"></custom-header>
   <view class="content" style="padding-top: {{statusBarHeight+44+12}}px;">
       <view class="canvas-container">
            <view class="canvas-area" bind:tap="onCanvasAreaTap">
@@ -21,6 +21,7 @@
            <view class="options-nav-header">
              <nav navList="{{menuData}}" currentNav="{{activeTab}}" bind:navChange="onTabChange"></nav>
             <view style="display: flex;align-items: center;gap: 8px;">
+              <button bindtap="onClearColors" class="options-button default">清空</button>
               <button class="options-button default" bindtap="onDownload">下载</button>
               <button class="options-button primary" bindtap="onSave" disabled="{{saveLoading}}">{{saveLoading?'保存中':'保存'}}</button>
             </view>
@@ -47,7 +48,9 @@
                 <!-- 颜色 -->
                 <view wx:if="{{activeTab === 'colors'}}" class="color-grid-container">
                   <view class="loading-container {{colorLoading ? 'loading' : ''}} "><loading></loading></view>
-                  <view class="custom-color-button"><color-picker value="{{curColor}}" width="100%" height="80rpx" text="自定义颜色"></color-picker></view>
+                  <view class="custom-color-button">
+                  <!-- <color-picker width="100%" height="80rpx" text="自定义颜色"></color-picker> -->
+                  </view>
                   <view style="flex:1;height:1%;display:flex;flex-direction:column">
                     <view class="colors-menu-container">
                       <nav navList="{{colorsData}}" currentNav="{{activeColorTab}}" bind:navChange="onColorMenuChange"></nav>
