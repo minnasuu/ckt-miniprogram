@@ -15,6 +15,7 @@ Page({
     ],
     brushColor: '#202020',
     canvasColor: '#FFFFFF',
+    previousCanvasColor: '#FFFFFF', // 之前的画布颜色，用于比较
     brushPatternData:['','','','',''],
     fullCanvas:false,
     showAlert: false,
@@ -38,6 +39,11 @@ Page({
     // 初始化画布数据
     this.initCanvas();
     
+    // 初始化之前的画布颜色
+    this.setData({
+      previousCanvasColor: this.data.canvasColor
+    });
+
     // 获取当前登录用户信息
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
@@ -72,8 +78,37 @@ Page({
       canvasData.push(row);
     }
     
-    this.setData({ canvasData });
+    this.setData({
+      canvasData,
+      previousCanvasColor: canvasColor // 初始化时设置之前的画布颜色
+    });
   },
+
+  // 更新画布背景色（保持用户绘制的内容）
+  updateCanvasBackgroundColor() {
+    const { canvasData, canvasColor } = this.data;
+
+    // 如果画布数据为空，则初始化
+    if (canvasData.length <= 0) {
+      this.initCanvas();
+      return;
+    }
+
+    // 创建新的画布数据，只更新空白像素（与之前画布颜色相同的像素）
+    const newCanvasData = canvasData.map(row =>
+      row.map(pixel =>
+        // 如果像素颜色与之前的画布颜色相同，则更新为新的画布颜色
+        // 否则保持用户绘制的颜色
+        pixel === this.data.previousCanvasColor ? canvasColor : pixel
+      )
+    );
+
+    this.setData({
+      canvasData: newCanvasData,
+      previousCanvasColor: canvasColor // 更新背景色后更新之前的画布颜色
+    });
+  },
+
   updateCanvas() {
     const { canvasWidth, canvasHeight, canvasColor, canvasData } = this.data;
     
@@ -140,7 +175,10 @@ Page({
       }
     }
     
-    this.setData({ canvasData: newCanvasData });
+    this.setData({
+      canvasData: newCanvasData,
+      previousCanvasColor: canvasColor // 调整尺寸后更新之前的画布颜色
+    });
   },
   
   // 绘制像素
@@ -174,6 +212,10 @@ Page({
       success: (res) => {
         if (res.confirm) {
           this.initCanvas();
+          // 清除画布后，更新之前的画布颜色
+          this.setData({
+            previousCanvasColor: this.data.canvasColor
+          });
         }
       }
     });
@@ -253,8 +295,13 @@ Page({
     if(value){
       this.setData({
         canvasWidth:value
-      })
-      this.updateCanvas();
+      }, () => {
+        this.updateCanvas();
+        // 调整尺寸后，更新之前的画布颜色
+        this.setData({
+          previousCanvasColor: this.data.canvasColor
+        });
+      });
     }
   },
   onCanvasHeightInput(e){
@@ -262,8 +309,13 @@ Page({
     if(value){
       this.setData({
         canvasHeight:value
-      })
-      this.updateCanvas();
+      }, () => {
+        this.updateCanvas();
+        // 调整尺寸后，更新之前的画布颜色
+        this.setData({
+          previousCanvasColor: this.data.canvasColor
+        });
+      });
     }
   },
   onFullCanvas(){
@@ -376,6 +428,10 @@ Page({
       // 在尺寸更新后，调用updateCanvas来智能调整画布
       // 这样可以保持已绘制的颜色数据不变
       this.updateCanvas();
+      // 重置尺寸后，更新之前的画布颜色
+      this.setData({
+        previousCanvasColor: this.data.canvasColor
+      });
     });
   },
 
@@ -422,12 +478,18 @@ Page({
         showColorPicker: false
       });
     } else if (currentPickerType === 'canvas') {
+      // 保存之前的画布颜色，用于比较
+      const previousCanvasColor = this.data.canvasColor;
+
       this.setData({
         canvasColor: color,
+        previousCanvasColor: previousCanvasColor,
         showColorPicker: false
+      }, () => {
+        // 更新画布背景色后，调用专门的方法来更新背景色
+        // 这样可以保持用户已绘制的内容不变
+        this.updateCanvasBackgroundColor();
       });
-      // 更新画布颜色后需要重新初始化画布
-      this.updateCanvas();
     }
   },
 

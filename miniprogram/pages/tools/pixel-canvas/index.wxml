@@ -23,7 +23,7 @@
         value="{{canvasWidth}}"
         min="4"
         max="36"
-        step="2"
+        step="1"
         disabledInput
         bind:change="onCanvasWidthInput"
       ></custom-number-input>
@@ -33,7 +33,7 @@
         value="{{canvasHeight}}"
         min="4"
         max="36"
-        step="2"
+        step="1"
         disabledInput
         bind:change="onCanvasHeightInput"
       ></custom-number-input>
