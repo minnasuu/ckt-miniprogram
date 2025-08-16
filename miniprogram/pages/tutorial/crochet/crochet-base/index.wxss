@@ -1,0 +1,84 @@
+/* pages/tutorial/adbout-wave/crochet-base/index.wxss */
+.crochet-base-container {
+  width: 100vw;
+  height: 100vh;
+  padding-top: 88px;
+}
+.crochet-base-content {
+  width: 100%;
+  height: calc(100vh - 88px);
+  display: flex;
+}
+/* 左侧导航样式 */
+.crochet-base-menu {
+  width: 200px;
+  height: 100%;
+  background-color: #f8f9fa;
+  border-right: 1px solid #e9ecef;
+  overflow-y: auto;
+}
+.crochet-base-menu-item {
+  width: 100%;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+.crochet-base-menu-item-active {
+  background-color: #007bff;
+  color: white;
+}
+.crochet-base-menu-item-active .crochet-base-menu-item-title {
+  color: white;
+}
+.crochet-base-menu-item-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+/* 右侧内容样式 */
+.crochet-base-content-right {
+  flex: 1;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: white;
+}
+.crochet-base-item {
+  width: 100%;
+}
+.crochet-base-item-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #007bff;
+}
+.crochet-base-item-desc {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.crochet-base-details {
+  width: 100%;
+}
+.crochet-base-details-item {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+.crochet-base-details-item-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.crochet-base-details-item-desc {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}

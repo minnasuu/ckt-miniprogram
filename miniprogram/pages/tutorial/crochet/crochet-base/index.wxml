@@ -1,0 +1,35 @@
+<!--pages/tutorial/adbout-wave/crochet-base/index.wxml-->
+<view class="crochet-base-container">
+  <custom-header title="{{title}}" showBack showBorder></custom-header>
+  <view class="crochet-base-content">
+    <!-- 左侧导航 -->
+    <view class="crochet-base-menu">
+      <view 
+        class="crochet-base-menu-item {{selectedIndex === index ? 'crochet-base-menu-item-active' : ''}}" 
+        wx:for="{{list}}" 
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onMenuClick"
+      >
+        <view class="crochet-base-menu-item-title">{{item.title}}</view>
+      </view>
+      <view class="crochet-base-menu-indicator" style="transform: translateY({{selectedIndex*48+18}}px);"></view>
+    </view>
+    
+    <!-- 右侧内容 -->
+    <view class="crochet-base-content-right">
+      <view class="crochet-base-item" wx:if="{{list[selectedIndex]}}">
+        <view class="crochet-base-item-title">{{list[selectedIndex].title}}</view>
+        <view class="crochet-base-item-content">
+          <view class="crochet-base-item-desc">{{list[selectedIndex].desc}}</view>
+        <view wx:if="{{list[selectedIndex].imgList.length}}" class="crochet-base-details">
+          <view class="crochet-base-details-item" wx:for="{{list[selectedIndex].imgList}}" wx:key="index" wx:for-item="detail">
+            <view wx:if="{{detail.img_des}}" class="crochet-base-details-item-desc">{{detail.img_des}}</view>
+            <image wx:if="{{detail.img_src}}" class="crochet-base-details-item-img" src="{{detail.img_src}}" mode="widthFix"></image>
+          </view>
+        </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

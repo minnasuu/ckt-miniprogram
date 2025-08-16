@@ -15,7 +15,9 @@
     "pages/tools/ai-chat/index",
     "pages/tools/color-change/index",
     "pages/tutorial/adbout-wave/xc/index",
-    "pages/tutorial/adbout-wave/qc/index"
+    "pages/tutorial/adbout-wave/qc/index",
+    "pages/tutorial/crochet/crochet-base/index",
+    "pages/tutorial/knit/knit-detail/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

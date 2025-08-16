@@ -11,10 +11,10 @@
         <about-wave></about-wave>
       </swiper-item>
       <swiper-item>
-        <crochet-basic></crochet-basic>
+        <crochet></crochet>
       </swiper-item>
       <swiper-item>
-        <knit-basic></knit-basic>
+        <knit></knit>
       </swiper-item>
     </swiper>
   </view>
