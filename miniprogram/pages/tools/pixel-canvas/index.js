@@ -20,7 +20,11 @@ Page({
     showAlert: false,
     alertMessage: '',
     borderStyle: '3',
-    gridStyleList:['1','2','3']
+    gridStyleList: ['1', '2', '3'],
+    // 颜色选择器相关
+    showColorPicker: false,
+    currentPickerColor: '#202020',
+    currentPickerType: '' // 'brush' 或 'canvas'
   },
   
   onLoad() {
@@ -243,16 +247,7 @@ Page({
         });
       });
   },
-  onBrushColorChange(e) {
-    this.setData({
-      brushColor: e.detail.color
-    });
-  },
-  onCanvasColorChange(e){
-    this.setData({
-      canvasColor:e.detail.color
-    })
-  },
+
   onCanvasWidthInput(e){
     const value = e.detail;
     if(value){
@@ -381,6 +376,66 @@ Page({
       // 在尺寸更新后，调用updateCanvas来智能调整画布
       // 这样可以保持已绘制的颜色数据不变
       this.updateCanvas();
+    });
+  },
+
+  // 显示画笔颜色选择器
+  showBrushColorPicker() {
+    this.setData({
+      showColorPicker: true,
+      currentPickerColor: this.data.brushColor,
+      currentPickerType: 'brush'
+    });
+  },
+
+  // 显示画布颜色选择器
+  showCanvasColorPicker() {
+    this.setData({
+      showColorPicker: true,
+      currentPickerColor: this.data.canvasColor,
+      currentPickerType: 'canvas'
+    });
+  },
+
+  // 关闭颜色选择器
+  onColorPickerClose() {
+    this.setData({
+      showColorPicker: false
+    });
+  },
+
+  // 取消颜色选择
+  onColorPickerCancel() {
+    this.setData({
+      showColorPicker: false
+    });
+  },
+
+  // 确认颜色选择
+  onColorPickerConfirm(e) {
+    const { color } = e.detail;
+    const { currentPickerType } = this.data;
+
+    if (currentPickerType === 'brush') {
+      this.setData({
+        brushColor: color,
+        showColorPicker: false
+      });
+    } else if (currentPickerType === 'canvas') {
+      this.setData({
+        canvasColor: color,
+        showColorPicker: false
+      });
+      // 更新画布颜色后需要重新初始化画布
+      this.updateCanvas();
+    }
+  },
+
+  // 颜色变化事件（实时预览）
+  onColorPickerChange(e) {
+    const { color } = e.detail;
+    this.setData({
+      currentPickerColor: color
     });
   }
 });

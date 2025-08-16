@@ -48,7 +48,9 @@
     <view class="option-item">
       <text class="title">画笔颜色</text>
       <view class="option-content">
-        <view style="width:100%"><color-picker value="{{brushColor}}" hueColors="{{colorPalette}}" width="100%" height="80rpx" bind:change="onBrushColorChange" /></view>
+        <view class="color-block-container" bindtap="showBrushColorPicker">
+          <view class="color-block" style="background-color: {{brushColor}}"></view>
+        </view>
         <button class="eraser-button"><view class="eraser-icon"></view></button>
       </view>
     </view>
@@ -64,7 +66,9 @@
       <view style="display:flex;gap:24px;width:100%">
         <view class="option-item" style="flex:1">
           <text class="title">画布颜色</text>
-          <view style="width:100%"><color-picker value="{{canvasColor}}" hueColors="{{colorPalette}}" width="100%" height="80rpx" bind:change="onCanvasColorChange" /></view>
+          <view class="color-block-container" bindtap="showCanvasColorPicker">
+            <view class="color-block" style="background-color: {{canvasColor}}"></view>
+          </view>
         </view>
         <view class="option-item" style="flex:1">
           <text class="title">网格线颜色</text>
@@ -96,4 +100,14 @@
   </movable-area>
   <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="display:none;width: {{canvasWidth*32}}px;height:{{canvasHeight*32}}px;"></canvas>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+  
+  <!-- 颜色选择器抽屉 -->
+  <color-picker-drawer 
+    show="{{showColorPicker}}"
+    value="{{currentPickerColor}}"
+    bindclose="onColorPickerClose"
+    bindcancel="onColorPickerCancel"
+    bindconfirm="onColorPickerConfirm"
+    bindchange="onColorPickerChange"
+  />
 </view>

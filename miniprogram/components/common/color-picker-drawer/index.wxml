@@ -1,0 +1,25 @@
+<!--components/common/color-picker-drawer/index.wxml-->
+<view class="color-picker-drawer {{show ? 'show' : ''}}" bindtap="onClose">
+  <view class="drawer-content" catchtap="preventBubble">
+    <!-- 抽屉头部 -->
+    <view class="drawer-header">
+      <view class="drawer-title">选择颜色</view>
+      <close-icon bind:close="onClose"  top="4" right="8" />
+    </view>
+
+    <!-- 颜色选择器 -->
+    <view class="color-picker-container">
+      <color-picker 
+        value="{{currentColor}}"
+        disabled="{{disabled}}"
+        bindchange="onColorChange"
+      />
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="drawer-actions">
+      <view class="action-btn cancel-btn" bindtap="onCancel">取消</view>
+      <view class="action-btn confirm-btn" bindtap="onConfirm">确定</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "color-picker": "/components/common/color-picker/index",
+    "close-icon": "/components/icon/close-icon/index"
+  },
+  "styleIsolation": "isolated"
+}

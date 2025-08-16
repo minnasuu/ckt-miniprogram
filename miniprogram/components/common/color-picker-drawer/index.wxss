@@ -1,0 +1,113 @@
+/* components/common/color-picker-drawer/index.wxss */
+.color-picker-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.color-picker-drawer.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.drawer-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 20rpx 20rpx 0 0;
+  padding: 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+  max-height: 90vh;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.color-picker-drawer.show .drawer-content {
+  transform: translateY(0);
+}
+
+/* 抽屉头部 */
+.drawer-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 40rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: relative;
+}
+
+.drawer-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* 颜色选择器容器 */
+.color-picker-container {
+  padding: 20rpx 40rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* 操作按钮 */
+.drawer-actions {
+  display: flex;
+  padding: 30rpx 40rpx;
+  gap: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+  background-color: #ffffff;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background-color: var(--ckt-gray-1);
+  color: var(--ckt-gray-11);
+}
+
+.cancel-btn:active {
+  background-color: var(--ckt-gray-2);
+}
+
+.confirm-btn {
+  background-color: var(--ckt-theme-6);
+  color: var(--ckt-gray-0);
+  border: 1rpx solid var(--ckt-theme-6);
+}
+
+.confirm-btn:active {
+  background-color: var(--ckt-theme-7);
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .drawer-content {
+    max-height: 85vh;
+  }
+  
+  .color-picker-container {
+    max-height: 55vh;
+  }
+}
