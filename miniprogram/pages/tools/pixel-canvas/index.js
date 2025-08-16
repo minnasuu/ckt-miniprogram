@@ -362,5 +362,19 @@ Page({
     this.setData({
       borderStyle: type
     })
+  },
+  onResetSize() {
+    // 保存当前的画布数据
+    const currentCanvasData = this.data.canvasData;
+
+    // 重置画布尺寸
+    this.setData({
+      canvasWidth: 12,
+      canvasHeight: 12
+    }, () => {
+      // 在尺寸更新后，调用updateCanvas来智能调整画布
+      // 这样可以保持已绘制的颜色数据不变
+      this.updateCanvas();
+    });
   }
 });

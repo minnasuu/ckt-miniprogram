@@ -49,7 +49,6 @@
                 <view wx:if="{{activeTab === 'colors'}}" class="color-grid-container">
                   <view class="loading-container {{colorLoading ? 'loading' : ''}} "><loading></loading></view>
                   <view class="custom-color-button">
-                  <!-- <color-picker width="100%" height="80rpx" text="自定义颜色"></color-picker> -->
                   </view>
                   <view style="flex:1;height:1%;display:flex;flex-direction:column">
                     <view class="colors-menu-container">

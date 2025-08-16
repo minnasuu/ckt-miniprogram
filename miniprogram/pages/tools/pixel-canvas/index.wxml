@@ -22,7 +22,7 @@
         宽：<custom-number-input
         value="{{canvasWidth}}"
         min="4"
-        max="60"
+        max="36"
         step="2"
         disabledInput
         bind:change="onCanvasWidthInput"
@@ -32,13 +32,16 @@
         高：<custom-number-input
         value="{{canvasHeight}}"
         min="4"
-        max="60"
+        max="36"
         step="2"
         disabledInput
         bind:change="onCanvasHeightInput"
       ></custom-number-input>
       </view>
+      <view style="display:flex;align-items:center;gap:8px;">
+      <button class="resetSize-button" style="width: 34px" bind:tap="onResetSize"><view class="resetSize-icon"></view></button>
       <button class="fullscreen-button" style="width: 34px" bind:tap="onFullCanvas"><view class="fullscreen-icon"></view></button>
+      </view>
       </view>
     </view>
 
