@@ -91,3 +91,51 @@ color-picker-drawer {
   z-index: 9999 !important;
 }
 
+.tolerance-slider {
+  width: 100%;
+}
+
+.mode-switch-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 400rpx;
+}
+
+.mode-label {
+  font-size: 24rpx;
+  color: var(--ckt-gray-8);
+  text-align: center;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 16rpx;
+  justify-content: center;
+}
+
+.mode-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 6rpx;
+  border: 1px solid var(--ckt-gray-4);
+  font-size: 22rpx;
+  background-color: var(--ckt-gray-1);
+  color: var(--ckt-gray-8);
+  transition: all 0.2s ease;
+}
+
+.mode-btn.active {
+  background-color: var(--ckt-theme-6);
+  color: var(--ckt-gray-0);
+  border-color: var(--ckt-theme-6);
+}
+
+.mode-description {
+  font-size: 20rpx;
+  color: var(--ckt-gray-6);
+  text-align: center;
+  line-height: 1.4;
+}
+

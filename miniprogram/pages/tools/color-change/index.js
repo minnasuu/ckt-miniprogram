@@ -26,6 +26,9 @@ Page({
     canvasStyle: '', // 动态canvas样式
     // 存储原始图片数据，用于重置
     originalImageData: null,
+    // 色相模式开关
+    hueMode: true,
+    hueTolerance: 10, // 色相容差
   },
 
   /**
@@ -107,68 +110,74 @@ Page({
           const data = imageData.data;
           
           const colorMap = {};
-        
-        // 每隔一定像素采样，提高性能但保持足够的采样量
-        const sampleStep = Math.max(1, Math.floor(data.length / 4 / 50000));
-        
-        for (let i = 0; i < data.length; i += 4 * sampleStep) {
-            // 将RGB值量化到更小的区间，提高颜色区分度
-            const r = Math.floor(data[i] / 16) * 16;  // 改为16个区间
-            const g = Math.floor(data[i + 1] / 16) * 16;
-            const b = Math.floor(data[i + 2] / 16) * 16;
+          const hueMap = {}; // 基于色相的颜色统计
+
+          // 每隔一定像素采样，提高性能但保持足够的采样量
+          const sampleStep = Math.max(1, Math.floor(data.length / 4 / 50000));
+
+          for (let i = 0; i < data.length; i += 4 * sampleStep) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
             const a = data[i + 3];
-            
+
             // 忽略透明像素和接近白色的像素
             if (a < 128 || (r > 240 && g > 240 && b > 240)) continue;
-            
-            const colorKey = `${r},${g},${b}`;
+
+            // 计算色相
+            const [hue, saturation, lightness] = this.rgbToHsl(r, g, b);
+
+            // 忽略低饱和度的颜色（接近灰色）
+            if (saturation < 15) continue;
+
+            // 将RGB值量化到更小的区间，提高颜色区分度
+            const quantizedR = Math.floor(r / 16) * 16;
+            const quantizedG = Math.floor(g / 16) * 16;
+            const quantizedB = Math.floor(b / 16) * 16;
+
+            const colorKey = `${quantizedR},${quantizedG},${quantizedB}`;
+            const hueKey = Math.floor(hue / 10) * 10; // 将色相量化到10度区间
+
             colorMap[colorKey] = (colorMap[colorKey] || 0) + 1;
-        }
-        
-        // 合并相似颜色
-        const mergedColors = {};
-        Object.entries(colorMap).forEach(([color1, count1]) => {
-            const [r1, g1, b1] = color1.split(',').map(Number);
-            
-            // 检查是否已经有相似的颜色
-            let found = false;
-            for (const [color2, count2] of Object.entries(mergedColors)) {
-                const [r2, g2, b2] = color2.split(',').map(Number);
-                
-                // 计算颜色距离
-                const distance = Math.sqrt(
-                    Math.pow(r1 - r2, 2) +
-                    Math.pow(g1 - g2, 2) +
-                    Math.pow(b1 - b2, 2)
-                );
-                
-                // 如果颜色相似，合并到已有颜色中
-                if (distance < 30) {
-                    mergedColors[color2] = count1 + count2;
-                    found = true;
-                    break;
-                }
-            }
-            
-            // 如果没有相似颜色，添加新颜色
-            if (!found) {
-                mergedColors[color1] = count1;
-            }
-        });
-        
-        // 获取出现频率最高的三种颜色
-        const resultArr= Object.entries(mergedColors)
+            hueMap[hueKey] = (hueMap[hueKey] || 0) + 1;
+          }
+
+          // 基于色相选择主要颜色
+          const dominantHues = Object.entries(hueMap)
             .sort(([, a], [, b]) => b - a)
             .slice(0, 3)
-            .map(([color]) => {
-                const [r, g, b] = color.split(',').map(Number);
-                return `rgb(${r}, ${g}, ${b})`;
-            });
+            .map(([hue]) => parseInt(hue));
+
+          // 为每个主要色相选择最具代表性的颜色
+          const resultArr = dominantHues.map(targetHue => {
+            let bestColor = null;
+            let maxCount = 0;
+
+            // 在目标色相范围内找到出现频率最高的颜色
+            for (const [colorKey, count] of Object.entries(colorMap)) {
+              const [r, g, b] = colorKey.split(',').map(Number);
+              const [hue] = this.rgbToHsl(r, g, b);
+
+              // 检查是否在目标色相范围内（±15度）
+              const hueDiff = Math.abs(hue - targetHue);
+              if (hueDiff <= 15 || hueDiff >= 345) { // 处理色相环边界
+                if (count > maxCount) {
+                  maxCount = count;
+                  bestColor = `rgb(${r}, ${g}, ${b})`;
+                }
+              }
+            }
+
+            return bestColor || `rgb(0, 0, 0)`; // 如果没有找到，返回黑色
+          });
+
+          console.log('基于色相提取的主要颜色:', resultArr);
+          console.log('主要色相值:', dominantHues);
           
           // 更新数据
           this.setData({
             colorArr: resultArr,
-            newColorArr: resultArr,
+            newColorArr: [...resultArr], // 使用展开运算符创建新数组
           });
           
           this.showMessage('已提取主要色相');
@@ -190,9 +199,29 @@ Page({
     const query = wx.createSelectorQuery();
     query.select('#result-canvas').fields({node:true,size:true}).exec((res)=>{
       if (this.data.newColorArr.length === 0) return;
+
+      console.log('Canvas查询结果:', res);
+
+      if (!res[0] || !res[0].node) {
+        console.error('Canvas节点获取失败');
+        this.showMessage('Canvas获取失败');
+        return;
+      }
+
       const canvas = res[0].node;
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        console.error('Canvas上下文获取失败');
+        this.showMessage('Canvas上下文获取失败');
+        return;
+      }
+
+      console.log('Canvas尺寸:', canvas.width, canvas.height);
+      console.log('当前颜色数组:', this.data.colorArr);
+      console.log('新颜色数组:', this.data.newColorArr);
+
+      // 预览将要被替换的颜色
+      this.previewColorReplacement(canvas, ctx);
 
       // 如果已经修改过，先重置
       if (this.data.hasModified) {
@@ -202,6 +231,64 @@ Page({
         this.startColorReplacement(canvas, ctx);
       }
     });
+  },
+
+  // 预览颜色替换效果
+  previewColorReplacement(canvas, ctx) {
+    const selectedColors = this.createColorMapping();
+
+    if (selectedColors.length === 0) {
+      this.showMessage('没有颜色需要替换');
+      return;
+    }
+
+    // 统计将要被替换的像素数量
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    let previewCount = 0;
+
+    // 快速预览：只检查部分像素
+    const sampleStep = Math.max(1, Math.floor(data.length / 4 / 10000));
+
+    for (let i = 0; i < data.length; i += 4 * sampleStep) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+
+      if (a < 128) continue;
+
+      // 查找是否需要替换当前颜色
+      const colorToReplace = selectedColors.find(c => {
+        const originalRgb = this.parseRgbString(c.original);
+        if (!originalRgb) return false;
+
+        if (this.data.hueMode) {
+          // 色相模式：基于色相匹配
+          const [origH] = this.rgbToHsl(originalRgb.r, originalRgb.g, originalRgb.b);
+          const [currentH] = this.rgbToHsl(r, g, b);
+          return Math.abs(currentH - origH) < 10; // 色相容差10度
+        } else {
+          // RGB模式：基于RGB值匹配
+          const tolerance = 30;
+          return Math.abs(r - originalRgb.r) <= tolerance &&
+            Math.abs(g - originalRgb.g) <= tolerance &&
+            Math.abs(b - originalRgb.b) <= tolerance;
+        }
+      });
+
+      if (colorToReplace) {
+        previewCount++;
+      }
+    }
+
+    // 估算总像素数
+    const estimatedTotal = Math.floor(previewCount * (data.length / 4 / sampleStep));
+    const percentage = Math.round((estimatedTotal / (canvas.width * canvas.height)) * 100);
+
+    const modeText = this.data.hueMode ? '色相模式' : 'RGB模式';
+    console.log(`预览(${modeText})：预计将替换约 ${estimatedTotal} 个像素 (${percentage}%)`);
+    this.showMessage(`预览(${modeText})：将替换约${percentage}%的像素`);
   },
 
   // 重置canvas到原始状态
@@ -275,17 +362,14 @@ Page({
       });
     }
 
-    // 创建颜色映射表：原色 -> 新色
-    const colorMapping = {};
-    this.data.colorArr.forEach((originalColor, index) => {
-      const newColor = this.data.newColorArr[index];
-      if (originalColor !== newColor) {
-        colorMapping[originalColor] = newColor;
-      }
-    });
+    // 创建颜色映射表
+    const selectedColors = this.createColorMapping();
+
+    console.log('颜色映射表:', selectedColors);
+    console.log('色相模式:', this.data.hueMode);
 
     // 如果没有颜色需要替换，直接返回
-    if (Object.keys(colorMapping).length === 0) {
+    if (selectedColors.length === 0) {
       this.setData({
         generateLoading: false,
         hasModified: false,
@@ -297,6 +381,7 @@ Page({
     // 使用 requestAnimationFrame 进行分批处理
     let currentIndex = 0;
     const batchSize = 10000; // 每批处理的像素数
+    let replacedCount = 0; // 统计替换的像素数量
 
     const processNextBatch = () => {
       if (this.data.isCancelled) {
@@ -318,28 +403,48 @@ Page({
         // 跳过透明像素
         if (a < 128) continue;
 
-        // 将当前像素转换为RGB字符串格式
-        const currentColor = `rgb(${r}, ${g}, ${b})`;
-
         // 查找是否需要替换当前颜色
-        let shouldReplace = false;
-        let newColor = null;
+        const colorToReplace = selectedColors.find(c => {
+          const originalRgb = this.parseRgbString(c.original);
+          if (!originalRgb) return false;
 
-        // 遍历所有需要替换的颜色
-        for (const [originalColor, replacementColor] of Object.entries(colorMapping)) {
-          if (this.colorsMatch(currentColor, originalColor)) {
-            shouldReplace = true;
-            newColor = replacementColor;
-            break;
+          if (this.data.hueMode) {
+            // 色相模式：基于色相匹配
+            const [origH] = this.rgbToHsl(originalRgb.r, originalRgb.g, originalRgb.b);
+            const [currentH] = this.rgbToHsl(r, g, b);
+            return Math.abs(currentH - origH) < 10; // 色相容差10度
+          } else {
+            // RGB模式：基于RGB值匹配
+            const tolerance = 30;
+            return Math.abs(r - originalRgb.r) <= tolerance &&
+              Math.abs(g - originalRgb.g) <= tolerance &&
+              Math.abs(b - originalRgb.b) <= tolerance;
           }
-        }
+        });
 
-        if (shouldReplace && newColor) {
-          const rgbColor = this.hexToRgb(newColor);
-          if (rgbColor) {
-            data[i] = rgbColor.r;
-            data[i + 1] = rgbColor.g;
-            data[i + 2] = rgbColor.b;
+        if (colorToReplace) {
+          const newColor = this.hexToRgb(colorToReplace.new);
+          if (newColor) {
+            if (this.data.hueMode) {
+              // 色相模式：保持原有的饱和度和亮度，只改变色相
+              const [, origS, origL] = this.rgbToHsl(r, g, b);
+              const [newH] = this.rgbToHsl(newColor.r, newColor.g, newColor.b);
+              const [newR, newG, newB] = this.hslToRgb(newH, origS, origL);
+              data[i] = newR;
+              data[i + 1] = newG;
+              data[i + 2] = newB;
+            } else {
+              // RGB模式：直接替换RGB值
+              data[i] = newColor.r;
+              data[i + 1] = newColor.g;
+              data[i + 2] = newColor.b;
+            }
+            replacedCount++;
+
+            // 添加调试信息
+            if (replacedCount <= 5) {
+              console.log(`替换像素 ${i / 4}: rgb(${r},${g},${b}) -> rgb(${data[i]},${data[i + 1]},${data[i + 2]})`);
+            }
           }
         }
       }
@@ -353,12 +458,13 @@ Page({
       if (currentIndex < data.length && !this.data.isCancelled) {
         canvas.requestAnimationFrame(processNextBatch);
       } else {
+        console.log('颜色转换完成，共替换了', replacedCount, '个像素');
         this.setData({
           generateLoading: false,
           hasModified: true, // 标记已经修改过
           finished: true, // 标记转换完成
         });
-        this.showMessage('颜色转换完成');
+        this.showMessage(`颜色转换完成，替换了${replacedCount}个像素`);
       }
     };
 
@@ -683,5 +789,40 @@ Page({
         console.error('Canvas节点获取失败:', res);
       }
     });
+  },
+
+  // 创建颜色映射表
+  createColorMapping() {
+    const selectedColors = [];
+
+    this.data.colorArr.forEach((originalColor, index) => {
+      const newColor = this.data.newColorArr[index];
+      if (originalColor !== newColor) {
+        selectedColors.push({
+          original: originalColor,
+          new: newColor
+        });
+      }
+    });
+
+    return selectedColors;
+  },
+
+  // 切换到色相模式
+  switchToHueMode() {
+    this.setData({
+      hueMode: true
+    });
+    console.log('切换到色相模式');
+    this.showMessage('已切换到色相模式');
+  },
+
+  // 切换到RGB模式
+  switchToRgbMode() {
+    this.setData({
+      hueMode: false
+    });
+    console.log('切换到RGB模式');
+    this.showMessage('已切换到RGB模式');
   }
 })
