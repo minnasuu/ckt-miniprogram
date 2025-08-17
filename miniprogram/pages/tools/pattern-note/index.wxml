@@ -2,7 +2,21 @@
   <custom-header title="图解笔记本" showBack background="transparent"></custom-header>
     <view class="pn-content" style="padding-top: {{statusBarHeight+44}}px">
         <view class="pn-operate-area">
-            <view class="pn-input-area">
+            <view class="pn-input-area"> 
+                <view 
+                    class="pn-pattern-title" 
+                    bind:tap="handlePatternTitleTap"
+                >
+                    {{patternTitle}}
+                    <view class="pn-pattern-title-input {{isEditingTitle ? '':'hide'}}">
+                        <input
+                            class="pattern-title-change-input"
+                            placeholder="{{patternTitle}}"
+                            bindblur="handlePatternTitleBlur"
+                            bindinput="handlePatternTitleChange"
+                        ></input>
+                    </view>
+                </view>
                 <view class="pn-header">
                     <view class="pn-header-title-list">
                         <block wx:for="{{data}}" wx:for-item="headItem" wx:for-index="headIndex">
@@ -44,17 +58,20 @@
                         bindinput="handleInputChange"
                       ></textarea>
                     <view class="pn-textarea-stiches {{showStich ? '' : 'hide'}}">
-                        <textarea
-                            value="{{curItem.nums}}"
-                            bindfocus="updateLineNumber"
-                            bindtap="updateLineNumber"
-                            bindkeydown="updateLineNumber"
-                            bindblur="handleNumsBlur"
-                            bindchange="handleNumsChange"
-                      ></textarea>
+                        <view wx:for="{{lineNumbers}}" wx:for-index="lineIndex" wx:key="lineIndex" class="stitch-input-line">
+                            <input 
+                                class="stitch-input"
+                                type="digit"
+                                value="{{curItem.nums && curItem.nums[lineIndex] !== undefined ? curItem.nums[lineIndex] : 0}}"
+                                data-line-index="{{lineIndex}}"
+                                bindinput="handleNumsInputChange"
+                                placeholder="0"
+                                adjust-position="true"
+                            />
+                        </view>
                     </view>
                     <view class="pn-dash-container {{showStich ? '':'hide'}} transition" >
-                          <view wx:for="{{curItem.values.aplit('/n')}}" wx:for-item="numItm" wx:for-index="numIdx" wx:key="numIdx" class="pn-dash-list">
+                          <view wx:for="{{lineNumbers}}" wx:for-item="numItm" wx:for-index="numIdx" wx:key="numIdx" class="pn-dash-list">
                             <view class="hide-value">{{numItm}}</view>
                             <view class="dividers">
                                 <view class="divider {{numIdx === curLine ? 'active':''}}"></view>
@@ -64,7 +81,7 @@
                 </view>
             </view>
             <view class="pn-bottom-btns">
-              <custom-checkbox checked="{{autoSave}}" bind:change="handleAutoSaveChange" text="自动保存"></custom-checkbox>
+              <button bindtap="handleHistoryBtnTap" class="default">查看历史</button>
               <button bindtap="handlePreviewBtnTap" class="default">预览 下载</button>
               <button bindtap="handleSaveBtnTap" class="primary">保存图解</button>
             </view>
@@ -75,7 +92,7 @@
           message="{{alertMessage}}" 
           show="{{showAlert}}" 
           type="success"
-        />
+        ></alert-message>
         <view
             class="pattern-preview-dialog {{!showPreviewDialog? 'hide':''}}"
         >

@@ -43,6 +43,42 @@
     border-radius: 8px;
 }
 
+
+.pn-pattern-title{
+    position: relative;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--ckt-gray-11);
+    cursor: pointer;
+    &:hover{
+        background-color: var(--ckt-gray-3);
+    }
+    .pn-pattern-title-input{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--ckt-gray-1);
+        border-radius: 6px;
+        transition: all 0.2s linear;
+        &.hide{
+            opacity: 0;
+            pointer-events: none;
+        }
+        .pattern-title-change-input{
+            width: 100%;
+            height: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--ckt-gray-11);
+            background-color: transparent;
+            border: none;
+            box-sizing: border-box;
+        }
+    }
+}
+
 .pn-header{
     display: flex;
     align-items: center;
@@ -91,7 +127,7 @@
         }
         .divider{
             width: 1px;
-            height: 16px;
+            height: 20px;
             background-color: var(--ckt-gray-3);
         }
         .title-add-btn{
@@ -132,7 +168,7 @@
     }
     textarea.pn-textarea{
         padding: 8px;
-        width: calc(100vw - 56px - 32px - 20px);
+        width: calc(100vw - 56px - 32px - 20px - 60px);
         height: 100%;
         font-size: 14px;
         line-height: 22px;
@@ -140,12 +176,33 @@
     }
     .pn-textarea-stiches{
         display: flex;
+        flex-direction: column;
         margin-left: auto;
         height: 100%;
-        width: 20px;
+        width: 40px;
+        padding-top: 8px;
         &.hide{
             opacity: 0;
             pointer-events: none;
+        }
+        .stitch-input-line{
+            height: 22px;
+            display: flex;
+            align-items: center;
+            .stitch-input{
+                text-align: right;
+                width: 100%;
+                height: 22px;
+                font-size: 12px;
+                line-height: 22px;
+                justify-content: center;
+                color: var(--ckt-gray-11);
+                background-color: transparent;
+                border: none;
+                border-radius: 4px;
+                padding: 0 4px;
+                box-sizing: border-box;
+            }
         }
     }
     .pn-dash-container{
@@ -155,8 +212,9 @@
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        padding-left: 48px;
-        width:calc(100% - 72px);
+        padding-left: 32px;
+        width:calc(100% - 40px);
+        box-sizing: border-box;
         &.hide{
             opacity: 0;
         }
@@ -165,13 +223,14 @@
             gap: 12px;
             .hide-value{
                 opacity: 0;
+                line-height: 22px;
             }
             .dividers{
                 flex: 1;
                 width: 1%;
                 display: flex;
                 align-items: center;
-                gap: 12px;
+                gap: 16px;
                 color: var(--ckt-gray-8);
                 .divider{
                     flex: 1;

@@ -1,8 +1,10 @@
 Page({
   data: {
     statusBarHeight: 0,
+    patternTitle: '', // 图解标题
+    isEditingTitle: false, // 是否正在编辑标题
     initData:[
-        {id:'1',title:'第 1 部分',values:'',nums: '',edited:false},
+      { id: '1', title: '第 1 部分', values: '', nums: [], edited: false },
     ],
     data:[],
     cur: '1',
@@ -12,16 +14,18 @@ Page({
     curLine: -1,
     showStich:false,
     stiches: [],
-    saving:false,
-    autoSave:false,
+    saving: false,
     showPreviewDialog:false,
     saveLoading:false
   },
 
   onLoad() {
     const systemInfo = wx.getSystemInfoSync();
+    // 生成默认标题（当前时间）
+    const defaultTitle = this.formatDateTime(new Date());
     this.setData({
-      statusBarHeight: systemInfo.statusBarHeight
+      statusBarHeight: systemInfo.statusBarHeight,
+      patternTitle: defaultTitle
     });
     if(this.data.data.length === 0){
       this.setData({
@@ -33,10 +37,27 @@ Page({
     }
   },
 
+  // 格式化时间为标题
+  formatDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  },
+
   // 更新 curItem 的方法
   updateCurItem() {
     const { data, cur } = this.data;
     const newCurItem = data.find(item => item.id === cur) || {};
+    // 确保 nums 数组存在且与行数匹配
+    if (newCurItem.values !== undefined) {
+      const lines = (newCurItem.values || '').split('\n');
+      if (!newCurItem.nums || newCurItem.nums.length !== lines.length) {
+        newCurItem.nums = lines.map(line => this.calculateExpression(line));
+      }
+    }
     this.setData({
       curItem: newCurItem
     }, () => {
@@ -47,7 +68,9 @@ Page({
   calculateLineNumbers() {
     const { curItem } = this.data;
     if (curItem) {
-      const lineNumbers = curItem.values.split('\n').map((_, index) => `R${index + 1}: `);
+      // 如果values为空，至少要有一行
+      const lines = curItem.values || '';
+      const lineNumbers = lines.split('\n').map((_, index) => `R${index + 1}: `);
       this.setData({
         lineNumbers: lineNumbers
       });
@@ -55,14 +78,17 @@ Page({
   },
   caculateStiches(){
     const data = this.data.data;
-    const newData = data.map(i=>{
-      Object.assign(i,{
-        nums: i.values.split('\n').map((i) => i.values.split('\n').map(j =>calculateExpression(j)).join('\n'))
-      })
-    })
+    const newData = data.map(item => {
+      const lines = (item.values || '').split('\n');
+      const nums = lines.map(line => this.calculateExpression(line));
+      return Object.assign(item, { nums: nums });
+    });
     this.setData({
       data: newData
-    })
+    }, () => {
+      // 更新当前项
+      this.updateCurItem();
+    });
   },
 
   // 当 cur 发生变化时调用
@@ -138,7 +164,7 @@ Page({
   },
   handleAddPart(){
     const data = this.data.data;
-    const newData = [...data,{id:`${data?.length+1}`,title:`第 ${data?.length+1} 部分`,values: '',nums:'',edited:false}];
+    const newData = [...data, { id: `${data?.length + 1}`, title: `第 ${data?.length + 1} 部分`, values: '', nums: [], edited: false }];
     this.setData({
       data: newData,
       cur: `${data?.length+1}`,
@@ -146,30 +172,113 @@ Page({
     this.updateCurItem()
   },
   handleShowStich(){
+    const newShowStich = !this.data.showStich;
+    console.log('显示针数状态:', newShowStich);
+    console.log('当前项:', this.data.curItem);
+    console.log('行数:', this.data.lineNumbers);
     this.setData({
-      showStich: !this.data.showStich
-    })
+      showStich: newShowStich
+    });
+    // 如果开启显示针数，重新计算针数
+    if (newShowStich) {
+      this.caculateStiches();
+    }
+  },
+
+  // 图解标题双击事件处理
+  lastPatternTitleTapTime: 0,
+  handlePatternTitleTap() {
+    const now = Date.now();
+    const timeDiff = now - this.lastPatternTitleTapTime;
+    this.lastPatternTitleTapTime = now;
+
+    if (timeDiff < 300) {
+      // 双击事件 - 进入编辑模式
+      this.setData({
+        isEditingTitle: true
+      });
+    }
+  },
+
+  // 图解标题输入完成
+  handlePatternTitleBlur() {
+    this.setData({
+      isEditingTitle: false
+    });
+  },
+
+  // 图解标题输入变化
+  handlePatternTitleChange(e) {
+    const val = e.detail.value;
+    if (!val) return;
+    this.setData({
+      patternTitle: val
+    });
+  },
+
+  // 处理针数输入变化
+  handleNumsInputChange(e) {
+    const { lineIndex } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    const cur = this.data.cur;
+    const newData = this.data.data.map(item => {
+      if (item.id === cur) {
+        const newNums = [...item.nums];
+        newNums[lineIndex] = parseFloat(value) || 0;
+        return Object.assign(item, { nums: newNums });
+      }
+      return item;
+    });
+
+    this.setData({
+      data: newData,
+      curItem: newData.find(i => i.id === cur)
+    });
   },
   calculateExpression(input) {
-    // 定义字母对应的值
+    if (!input || typeof input !== 'string') return 0;
+
+    // 定义字母对应的值（根据需求）
     const valueMap = {
+      // *1 的情况
         'x': 1, 'X': 1,
+      'f': 1, 'F': 1,
+      't': 1, 'T': 1,
+      // *2 的情况
         'v': 2, 'V': 2,
-        'w': 3, 'W': 3,
-        'a': 1, 'A': 1,
-        'ch': 1, 'CH': 1
+      'tv': 2, 'TV': 2,
+      'fv': 2, 'FV': 2,
+      // *3 的情况
+      'tw': 3, 'TW': 3,
+      'fww': 3, 'FWW': 3,
+      // *0.5 的情况
+      'a': 0.5, 'A': 0.5,
+      'ta': 0.5, 'TA': 0.5,
+      'fa': 0.5, 'FA': 0.5
     };
 
     // 解析单个表达式（数字+字母或字母组合）
     function parseSingle(expr) {
-        // 如果是数字，直接返回
-        if (/^\d+$/.test(expr)) {
-            return parseInt(expr, 10);
-        }
+      if (!expr) return 0;
 
-        // 如果是字母或字母组合，返回对应的值
-        if (valueMap[expr]) {
-            return valueMap[expr];
+      // 如果是纯数字，直接返回
+      if (/^\d+(\.\d+)?$/.test(expr)) {
+        return parseFloat(expr);
+      }
+
+      // 检查是否有数字前缀
+      const match = expr.match(/^(\d+(\.\d+)?)([a-zA-Z]+)$/i);
+      if (match) {
+        const num = parseFloat(match[1]);
+        const letter = match[3].toLowerCase();
+        const value = valueMap[letter] || 1; // 如果字母不在映射中，默认为 1
+        return num * value;
+      }
+
+      // 如果是纯字母组合，查找对应值
+      const letter = expr.toLowerCase();
+      if (valueMap[letter] !== undefined) {
+        return valueMap[letter];
         }
 
         // 如果是其他字母，返回 1
@@ -177,45 +286,38 @@ Page({
             return 1;
         }
 
-        // 如果是数字+字母的组合
-        const match = expr.match(/^(\d+)([a-zA-Z]+)$/);
-        if (match) {
-            const num = parseInt(match[1], 10);
-            const letter = match[2];
-            const value = valueMap[letter] || 1; // 如果字母不在映射中，默认为 1
-            return num * value;
-        }
-
-        // 如果无法解析，返回 0
-        return 0;
+      return 0;
     }
 
-    // 解析整个表达式
-    function parse(expr) {
-        // 去掉空格
-        expr = expr.replace(/\s+/g, '');
+    // 处理括号表达式，支持分配律
+    function handleBrackets(expr) {
+      // 匹配类似 "6(2X V)" 的模式
+      const bracketPattern = /(\d+(\.\d+)?)\s*\(\s*([^)]+)\s*\)/g;
 
-        // 如果表达式是括号内的内容，递归解析
-        if (expr.startsWith('(') && expr.endsWith(')')) {
-            return parse(expr.slice(1, -1));
-        }
-
-        // 如果表达式包含括号，先解析括号内的内容
-        const bracketMatch = expr.match(/\(([^()]+)\)/);
-        if (bracketMatch) {
-            const insideBracket = bracketMatch[1];
-            const outsideBefore = expr.slice(0, bracketMatch.index);
-            const outsideAfter = expr.slice(bracketMatch.index + bracketMatch[0].length);
-            return parse(outsideBefore + parse(insideBracket) + outsideAfter);
-        }
-
-        // 如果表达式是多个部分的组合（如 "2X3V"），按顺序解析并相加
-        const parts = expr.split(/(\d+[a-zA-Z]+|[a-zA-Z]+)/).filter(Boolean);
-        return parts.reduce((sum, part) => sum + parseSingle(part), 0);
+      return expr.replace(bracketPattern, (match, multiplier, _, inside) => {
+        const mult = parseFloat(multiplier);
+        const insideValue = parseExpression(inside);
+        return (mult * insideValue).toString();
+      });
     }
 
-    // 将输入字符串按空格分割成多个表达式，分别解析后相加
-    const expressions = input.split(/\s+/);
-    return expressions?.reduce((sum, expr) => sum + parse(expr), 0);
-}
+    // 解析表达式（处理空格分隔的多个部分）
+    function parseExpression(expr) {
+      if (!expr) return 0;
+
+      // 去掉多余空格
+      expr = expr.trim().replace(/\s+/g, ' ');
+
+      // 先处理括号
+      expr = handleBrackets(expr);
+
+      // 按空格分割并计算每个部分
+      const parts = expr.split(/\s+/).filter(Boolean);
+      return parts.reduce((sum, part) => {
+        return sum + parseSingle(part);
+      }, 0);
+    }
+
+    return parseExpression(input);
+  },
 });
