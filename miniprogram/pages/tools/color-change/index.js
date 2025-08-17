@@ -29,6 +29,12 @@ Page({
     // 色相模式开关
     hueMode: true,
     hueTolerance: 10, // 色相容差
+    // 下载和保存相关
+    canvasWidth: 0,
+    canvasHeight: 0,
+    totalCanvasHeight: 0,
+    // 临时文件路径
+    tempFilePath: '',
   },
 
   /**
@@ -336,10 +342,30 @@ Page({
       console.log('开始清除canvas效果');
 
       if (this.data.originalImageData) {
-      // 使用保存的原始数据恢复
+        // 使用保存的原始数据恢复
         try {
           ctx.putImageData(this.data.originalImageData, 0, 0);
           console.log('使用原始数据恢复成功');
+
+          // 更新临时文件路径为原图
+          try {
+            wx.canvasToTempFilePath({
+              canvas: canvas,
+              fileType: 'png',
+              quality: 1,
+              success: (res) => {
+                console.log('清除后更新临时文件路径:', res.tempFilePath);
+                this.setData({
+                  tempFilePath: res.tempFilePath
+                });
+              },
+              fail: (error) => {
+                console.error('清除后更新临时文件路径失败:', error);
+              }
+            });
+          } catch (error) {
+            console.error('清除后更新临时文件路径异常:', error);
+          }
         } catch (error) {
           console.error('使用原始数据恢复失败:', error);
           // 如果失败，尝试重新绘制原图
@@ -370,6 +396,26 @@ Page({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       console.log('原图重新绘制成功');
+
+      // 更新临时文件路径为原图
+      try {
+        wx.canvasToTempFilePath({
+          canvas: canvas,
+          fileType: 'png',
+          quality: 1,
+          success: (res) => {
+            console.log('重新绘制后更新临时文件路径:', res.tempFilePath);
+            this.setData({
+              tempFilePath: res.tempFilePath
+            });
+          },
+          fail: (error) => {
+            console.error('重新绘制后更新临时文件路径失败:', error);
+          }
+        });
+      } catch (error) {
+        console.error('重新绘制后更新临时文件路径异常:', error);
+      }
     };
 
     img.onerror = (error) => {
@@ -495,11 +541,43 @@ Page({
         canvas.requestAnimationFrame(processNextBatch);
       } else {
         console.log('颜色转换完成，共替换了', replacedCount, '个像素');
-        this.setData({
-          generateLoading: false,
-          hasModified: true, // 标记已经修改过
-          finished: true, // 标记转换完成
-        });
+
+        // 更新临时文件路径
+        try {
+          wx.canvasToTempFilePath({
+            canvas: canvas,
+            fileType: 'png',
+            quality: 1,
+            success: (res) => {
+              console.log('更新临时文件路径:', res.tempFilePath);
+
+              this.setData({
+                generateLoading: false,
+                hasModified: true, // 标记已经修改过
+                finished: true, // 标记转换完成
+                tempFilePath: res.tempFilePath
+              });
+            },
+            fail: (error) => {
+              console.error('更新临时文件路径失败:', error);
+              this.setData({
+                generateLoading: false,
+                hasModified: true,
+                finished: true,
+                tempFilePath: ''
+              });
+            }
+          });
+        } catch (error) {
+          console.error('更新临时文件路径异常:', error);
+          this.setData({
+            generateLoading: false,
+            hasModified: true,
+            finished: true,
+            tempFilePath: ''
+          });
+        }
+
         this.showMessage(`颜色转换完成，替换了${replacedCount}个像素`);
       }
     };
@@ -792,7 +870,10 @@ Page({
         // 设置canvas的CSS样式尺寸，确保显示正确
         // 注意：在微信小程序中，需要通过setData来更新样式
         this.setData({
-          canvasStyle: `width: ${canvasWidth}px; height: ${canvasHeight}px;`
+          canvasStyle: `width: ${canvasWidth}px; height: ${canvasHeight}px;`,
+          canvasWidth: canvasWidth,
+          canvasHeight: canvasHeight,
+          totalCanvasHeight: canvasHeight
         });
 
         // 创建图片对象
@@ -809,12 +890,45 @@ Page({
           // 保存原始图片数据，用于清除效果时恢复
           const originalImageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
-          // 重置状态
-          this.setData({
-            hasModified: false,
-            finished: false,
-            originalImageData: originalImageData
-          });
+          // 生成临时文件路径
+          try {
+            // 使用异步方式生成临时文件路径
+            wx.canvasToTempFilePath({
+              canvas: canvas,
+              fileType: 'png',
+              quality: 1,
+              success: (res) => {
+                console.log('生成临时文件路径:', res.tempFilePath);
+
+                // 重置状态
+                this.setData({
+                  hasModified: false,
+                  finished: false,
+                  originalImageData: originalImageData,
+                  tempFilePath: res.tempFilePath
+                });
+              },
+              fail: (error) => {
+                console.error('生成临时文件路径失败:', error);
+                // 即使失败也要保存原始数据
+                this.setData({
+                  hasModified: false,
+                  finished: false,
+                  originalImageData: originalImageData,
+                  tempFilePath: ''
+                });
+              }
+            });
+          } catch (error) {
+            console.error('生成临时文件路径异常:', error);
+            // 即使失败也要保存原始数据
+            this.setData({
+              hasModified: false,
+              finished: false,
+              originalImageData: originalImageData,
+              tempFilePath: ''
+            });
+          }
         };
 
         img.onerror = (error) => {
@@ -863,5 +977,215 @@ Page({
     });
     console.log('切换到RGB模式');
     this.showMessage('已切换到RGB模式');
+  },
+
+
+  // 保存颜色卡至仓库
+  async saveColorCard() {
+    if (!this.data.author) {
+      this.showMessage('请先登录☺️');
+      return;
+    }
+    if (!this.data.hasModified) {
+      this.showMessage('请先进行颜色转换☺️');
+      return;
+    }
+
+    // 如果有临时文件路径，直接使用
+    if (this.data.tempFilePath) {
+      console.log('开始保存到仓库，使用临时文件路径:', this.data.tempFilePath);
+      this.uploadToCloudStorage(this.data.tempFilePath);
+      return;
+    }
+
+    // 如果没有临时文件路径，重新生成
+    console.log('临时文件路径不存在，重新生成');
+    this.generateTempFilePathAndSave();
+  },
+
+  // 生成临时文件路径并保存
+  generateTempFilePathAndSave() {
+    const query = wx.createSelectorQuery();
+    query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
+      if (!res[0] || !res[0].node) {
+        console.error('Canvas节点获取失败');
+        this.showMessage('Canvas获取失败');
+        return;
+      }
+
+      const canvas = res[0].node;
+
+      try {
+        wx.canvasToTempFilePath({
+          canvas: canvas,
+          fileType: 'png',
+          quality: 1,
+          success: (res) => {
+            console.log('重新生成临时文件路径:', res.tempFilePath);
+
+            // 更新临时文件路径
+            this.setData({
+              tempFilePath: res.tempFilePath
+            });
+
+            // 开始上传
+            this.uploadToCloudStorage(res.tempFilePath);
+          },
+          fail: (error) => {
+            console.error('生成临时文件路径失败:', error);
+            this.showMessage('生成临时文件失败，请重试💔');
+          }
+        });
+      } catch (error) {
+        console.error('生成临时文件路径异常:', error);
+        this.showMessage('生成临时文件失败，请重试💔');
+      }
+    });
+  },
+
+  // 上传到云存储
+  uploadToCloudStorage(tempFilePath) {
+    // 上传文件到云存储
+    wx.cloud.uploadFile({
+      cloudPath: `colorCards/${Date.now()}.png`,
+      filePath: tempFilePath,
+      success: (uploadRes) => {
+        const fileID = uploadRes.fileID;
+        console.log('文件上传成功，fileID:', fileID);
+
+        // 将文件 ID 保存到云数据库
+        const db = wx.cloud.database();
+        db.collection('colorCards').add({
+          data: {
+            fileID: fileID,
+            createTime: db.serverDate(),
+            tag: '图片换色', // 标记为颜色转换功能
+            author: this.data.author,
+            width: this.data.canvasWidth,
+            height: this.data.canvasHeight,
+            // 保存颜色转换信息
+            originalColors: this.data.colorArr,
+            newColors: this.data.newColorArr,
+            hueMode: this.data.hueMode
+          },
+          success: () => {
+            this.showMessage(`保存成功🎉\n前往个人中心-我的创作查查看`);
+          },
+          fail: (err) => {
+            console.error('保存到云数据库失败', err);
+            this.showMessage('保存失败💔');
+          }
+        });
+      },
+      fail: (err) => {
+        console.error('文件上传失败', err);
+        this.showMessage('上传失败💔');
+      }
+    });
+  },
+
+  downloadColorCard() {
+    if (!this.data.hasModified) {
+      this.showMessage('请先进行颜色转换☺️');
+      return;
+    }
+
+    // 如果有临时文件路径，直接使用
+    if (this.data.tempFilePath) {
+      console.log('开始下载，使用临时文件路径:', this.data.tempFilePath);
+      this.requestPhotoPermissionAndSave(this.data.tempFilePath);
+      return;
+    }
+
+    // 如果没有临时文件路径，重新生成
+    console.log('临时文件路径不存在，重新生成');
+    this.generateTempFilePathAndDownload();
+  },
+
+  // 生成临时文件路径并下载
+  generateTempFilePathAndDownload() {
+    const query = wx.createSelectorQuery();
+    query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
+      if (!res[0] || !res[0].node) {
+        console.error('Canvas节点获取失败');
+        this.showMessage('Canvas获取失败');
+        return;
+      }
+
+      const canvas = res[0].node;
+
+      try {
+        wx.canvasToTempFilePath({
+          canvas: canvas,
+          fileType: 'png',
+          quality: 1,
+          success: (res) => {
+            console.log('重新生成临时文件路径:', res.tempFilePath);
+
+            // 更新临时文件路径
+            this.setData({
+              tempFilePath: res.tempFilePath
+            });
+
+            // 开始下载
+            this.requestPhotoPermissionAndSave(res.tempFilePath);
+          },
+          fail: (error) => {
+            console.error('生成临时文件路径失败:', error);
+            this.showMessage('生成临时文件失败，请重试💔');
+          }
+        });
+      } catch (error) {
+        console.error('生成临时文件路径异常:', error);
+        this.showMessage('生成临时文件失败，请重试💔');
+      }
+    });
+  },
+
+  // 请求相册权限并保存
+  requestPhotoPermissionAndSave(tempFilePath) {
+    // 请求用户授权保存图片到相册的权限
+    wx.getSetting({
+      success: (settingRes) => {
+        if (!settingRes.authSetting['scope.writePhotosAlbum']) {
+          wx.authorize({
+            scope: 'scope.writePhotosAlbum',
+            success: () => {
+              // 授权成功，保存图片到相册
+              this.saveImageToAlbum(tempFilePath);
+            },
+            fail: () => {
+              // 用户拒绝授权，提示用户手动开启权限
+              wx.showModal({
+                title: '提示',
+                content: '需要您授权保存图片到相册，请前往设置开启权限',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    wx.openSetting();
+                  }
+                }
+              });
+            }
+          });
+        } else {
+          // 已经授权，直接保存图片到相册
+          this.saveImageToAlbum(tempFilePath);
+        }
+      }
+    });
+  },
+
+  // 保存图片到相册的方法
+  saveImageToAlbum(tempFilePath) {
+    wx.saveImageToPhotosAlbum({
+      filePath: tempFilePath,
+      success: () => {
+        this.showMessage('保存成功🎉');
+      },
+      fail: (err) => {
+        console.error('保存图片到相册失败:', err);
+        this.showMessage('保存失败，请重试💔');
+      }
+    });
   }
 })
