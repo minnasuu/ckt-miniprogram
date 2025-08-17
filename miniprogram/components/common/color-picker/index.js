@@ -11,12 +11,27 @@ Component({
     }
   },
 
+  observers: {
+    // 监听value属性变化，自动重新解析颜色
+    'value': function (newValue) {
+      if (newValue && newValue !== this.data.currentColor) {
+        console.log('value属性变化，重新解析颜色:', newValue);
+        this.parseColor(newValue);
+      }
+    }
+  },
+
   data: {
-    // 颜色相关数据
+    // 颜色相关数据 - 这些值将在parseColor中被正确设置
     hue: 0,
     saturation: 100,
     lightness: 100,
     opacity: 100,
+
+    // RGB值 - 这些值将在parseColor中被正确设置
+    red: 255,
+    green: 203,
+    blue: 203,
 
     // 颜色面板触摸相关
     colorPanelSize: 160,
@@ -24,7 +39,7 @@ Component({
     selectorX: 0,
     selectorY: 0,
 
-    // 当前颜色
+    // 当前颜色 - 这些值将在parseColor中被正确设置
     currentColor: '#ffcbcb',
     hexColor: '#ffcbcb',
 
@@ -65,9 +80,11 @@ Component({
 
     // 解析颜色值
     parseColor(color) {
+      let r, g, b, opacity = 100;
+
       if (color.startsWith('#')) {
+        // HEX格式处理
         let hex = color.substring(1);
-        let opacity = 100;
         
         if (hex.length === 8) {
           opacity = parseInt(hex.substring(6, 8), 16) / 255 * 100;
@@ -76,23 +93,45 @@ Component({
           hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
 
-        const r = parseInt(hex.substring(0, 2), 16);
-        const g = parseInt(hex.substring(2, 4), 16);
-        const b = parseInt(hex.substring(4, 6), 16);
-        
-        const hsl = this.rgbToHsl(r, g, b);
-
-        this.setData({
-          hue: hsl.h,
-          saturation: hsl.s,
-          lightness: hsl.l,
-          opacity: opacity,
-          hexColor: '#' + hex,
-          currentColor: color
-        });
-        
-        this.updateSelectorPosition();
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+      } else if (color.startsWith('rgb')) {
+        // RGB/RGBA格式处理
+        const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        if (rgbMatch) {
+          r = parseInt(rgbMatch[1]);
+          g = parseInt(rgbMatch[2]);
+          b = parseInt(rgbMatch[3]);
+          opacity = rgbMatch[4] ? Math.round(parseFloat(rgbMatch[4]) * 100) : 100;
+        }
       }
+
+      // 如果成功解析了RGB值，则更新所有色板数据
+      if (r !== undefined && g !== undefined && b !== undefined) {
+        this.updateColorFromRgb(r, g, b, opacity);
+      }
+    },
+
+    // 从RGB值更新颜色数据
+    updateColorFromRgb(r, g, b, opacity = 100) {
+      const hsl = this.rgbToHsl(r, g, b);
+      const hex = this.rgbToHex(r, g, b);
+      console.log(r, g, b, opacity);
+
+      this.setData({
+        hue: hsl.h,
+        saturation: hsl.s,
+        lightness: hsl.l,
+        opacity: opacity,
+        hexColor: hex,
+        currentColor: opacity < 100 ? hex + Math.round(opacity * 255 / 100).toString(16).padStart(2, '0') : hex,
+        red: r,
+        green: g,
+        blue: b
+      });
+
+      this.updateSelectorPosition();
     },
 
     // RGB转HSL
@@ -159,6 +198,16 @@ Component({
         Math.round(g * 255),
         Math.round(b * 255)
       ];
+    },
+
+    // RGB转HEX
+    rgbToHex(r, g, b) {
+      const toHex = (n) => {
+        const hex = Math.round(n).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      };
+
+      return '#' + toHex(r) + toHex(g) + toHex(b);
     },
 
     // 更新选择器位置
@@ -243,10 +292,21 @@ Component({
 
       this.setData({
         hexColor,
-        currentColor
+        currentColor,
+        red: rgb[0],
+        green: rgb[1],
+        blue: rgb[2]
       });
 
-      this.triggerEvent('change', { color: currentColor });
+      // 统一事件数据格式，同时支持color和value字段
+      this.triggerEvent('change', {
+        color: currentColor,
+        value: currentColor,
+        hex: hexColor,
+        rgb: rgb,
+        hsl: { h: hue, s: saturation, l: lightness },
+        opacity: opacity
+      });
     },
 
     // HEX输入框变化
@@ -256,6 +316,29 @@ Component({
         this.parseColor(value);
         this.updateCurrentColor();
       }
+    },
+
+    // RGB输入框变化
+    onRgbInput(e) {
+      const { type, value } = e.detail;
+      const numValue = parseInt(value) || 0;
+      const clampedValue = Math.max(0, Math.min(255, numValue));
+
+      let rgb = [this.data.red, this.data.green, this.data.blue];
+      switch (type) {
+        case 'red':
+          rgb[0] = clampedValue;
+          break;
+        case 'green':
+          rgb[1] = clampedValue;
+          break;
+        case 'blue':
+          rgb[2] = clampedValue;
+          break;
+      }
+
+      this.updateColorFromRgb(rgb[0], rgb[1], rgb[2], this.data.opacity);
+      this.updateCurrentColor();
     },
 
     // 阻止事件冒泡

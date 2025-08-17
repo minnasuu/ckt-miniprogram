@@ -20,6 +20,9 @@ Page({
     generateLoading:false,
     isCancelled:false,
     finished: false,
+    showColorPicker: false,
+    currentColor: '#FFF',
+    currentColorIndex: 0,
   },
 
   /**
@@ -151,7 +154,7 @@ Page({
           // 更新数据
           this.setData({
             colorArr: resultArr,
-            newColorArr: resultArr.map(_c => '#FFF'),
+            newColorArr: resultArr,
           });
           
           this.showMessage('已提取主要色相');
@@ -176,111 +179,119 @@ Page({
       const canvas = res[0].node;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-        // 如果已经修改过，先重置
-        if (this.data.hasModified) {
-            const img = new Image();
-            img.src = imgUrl;
-            img.onload = () => {
-                // 重置画布
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                
-                // 开始新的颜色替换
-                this.startColorReplacement(canvas,ctx);
-            };
-        } else {
-            // 直接开始颜色替换
-            this.startColorReplacement(canvas,ctx);
-        }
+
+      // 如果已经修改过，先重置
+      if (this.data.hasModified) {
+        const img = canvas.createImage(); // 修复：使用canvas.createImage()而不是new Image()
+        img.src = this.data.imageUrl;
+        img.onload = () => {
+          // 重置画布
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+
+        // 开始新的颜色替换
+          this.startColorReplacement(canvas, ctx);
+        };
+      } else {
+        // 直接开始颜色替换
+        this.startColorReplacement(canvas, ctx);
+      }
     });
   },
-  startColorReplacement(canvas,ctx){
+  startColorReplacement(canvas, ctx) {
     if (!ctx) return;
+
     this.setData({
-      generateLoading:true,
-      isCancelled:false,
-    })
+      generateLoading: true,
+      isCancelled: false,
+    });
         
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        
-        // 使用 requestAnimationFrame 进行分批处理
-        let currentIndex = 0;
-        const batchSize = 10000; // 每批处理的像素数
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
 
-        const processNextBatch = () => {
-            if (this.data.isCancelled) {
-              this.setData({
-                generateLoading:false,
-              })
-                return;
-            }
+    // 使用 requestAnimationFrame 进行分批处理
+    let currentIndex = 0;
+    const batchSize = 10000; // 每批处理的像素数
 
-            const endIndex = Math.min(currentIndex + batchSize, data.length);
-            
-            // 处理当前批次的像素
-            for (let i = currentIndex; i < endIndex; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-        
-                // 查找是否需要替换当前颜色
-                const colorToReplace = this.data.newColorArr.find(c => {
-                    if (!c || !c.original || typeof c.original !== 'string') return false;
-                    const matches = c.original.match(/\d+/g);
-                    if (!matches) return false;
-                    const [origR, origG, origB] = matches.map(Number);
-                    
-                    if (hueMode) {
-                        const [origH] = rgbToHsl(origR, origG, origB);
-                        const [currentH] = rgbToHsl(r, g, b);
-                        return Math.abs(currentH - origH) < 10;
-                    } else {
-                        const tolerance = 30;
-                        return Math.abs(r - origR) <= tolerance && 
-                               Math.abs(g - origG) <= tolerance && 
-                               Math.abs(b - origB) <= tolerance;
-                    }
-                });
-        
-                if (colorToReplace) {
-                    const newColor = hexToRgb(colorToReplace.new);
-                    if (newColor) {
-                        if (hueMode) {
-                            const [, origS, origL] = rgbToHsl(r, g, b);
-                            const [newH] = rgbToHsl(newColor.r, newColor.g, newColor.b);
-                            const [newR, newG, newB] = hslToRgb(newH, origS, origL);
-                            data[i] = newR;
-                            data[i + 1] = newG;
-                            data[i + 2] = newB;
-                        } else {
-                            data[i] = newColor.r;
-                            data[i + 1] = newColor.g;
-                            data[i + 2] = newColor.b;
-                        }
-                    }
-                }
-            }
+    const processNextBatch = () => {
+      if (this.data.isCancelled) {
+        this.setData({
+          generateLoading: false,
+        });
+        return;
+      }
 
-            currentIndex = endIndex;
+      const endIndex = Math.min(currentIndex + batchSize, data.length);
 
-            // 更新画布显示进度
-            ctx.putImageData(imageData, 0, 0);
+      // 处理当前批次的像素
+      for (let i = currentIndex; i < endIndex; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
 
-            // 如果还有未处理的像素，继续下一批
-            if (currentIndex < data.length && !this.data.isCancelled) {
-                canvas.requestAnimationFrame(processNextBatch);
+        // 查找是否需要替换当前颜色
+        const colorToReplace = this.data.newColorArr.find(c => {
+          if (!c || !c.original || typeof c.original !== 'string') return false;
+          const matches = c.original.match(/\d+/g);
+          if (!matches) return false;
+          const [origR, origG, origB] = matches.map(Number);
+
+          // 检查是否有hueMode配置，如果没有则默认为false
+          const hueMode = this.data.hueMode || false;
+
+          if (hueMode) {
+            const [origH] = this.rgbToHsl(origR, origG, origB);
+            const [currentH] = this.rgbToHsl(r, g, b);
+            return Math.abs(currentH - origH) < 10;
+          } else {
+            const tolerance = 30;
+            return Math.abs(r - origR) <= tolerance &&
+              Math.abs(g - origG) <= tolerance &&
+              Math.abs(b - origB) <= tolerance;
+          }
+        });
+
+        if (colorToReplace) {
+          const newColor = this.hexToRgb(colorToReplace.new);
+          if (newColor) {
+            // 检查是否有hueMode配置，如果没有则默认为false
+            const hueMode = this.data.hueMode || false;
+
+            if (hueMode) {
+              const [, origS, origL] = this.rgbToHsl(r, g, b);
+              const [newH] = this.rgbToHsl(newColor.r, newColor.g, newColor.b);
+              const [newR, newG, newB] = this.hslToRgb(newH, origS, origL);
+              data[i] = newR;
+              data[i + 1] = newG;
+              data[i + 2] = newB;
             } else {
-                this.setData({
-                  generateLoading:false,
-                  hasModified:true,
-                })
+              data[i] = newColor.r;
+              data[i + 1] = newColor.g;
+              data[i + 2] = newColor.b;
             }
-        };
+          }
+        }
+      }
 
-        // 开始处理第一批
+      currentIndex = endIndex;
+
+      // 更新画布显示进度
+      ctx.putImageData(imageData, 0, 0);
+
+      // 如果还有未处理的像素，继续下一批
+      if (currentIndex < data.length && !this.data.isCancelled) {
         canvas.requestAnimationFrame(processNextBatch);
+      } else {
+        this.setData({
+          generateLoading: false,
+          hasModified: true, // 标记已经修改过
+        });
+      }
+    };
+
+    // 开始处理第一批
+    canvas.requestAnimationFrame(processNextBatch);
   },
   
   // RGB转HSV
@@ -344,6 +355,72 @@ Page({
     };
   },
   
+  // RGB转HSL
+  rgbToHsl(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0;
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    return [
+      Math.round(h * 360),
+      Math.round(s * 100),
+      Math.round(l * 100)
+    ];
+  },
+
+  // HSL转RGB
+  hslToRgb(h, s, l) {
+    h /= 360;
+    s /= 100;
+    l /= 100;
+
+    let r, g, b;
+
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [
+      Math.round(r * 255),
+      Math.round(g * 255),
+      Math.round(b * 255)
+    ];
+  },
+
   // HEX转RGB
   hexToRgb(hex) {
     // 移除可能的 # 前缀
@@ -375,5 +452,51 @@ Page({
     };
     
     return '#' + toHex(r) + toHex(g) + toHex(b);
+  },
+
+  // 点击颜色块
+  onColorTap(e) {
+    const index = e.currentTarget.dataset.index;
+    console.log(index, this.data.newColorArr[index]);
+
+    this.setData({
+      showColorPicker: true,
+      currentColor: this.data.newColorArr[index],
+      currentColorIndex: index
+    });
+  },
+
+  // 颜色选择确认
+  onColorConfirm(e) {
+    const { value, color } = e.detail;
+
+    // 优先使用value字段，如果没有则使用color字段（向后兼容）
+    const selectedColor = value || color;
+
+    if (!selectedColor) {
+      console.error('未接收到颜色值');
+      return;
+    }
+
+    const { currentColorIndex } = this.data;
+
+    const newColorArr = [...this.data.newColorArr];
+    newColorArr[currentColorIndex] = selectedColor;
+
+    this.setData({
+      newColorArr,
+      showColorPicker: false,
+      hasModified: true
+    });
+
+    // 显示成功提示
+    this.showMessage('颜色已更新');
+  },
+
+  // 颜色选择取消
+  onColorCancel() {
+    this.setData({
+      showColorPicker: false
+    });
   }
 })

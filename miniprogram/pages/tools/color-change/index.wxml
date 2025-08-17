@@ -11,7 +11,7 @@
            <span>原色: </span><view wx:for="{{colorArr}}" class="color-item" style="background-color:{{item}};width:20px;height:20px"></view>
         </view>
         <view class="color-list" wx:if="{{colorArr.length>0}}">
-            <span>新色: </span><color-picker wx:for="{{newColorArr}}" class="color-item" value="{{item}}" width="20px" height="20px"></color-picker>
+            <span>新色: </span><view wx:for="{{newColorArr}}" wx:for-index="index" class="color-item" style="background-color:{{item}};width:20px;height:20px;border: 1px solid var(--ckt-gray-4)" bind:tap="onColorTap" data-index="{{index}}"></view>
         </view>
     </view>
     <view class="buttons-container">
@@ -23,4 +23,5 @@
     </view>
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+  <color-picker-drawer show="{{showColorPicker}}" value="{{currentColor}}" bind:confirm="onColorConfirm" bind:cancel="onColorCancel" bind:close="onColorCancel"></color-picker-drawer>
 </view>
