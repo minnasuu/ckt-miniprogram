@@ -24,6 +24,8 @@ Page({
     currentColor: '#FFF',
     currentColorIndex: 0,
     canvasStyle: '', // 动态canvas样式
+    // 存储原始图片数据，用于重置
+    originalImageData: null,
   },
 
   /**
@@ -194,23 +196,67 @@ Page({
 
       // 如果已经修改过，先重置
       if (this.data.hasModified) {
-        const img = canvas.createImage(); // 修复：使用canvas.createImage()而不是new Image()
-        img.src = this.data.imageUrl;
-        img.onload = () => {
-          // 重置画布
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-
-        // 开始新的颜色替换
-          this.startColorReplacement(canvas, ctx);
-        };
+        this.resetCanvas(canvas, ctx);
       } else {
         // 直接开始颜色替换
         this.startColorReplacement(canvas, ctx);
       }
     });
   },
+
+  // 重置canvas到原始状态
+  resetCanvas(canvas, ctx) {
+    if (!this.data.originalImageData) {
+      // 如果没有原始数据，重新绘制原图
+      const img = canvas.createImage();
+      img.src = this.data.imageUrl;
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // 重新开始颜色替换
+        this.startColorReplacement(canvas, ctx);
+      };
+    } else {
+      // 使用保存的原始数据重置
+      ctx.putImageData(this.data.originalImageData, 0, 0);
+      this.startColorReplacement(canvas, ctx);
+    }
+  },
+
+  // 清除canvas效果，恢复到原始状态
+  clearCanvas() {
+    const query = wx.createSelectorQuery();
+    query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
+      if (res[0] && res[0].node) {
+        const canvas = res[0].node;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        if (this.data.originalImageData) {
+          // 使用保存的原始数据恢复
+          ctx.putImageData(this.data.originalImageData, 0, 0);
+        } else {
+          // 重新绘制原图
+          const img = canvas.createImage();
+          img.src = this.data.imageUrl;
+          img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          };
+        }
+
+        // 重置状态
+        this.setData({
+          hasModified: false,
+          finished: false,
+          generateLoading: false
+        });
+
+        this.showMessage('已清除效果');
+      }
+    });
+  },
+
   startColorReplacement(canvas, ctx) {
     if (!ctx) return;
 
@@ -221,6 +267,32 @@ Page({
         
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
+
+    // 如果是第一次修改，保存原始数据
+    if (!this.data.originalImageData) {
+      this.setData({
+        originalImageData: imageData
+      });
+    }
+
+    // 创建颜色映射表：原色 -> 新色
+    const colorMapping = {};
+    this.data.colorArr.forEach((originalColor, index) => {
+      const newColor = this.data.newColorArr[index];
+      if (originalColor !== newColor) {
+        colorMapping[originalColor] = newColor;
+      }
+    });
+
+    // 如果没有颜色需要替换，直接返回
+    if (Object.keys(colorMapping).length === 0) {
+      this.setData({
+        generateLoading: false,
+        hasModified: false,
+      });
+      this.showMessage('没有颜色需要替换');
+      return;
+    }
 
     // 使用 requestAnimationFrame 进行分批处理
     let currentIndex = 0;
@@ -241,47 +313,33 @@ Page({
         const r = data[i];
         const g = data[i + 1];
         const b = data[i + 2];
+        const a = data[i + 3];
+
+        // 跳过透明像素
+        if (a < 128) continue;
+
+        // 将当前像素转换为RGB字符串格式
+        const currentColor = `rgb(${r}, ${g}, ${b})`;
 
         // 查找是否需要替换当前颜色
-        const colorToReplace = this.data.newColorArr.find(c => {
-          if (!c || !c.original || typeof c.original !== 'string') return false;
-          const matches = c.original.match(/\d+/g);
-          if (!matches) return false;
-          const [origR, origG, origB] = matches.map(Number);
+        let shouldReplace = false;
+        let newColor = null;
 
-          // 检查是否有hueMode配置，如果没有则默认为false
-          const hueMode = this.data.hueMode || false;
-
-          if (hueMode) {
-            const [origH] = this.rgbToHsl(origR, origG, origB);
-            const [currentH] = this.rgbToHsl(r, g, b);
-            return Math.abs(currentH - origH) < 10;
-          } else {
-            const tolerance = 30;
-            return Math.abs(r - origR) <= tolerance &&
-              Math.abs(g - origG) <= tolerance &&
-              Math.abs(b - origB) <= tolerance;
+        // 遍历所有需要替换的颜色
+        for (const [originalColor, replacementColor] of Object.entries(colorMapping)) {
+          if (this.colorsMatch(currentColor, originalColor)) {
+            shouldReplace = true;
+            newColor = replacementColor;
+            break;
           }
-        });
+        }
 
-        if (colorToReplace) {
-          const newColor = this.hexToRgb(colorToReplace.new);
-          if (newColor) {
-            // 检查是否有hueMode配置，如果没有则默认为false
-            const hueMode = this.data.hueMode || false;
-
-            if (hueMode) {
-              const [, origS, origL] = this.rgbToHsl(r, g, b);
-              const [newH] = this.rgbToHsl(newColor.r, newColor.g, newColor.b);
-              const [newR, newG, newB] = this.hslToRgb(newH, origS, origL);
-              data[i] = newR;
-              data[i + 1] = newG;
-              data[i + 2] = newB;
-            } else {
-              data[i] = newColor.r;
-              data[i + 1] = newColor.g;
-              data[i + 2] = newColor.b;
-            }
+        if (shouldReplace && newColor) {
+          const rgbColor = this.hexToRgb(newColor);
+          if (rgbColor) {
+            data[i] = rgbColor.r;
+            data[i + 1] = rgbColor.g;
+            data[i + 2] = rgbColor.b;
           }
         }
       }
@@ -298,7 +356,9 @@ Page({
         this.setData({
           generateLoading: false,
           hasModified: true, // 标记已经修改过
+          finished: true, // 标记转换完成
         });
+        this.showMessage('颜色转换完成');
       }
     };
 
@@ -466,6 +526,41 @@ Page({
     return '#' + toHex(r) + toHex(g) + toHex(b);
   },
 
+  // 判断两个颜色是否匹配（支持容差）
+  colorsMatch(color1, color2) {
+    // 如果两个颜色完全相同，直接返回true
+    if (color1 === color2) return true;
+
+    // 解析RGB值
+    const rgb1 = this.parseRgbString(color1);
+    const rgb2 = this.parseRgbString(color2);
+
+    if (!rgb1 || !rgb2) return false;
+
+    // 计算颜色距离，设置容差为30
+    const tolerance = 30;
+    const distance = Math.sqrt(
+      Math.pow(rgb1.r - rgb2.r, 2) +
+      Math.pow(rgb1.g - rgb2.g, 2) +
+      Math.pow(rgb1.b - rgb2.b, 2)
+    );
+
+    return distance <= tolerance;
+  },
+
+  // 解析RGB字符串格式
+  parseRgbString(rgbString) {
+    const match = rgbString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (match) {
+      return {
+        r: parseInt(match[1]),
+        g: parseInt(match[2]),
+        b: parseInt(match[3])
+      };
+    }
+    return null;
+  },
+
   // 点击颜色块
   onColorTap(e) {
     const index = e.currentTarget.dataset.index;
@@ -562,13 +657,19 @@ Page({
         const img = canvas.createImage();
 
         img.onload = () => {
-
           // 清空canvas
           ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
           // 绘制图片到canvas，保持比例
           // 使用目标尺寸绘制，确保图片不会被压缩
           ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+
+          // 重置状态
+          this.setData({
+            hasModified: false,
+            finished: false,
+            originalImageData: null
+          });
         };
 
         img.onerror = (error) => {

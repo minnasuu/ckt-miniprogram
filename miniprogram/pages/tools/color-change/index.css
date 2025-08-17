@@ -3,6 +3,9 @@
   width: 100vw;
   height: 100vh;
   background-color: #fff;
+  /* 确保容器不会产生层级问题 */
+  position: relative;
+  z-index: 0;
 }
 .color-change-container .content {
   width: 100%;
@@ -67,12 +70,24 @@
   margin-top: 24rpx;
   display: flex;
   justify-content: center;
+  z-index: 0;
+  /* 确保canvas不会产生层级问题 */
+  isolation: isolate;
 }
+
 .canvas-container canvas {
   border: 1px solid var(--ckt-gray-4);
   border-radius: 8rpx;
   display: block;
   /* 尺寸由JavaScript动态设置 */
   box-sizing: border-box;
+  /* 确保canvas本身不会产生层级问题 */
+  position: relative;
+  z-index: 0;
+}
+
+/* 确保color-picker-drawer在最上层 */
+color-picker-drawer {
+  z-index: 9999 !important;
 }
 
