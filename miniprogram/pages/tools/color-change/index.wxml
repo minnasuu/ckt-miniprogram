@@ -18,8 +18,8 @@
       <button class="generate-button" bind:tap="generate">{{generateLoading?'转换中...':'开始转换'}}</button>
       <button disabled="{{!finished}}" class="clear-button" bind:tap="generate">清除效果</button>
     </view>
-    <view class="canvas-container">
-      <canvas canvas-id="result-canvas" id="result-canvas" type="2d"></canvas>
+    <view class="canvas-container" wx:if="{{imageUrl}}">
+      <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
     </view>
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />

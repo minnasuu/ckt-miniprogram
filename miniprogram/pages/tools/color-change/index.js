@@ -23,6 +23,7 @@ Page({
     showColorPicker: false,
     currentColor: '#FFF',
     currentColorIndex: 0,
+    canvasStyle: '', // 动态canvas样式
   },
 
   /**
@@ -66,6 +67,8 @@ Page({
       imgHeight:height,
       imgRatio:width/height,
     });
+    // 先绘制图片到canvas，再提取颜色
+    this.drawImageToCanvas();
     this.pickMainColorH();
   },
   pickMainColorH(){
@@ -73,20 +76,29 @@ Page({
       this.showMessage('请先上传图片');
       return;
     }
-    const {imgWidth,imgHeight} = this.data;
+    const { imgWidth, imgHeight } = this.data;
+    const systemInfo = wx.getSystemInfoSync();
+    const canvasWidth = systemInfo.windowWidth - 40;
+    const canvasHeight = canvasWidth / this.data.imgRatio;
     wx.getImageInfo({
       src: this.data.imageUrl,
-      success: (res) => {
+      success: (imageRes) => {
         // 创建离屏 canvas 处理图片
-        const canvas = wx.createOffscreenCanvas({ type: '2d', width: imgWidth, height: imgHeight });
+        const canvas = wx.createOffscreenCanvas({ type: '2d' });
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
         const ctx = canvas.getContext('2d');
         
         const img = canvas.createImage();
-        img.src = res.path;
+        img.src = imageRes.path;
         
         img.onload = () => {
-          // 绘制图片到 canvas
-          ctx.drawImage(img, 0, 0, imgWidth, imgHeight);
+          console.log('原图尺寸:', imgWidth, imgHeight);
+          console.log('Canvas尺寸:', canvasWidth, canvasHeight);
+          console.log('图片比例:', this.data.imgRatio);
+
+          // 绘制图片到 canvas，保持比例
+          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
           
           // 获取像素数据
           const imageData = ctx.getImageData(0, 0, imgWidth, imgHeight);
@@ -497,6 +509,78 @@ Page({
   onColorCancel() {
     this.setData({
       showColorPicker: false
+    });
+  },
+
+  // 绘制图片到canvas
+  drawImageToCanvas() {
+    if (!this.data.imageUrl) {
+      console.log('没有图片URL，无法绘制');
+      return;
+    }
+
+    console.log('开始绘制图片到canvas');
+    console.log('图片URL:', this.data.imageUrl);
+    console.log('原图尺寸:', this.data.imgWidth, this.data.imgHeight);
+    console.log('原图比例:', this.data.imgRatio);
+
+    // 获取屏幕宽度，计算canvas宽度（100%屏宽-40px）
+    const systemInfo = wx.getSystemInfoSync();
+    const canvasWidth = systemInfo.windowWidth - 40;
+    const canvasHeight = canvasWidth / this.data.imgRatio;
+
+    console.log('计算出的Canvas尺寸:', canvasWidth, canvasHeight);
+
+    const query = wx.createSelectorQuery();
+    query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
+      console.log('Canvas查询结果:', res);
+
+      if (res[0] && res[0].node) {
+        const canvas = res[0].node;
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+          console.error('无法获取Canvas上下文');
+          return;
+        }
+
+        console.log('Canvas节点获取成功');
+
+        // 设置canvas的实际绘制尺寸
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        console.log('设置后的Canvas尺寸:', canvas.width, canvas.height);
+
+        // 设置canvas的CSS样式尺寸，确保显示正确
+        // 注意：在微信小程序中，需要通过setData来更新样式
+        this.setData({
+          canvasStyle: `width: ${canvasWidth}px; height: ${canvasHeight}px;`
+        });
+
+        // 创建图片对象
+        const img = canvas.createImage();
+
+        img.onload = () => {
+
+          // 清空canvas
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+          // 绘制图片到canvas，保持比例
+          // 使用目标尺寸绘制，确保图片不会被压缩
+          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+        };
+
+        img.onerror = (error) => {
+          this.showMessage('图片加载失败');
+        };
+
+        // 设置图片源
+        console.log('设置图片源:', this.data.imageUrl);
+        img.src = this.data.imageUrl;
+      } else {
+        console.error('Canvas节点获取失败:', res);
+      }
     });
   }
 })

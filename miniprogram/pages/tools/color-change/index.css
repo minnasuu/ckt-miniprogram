@@ -36,19 +36,43 @@
   height: 20px;
   border-radius: 8rpx;
 }
-.canvas-container {
-  position: relative;
-}
-.canvas-container button {
-  width: 100px;
-  height: 36px;
-  padding: 0;
-  margin: 0;
+
+.buttons-container {
   display: flex;
-  align-items: center;
+  gap: 24rpx;
   justify-content: center;
+  margin-top: 24rpx;
+  margin-bottom: 24rpx;
 }
-.canvas-container .generate-button {
+
+.generate-button, .clear-button {
+  padding: 16rpx 32rpx;
+  border-radius: 8rpx;
+  border: none;
+  font-size: 28rpx;
+  cursor: pointer;
+}
+
+.generate-button {
   background-color: var(--ckt-theme-6);
   color: var(--ckt-gray-0);
 }
+
+.clear-button {
+  background-color: var(--ckt-gray-4);
+  color: var(--ckt-gray-8);
+}
+.canvas-container {
+  position: relative;
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: center;
+}
+.canvas-container canvas {
+  border: 1px solid var(--ckt-gray-4);
+  border-radius: 8rpx;
+  display: block;
+  /* 尺寸由JavaScript动态设置 */
+  box-sizing: border-box;
+}
+
