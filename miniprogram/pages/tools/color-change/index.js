@@ -312,36 +312,72 @@ Page({
 
   // 清除canvas效果，恢复到原始状态
   clearCanvas() {
+    if (!this.data.imageUrl) {
+      this.showMessage('没有图片可以清除');
+      return;
+    }
+
     const query = wx.createSelectorQuery();
     query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
-      if (res[0] && res[0].node) {
-        const canvas = res[0].node;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        if (this.data.originalImageData) {
-          // 使用保存的原始数据恢复
-          ctx.putImageData(this.data.originalImageData, 0, 0);
-        } else {
-          // 重新绘制原图
-          const img = canvas.createImage();
-          img.src = this.data.imageUrl;
-          img.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          };
-        }
-
-        // 重置状态
-        this.setData({
-          hasModified: false,
-          finished: false,
-          generateLoading: false
-        });
-
-        this.showMessage('已清除效果');
+      if (!res[0] || !res[0].node) {
+        console.error('Canvas节点获取失败');
+        this.showMessage('Canvas获取失败');
+        return;
       }
+
+      const canvas = res[0].node;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error('Canvas上下文获取失败');
+        this.showMessage('Canvas上下文获取失败');
+        return;
+      }
+
+      console.log('开始清除canvas效果');
+
+      if (this.data.originalImageData) {
+      // 使用保存的原始数据恢复
+        try {
+          ctx.putImageData(this.data.originalImageData, 0, 0);
+          console.log('使用原始数据恢复成功');
+        } catch (error) {
+          console.error('使用原始数据恢复失败:', error);
+          // 如果失败，尝试重新绘制原图
+          this.redrawOriginalImage(canvas, ctx);
+        }
+      } else {
+        // 重新绘制原图
+        this.redrawOriginalImage(canvas, ctx);
+      }
+
+      // 重置状态
+      this.setData({
+        hasModified: false,
+        finished: false,
+        generateLoading: false
+      });
+
+      this.showMessage('已清除效果');
     });
+  },
+
+  // 重新绘制原图
+  redrawOriginalImage(canvas, ctx) {
+    console.log('重新绘制原图');
+    const img = canvas.createImage();
+
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      console.log('原图重新绘制成功');
+    };
+
+    img.onerror = (error) => {
+      console.error('原图重新绘制失败:', error);
+      this.showMessage('原图重新绘制失败');
+    };
+
+    img.src = this.data.imageUrl;
   },
 
   startColorReplacement(canvas, ctx) {
@@ -770,11 +806,14 @@ Page({
           // 使用目标尺寸绘制，确保图片不会被压缩
           ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
 
+          // 保存原始图片数据，用于清除效果时恢复
+          const originalImageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
           // 重置状态
           this.setData({
             hasModified: false,
             finished: false,
-            originalImageData: null
+            originalImageData: originalImageData
           });
         };
 

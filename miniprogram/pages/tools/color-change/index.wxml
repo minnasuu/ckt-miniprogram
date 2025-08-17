@@ -1,6 +1,6 @@
 <!--pages/tools/color-change/index.wxml-->
 <view class="color-change-container">
-  <custom-header title="" showBack background="transparent"></custom-header>
+  <custom-header title="" title="图片换色" showBack background="transparent"></custom-header>
   <view class="content" style="padding-top: {{statusBarHeight+44}}px;">
     <view class="step-container">
         <part-title title="Step 01：上传图片"></part-title>
@@ -22,6 +22,10 @@
       <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
     </view>
   </view>
+   <view class="buttons-container" style="margin-top: 24rpx;">
+      <button class="generate-button" bind:tap="download">下载图片</button>
+      <button class="clear-button" bind:tap="save">保存图片</button>
+    </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
   <color-picker-drawer show="{{showColorPicker}}" value="{{currentColor}}" bind:confirm="onColorConfirm" bind:cancel="onColorCancel" bind:close="onColorCancel"></color-picker-drawer>
 </view>

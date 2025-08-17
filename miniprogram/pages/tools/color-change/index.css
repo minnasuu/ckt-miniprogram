@@ -65,6 +65,13 @@
   background-color: var(--ckt-gray-4);
   color: var(--ckt-gray-8);
 }
+
+.clear-button:disabled {
+  background-color: var(--ckt-gray-2);
+  color: var(--ckt-gray-6);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 .canvas-container {
   position: relative;
   margin-top: 24rpx;
