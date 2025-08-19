@@ -16,7 +16,10 @@ Page({
     stiches: [],
     saving: false,
     showPreviewDialog:false,
-    saveLoading:false
+    saveLoading:false,
+    downloadLoading:false, // 控制下载按钮状态
+    previewData: [], // 预览数据
+    isShowStichDisabled: true // 控制显示针数功能是否禁用
   },
 
   onLoad() {
@@ -62,6 +65,16 @@ Page({
       curItem: newCurItem
     }, () => {
       this.calculateLineNumbers();
+      this.updateShowStichDisabled();
+    });
+  },
+
+  // 更新显示针数功能的禁用状态
+  updateShowStichDisabled() {
+    const { curItem } = this.data;
+    const hasContent = curItem && curItem.values && curItem.values.trim() !== '';
+    this.setData({
+      isShowStichDisabled: !hasContent
     });
   },
 
@@ -120,6 +133,7 @@ Page({
     })
     this.calculateLineNumbers();
     this.caculateStiches();
+    this.updateShowStichDisabled();
   },
   lastTapTime: 0, // 记录上次点击的时间
 
@@ -172,6 +186,11 @@ Page({
     this.updateCurItem()
   },
   handleShowStich(){
+    // 如果功能被禁用，不执行任何操作
+    if (this.data.isShowStichDisabled) {
+      return;
+    }
+    
     const newShowStich = !this.data.showStich;
     console.log('显示针数状态:', newShowStich);
     console.log('当前项:', this.data.curItem);
@@ -320,4 +339,71 @@ Page({
 
     return parseExpression(input);
   },
+  handlePreviewBtnTap(){
+    // 预处理数据，为每个部分添加行数据
+    const processedData = this.data.data.map(item => {
+      const lines = item.values ? item.values.split('\n') : [];
+      return {
+        ...item,
+        lines: lines.map((line, index) => ({
+          lineNumber: `R${index + 1}: `,
+          content: line,
+          stitch: item.nums && item.nums[index] !== undefined ? item.nums[index] : null
+        }))
+      };
+    });
+    
+    this.setData({
+      showPreviewDialog: true,
+      previewData: processedData
+    });
+  },
+  handlePreviewDialogClose(){
+    this.setData({
+      showPreviewDialog: false
+    });
+  },
+  
+  // 下载图解功能
+  handleDownloadPattern(){
+    if (this.data.downloadLoading) return;
+    
+    this.setData({
+      downloadLoading: true
+    });
+    
+    // 这里可以实现下载功能，比如生成图片或PDF
+    // 目前先模拟下载过程
+    setTimeout(() => {
+      this.setData({
+        downloadLoading: false
+      });
+      wx.showToast({
+        title: '下载完成',
+        icon: 'success'
+      });
+    }, 2000);
+  },
+  
+  // 保存图解到仓库功能
+  handleSavePatternImg(){
+    if (this.data.saveLoading) return;
+    
+    this.setData({
+      saveLoading: true
+    });
+    
+    // 这里可以实现保存到仓库的功能
+    // 目前先模拟保存过程
+    setTimeout(() => {
+      this.setData({
+        saveLoading: false,
+        showPreviewDialog: false
+      });
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success'
+      });
+    }, 2000);
+  }
 });

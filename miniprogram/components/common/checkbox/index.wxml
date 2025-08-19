@@ -1,6 +1,6 @@
-<view class="checkbox-container {{class}}" catch:tap="handleChange">
-  <view class="checkbox {{checked ? 'checked' : ''}}">
+<view class="checkbox-container {{class}} {{disabled ? 'disabled' : ''}}" catch:tap="handleChange">
+  <view class="checkbox {{checked ? 'checked' : ''}} {{disabled ? 'disabled' : ''}}">
     <view class="checkbox-inner" wx:if="{{checked}}"></view>
   </view>
-  <view class="checkbox-text">{{text}}</view>
+  <view class="checkbox-text {{disabled ? 'disabled' : ''}}">{{text}}</view>
 </view>

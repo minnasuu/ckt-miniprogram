@@ -11,11 +11,18 @@ Component({
     class: {
       type: String,
       value: ''
+    },
+    disabled: {
+      type: Boolean,
+      value: false
     }
   },
 
   methods: {
     handleChange() {
+      if (this.properties.disabled) {
+        return;
+      }
       this.triggerEvent('change');
     }
   }

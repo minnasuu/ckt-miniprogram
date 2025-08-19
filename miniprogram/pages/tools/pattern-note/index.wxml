@@ -1,4 +1,5 @@
-<view class="pattern-note-view">
+<block>
+    <view class="pattern-note-view">
   <custom-header title="图解笔记本" showBack background="transparent"></custom-header>
     <view class="pn-content" style="padding-top: {{statusBarHeight+44}}px">
         <view class="pn-operate-area">
@@ -42,6 +43,7 @@
                     <custom-checkbox
                         text="显示针数"
                         checked="{{showStich}}"
+                        disabled="{{isShowStichDisabled}}"
                         bind:change="handleShowStich"
                     ></custom-checkbox>
                 </view>
@@ -86,43 +88,43 @@
               <button bindtap="handleSaveBtnTap" class="primary">保存图解</button>
             </view>
         </view>
-        </view>
+    </view>
 
         <alert-message 
           message="{{alertMessage}}" 
           show="{{showAlert}}" 
           type="success"
         ></alert-message>
-        <view
-            class="pattern-preview-dialog {{!showPreviewDialog? 'hide':''}}"
-        >
-           <view id="previewContentRef" class="flex column gap-12 p-24">
-               <view wx:for="{{data}}" wx:key="{{itm.id}}" class="flex column gap-4">
-                   <view class="fw-600 fs-14 color-gray-2">{{itm.title}}</view>
-                   <view class="relative flex gap-12 fs-14">
-                       <view class="color-gray-4">
-                           <view wx:for="{{lineNumbers}}" wx:for-item="itm1" wx:for-index="idx1" wx:key="idx1">{{itm1}}</view>
-                       </view>
-                       <view class="flex column color-gray-2">
-                           <view wx:for="{{lineNumbers}}" wx:for-item="itm2" wx:for-index="idx2" wx:key="idx2">{{itm2}}</view>
-                       </view>
-                       <view class="ml-auto fs-14 color-gray-4">
-                        <view wx:for="{{lineNumbers}}" wx:for-item="itm3" wx:for-index="idx3" wx:key="idx3">{{itm3}}</view>
-                      </view>
-                       <view class="absolute top-0 left-0 flex column pr-12 width-100 events-none"
-                            style="padding-left: 24px;padding-right: 32px"
-                          >
-                           <view wx:for="{{lineNumbers}}" wx:for-item="numItm" wx:for-index="numIdx" wx:key="numIdx" class="flex gap-24">
-                               <view class="opacity-0">{{numItm}}</view>
-                               <view class="flex-1 width-1 flex items-center gap-24 color-gray-4">
-                                   <view class="flex-1 width-1 border-dash"
-                                        style="transform: translateY(1px)"></view>
-                               </view>
-                           </view>
-                       </view>
-                   </view>
-               </view>
-           </view>
-           <button bindtap="handleSavePatternImg">{{saveLoading ? '保存中...':'保存到仓库'}}</button>
-        </view>
 </view>
+ <view
+    class="pattern-preview-dialog {{!showPreviewDialog? 'hide':''}}"
+    bindtap="handlePreviewDialogClose"
+>
+    <view id="previewContentRef" class="pattern-preview-dialog-body" catchtap="">
+        <view class="pattern-preview-dialog-header">
+            <view class="preview-title">图解预览</view>
+            <close-icon bindtap="handlePreviewDialogClose" top="0" right="0" size="16px"/>
+        </view>
+        <view class="pattern-preview-dialog-content">
+            <view class="pattern-preview-dialog-content-name">{{patternTitle}}</view>
+            <view wx:for="{{previewData}}" wx:for-item="item" wx:key="{{item.id}}" class="pattern-preview-section">
+                <view class="pattern-preview-section-title">{{item.title}}</view>
+                <view wx:if="{{item.lines && item.lines.length > 0}}" class="pattern-preview-section-content">
+                    <view wx:for="{{item.lines}}" wx:for-item="lineData" wx:key="{{index}}" class="pattern-preview-line">
+                        <text class="line-number">{{lineData.lineNumber}}</text>
+                        <text class="line-content">{{lineData.content}}</text>
+                        <text wx:if="{{showStich && lineData.stitch !== null}}" class="line-stitch">({{lineData.stitch}})</text>
+                    </view>
+                </view>
+                <view wx:else class="pattern-preview-empty">
+                    暂无内容
+                </view>
+            </view>
+        </view>
+        <view class="dialog-btns">
+            <button bindtap="handleDownloadPattern">{{downloadLoading ? '下载中...':'下载图解'}}</button>
+            <button bindtap="handleSavePatternImg" type="primary">{{saveLoading ? '保存中...':'保存到仓库'}}</button>
+        </view>
+    </view>
+</view>
+</block>

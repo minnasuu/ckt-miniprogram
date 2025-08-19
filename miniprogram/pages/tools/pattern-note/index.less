@@ -274,10 +274,132 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-inline: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 9999;
+    box-sizing: border-box;
     &.hide{
         opacity: 0;
         pointer-events: none;
     }
+}
+
+.pattern-preview-dialog-body{
+    width: 100%;
+    height: fit-content;
+    background-color: var(--ckt-gray-0);
+    border-radius: 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 20px 12px;
+    max-height: calc(100vh - 88px - env(safe-area-inset-bottom,12px));
+    // 旧的样式已移除，使用新的 pattern-preview-section 样式
+    .dialog-btns{
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 12px;
+        button{
+            flex: 1;
+            width: 100%;
+            margin: 0;
+            padding-block: 12px;
+            font-size: 14px;
+            background-color: var(--ckt-gray-1);
+            color: var(--ckt-gray-11);
+            border-radius: 8px;
+            &[type="primary"]{
+                background-color: var(--ckt-theme-6);
+                color: var(--ckt-gray-0);
+            }
+        }
+    }
+}
+
+// 新的预览部分样式
+.pattern-preview-section{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    
+    .pattern-preview-section-title{
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ckt-gray-12);
+        margin-bottom: 8px;
+    }
+    
+    .pattern-preview-section-content{
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        
+        .pattern-preview-line{
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            line-height: 1.5;
+            
+            .line-number{
+                color: var(--ckt-gray-8);
+                font-size: 14px;
+                font-weight: 500;
+                min-width: 40px;
+                flex-shrink: 0;
+            }
+            
+            .line-content{
+                color: var(--ckt-gray-12);
+                font-size: 14px;
+                flex: 1;
+            }
+            
+            .line-stitch{
+                color: var(--ckt-theme-6);
+                font-size: 12px;
+                font-weight: 500;
+                margin-left: 8px;
+            }
+        }
+    }
+    
+    .pattern-preview-empty{
+        color: var(--ckt-gray-6);
+        font-size: 14px;
+        font-style: italic;
+        padding: 12px 0;
+        text-align: center;
+    }
+}
+
+.pattern-preview-dialog-header{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    .preview-title{
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ckt-gray-12);
+    }
+}
+
+.pattern-preview-dialog-content{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;  
+    background-color: var(--ckt-gray-1);
+    padding: 12px;
+    overflow: auto;
+}
+
+.pattern-preview-dialog-content-name{
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ckt-gray-12);
 }

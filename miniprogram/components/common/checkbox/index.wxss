@@ -38,3 +38,22 @@
   color: var(--ckt-gray-12);
   flex-shrink: 0;
 }
+
+.checkbox-container.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checkbox.disabled {
+  border-color: var(--ckt-gray-6);
+  background: var(--ckt-gray-2);
+}
+
+.checkbox.disabled.checked {
+  background: var(--ckt-gray-6);
+  border-color: var(--ckt-gray-6);
+}
+
+.checkbox-text.disabled {
+  color: var(--ckt-gray-6);
+}
