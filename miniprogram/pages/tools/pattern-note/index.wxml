@@ -103,7 +103,7 @@
     <view id="previewContentRef" class="pattern-preview-dialog-body" catchtap="">
         <view class="pattern-preview-dialog-header">
             <view class="preview-title">图解预览</view>
-            <close-icon bindtap="handlePreviewDialogClose" top="0" right="0" size="16px"/>
+            <close-icon bindtap="handlePreviewDialogClose" top="4" right="-4" size="16px"/>
         </view>
         <view class="pattern-preview-dialog-content">
             <view class="pattern-preview-dialog-content-name">{{patternTitle}}</view>
