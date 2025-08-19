@@ -277,6 +277,7 @@
     display: flex;
     align-items: center;
     padding-inline: 20px;
+    padding-top: 44px;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 9999;
     box-sizing: border-box;
@@ -295,7 +296,8 @@
     display: flex;
     flex-direction: column;
     padding: 0 12px 20px 12px;
-    max-height: calc(100vh - 88px - env(safe-area-inset-bottom,12px));
+    max-height: calc(100vh - 120px - env(safe-area-inset-bottom,12px));
+    box-sizing: border-box;
     // 旧的样式已移除，使用新的 pattern-preview-section 样式
     .dialog-btns{
         display: flex;
@@ -329,7 +331,7 @@
     .pattern-preview-section-title{
         font-size: 16px;
         font-weight: 600;
-        color: var(--ckt-gray-12);
+        color: var(--ckt-gray-10);
         margin-bottom: 8px;
     }
     
@@ -382,6 +384,7 @@
     align-items: center;
     justify-content: space-between;
     height: 48px;
+    flex-shrink: 0;
     .preview-title{
         font-size: 16px;
         font-weight: 600;
@@ -402,4 +405,6 @@
     font-size: 16px;
     font-weight: 600;
     color: var(--ckt-gray-12);
+    border-bottom: 1px solid var(--ckt-gray-3);
+    padding-bottom: 12px;
 }
