@@ -71,10 +71,11 @@ Page({
 
   // 更新显示针数功能的禁用状态
   updateShowStichDisabled() {
-    const { curItem } = this.data;
-    const hasContent = curItem && curItem.values && curItem.values.trim() !== '';
+    const { data } = this.data;
+    // 检查是否有任何一个部分有内容，而不是只检查当前部分
+    const hasAnyContent = data.some(item => item.values && item.values.trim() !== '');
     this.setData({
-      isShowStichDisabled: !hasContent
+      isShowStichDisabled: !hasAnyContent
     });
   },
 
@@ -184,13 +185,9 @@ Page({
       cur: `${data?.length+1}`,
     })
     this.updateCurItem()
+    this.updateShowStichDisabled()
   },
   handleShowStich(){
-    // 如果功能被禁用，不执行任何操作
-    if (this.data.isShowStichDisabled) {
-      return;
-    }
-    
     const newShowStich = !this.data.showStich;
     console.log('显示针数状态:', newShowStich);
     console.log('当前项:', this.data.curItem);
@@ -340,8 +337,16 @@ Page({
     return parseExpression(input);
   },
   handlePreviewBtnTap(){
+    // 确保针数是最新的，然后处理预览数据
+    const data = this.data.data;
+    const updatedData = data.map(item => {
+      const lines = (item.values || '').split('\n');
+      const nums = lines.map(line => this.calculateExpression(line));
+      return Object.assign({}, item, { nums: nums });
+    });
+    
     // 预处理数据，为每个部分添加行数据
-    const processedData = this.data.data.map(item => {
+    const processedData = updatedData.map(item => {
       const lines = item.values ? item.values.split('\n') : [];
       return {
         ...item,
@@ -355,7 +360,8 @@ Page({
     
     this.setData({
       showPreviewDialog: true,
-      previewData: processedData
+      previewData: processedData,
+      data: updatedData
     });
   },
   handlePreviewDialogClose(){

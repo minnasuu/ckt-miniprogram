@@ -341,6 +341,7 @@
         gap: 4px;
         
         .pattern-preview-line{
+            position: relative;
             display: flex;
             align-items: baseline;
             gap: 8px;
@@ -361,10 +362,38 @@
             }
             
             .line-stitch{
-                color: var(--ckt-theme-6);
+                color: var(--ckt-gray-6);
                 font-size: 12px;
                 font-weight: 500;
                 margin-left: 8px;
+                line-height: 1.5;
+            }
+            .line-stitch-line{
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: calc(100% - 32px);
+                height: 100%;
+                border-radius: 4px;
+                box-sizing: border-box;
+                pointer-events: none;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                .line-content{
+                    width: fit-content;
+                    display: inline;
+                }
+                .line-dash{
+                    flex: 1;
+                    width: 1%;
+                    height: 1px;
+                    border-bottom: 1px dashed var(--ckt-gray-4);
+                    transform: translateY(-1px);
+                }
+                text{
+                    opacity: 0;  
+                }
             }
         }
     }

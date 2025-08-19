@@ -113,7 +113,12 @@
                     <view wx:for="{{item.lines}}" wx:for-item="lineData" wx:key="{{index}}" class="pattern-preview-line">
                         <text class="line-number">{{lineData.lineNumber}}</text>
                         <text class="line-content">{{lineData.content}}</text>
-                        <text wx:if="{{showStich && lineData.stitch !== null}}" class="line-stitch">({{lineData.stitch}})</text>
+                        <text wx:if="{{showStich && lineData.stitch !== null}}" class="line-stitch">{{lineData.stitch}}</text>
+                        <view class="line-stitch-line" wx:if="{{showStich && lineData.stitch !== null}}">
+                            <text class="line-number">{{lineData.lineNumber}}</text>
+                            <text class="line-content">{{lineData.content}}</text>
+                            <view class="line-dash"></view>
+                        </view>
                     </view>
                 </view>
                 <view wx:else class="pattern-preview-empty">
