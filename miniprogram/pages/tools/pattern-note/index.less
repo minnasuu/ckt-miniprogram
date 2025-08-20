@@ -298,12 +298,12 @@
     padding: 0 12px 20px 12px;
     max-height: calc(100vh - 120px - env(safe-area-inset-bottom,12px));
     box-sizing: border-box;
-    // 旧的样式已移除，使用新的 pattern-preview-section 样式
     .dialog-btns{
         display: flex;
         gap: 12px;
         align-items: center;
         margin-top: 12px;
+        flex-shrink: 0;
         button{
             flex: 1;
             width: 100%;
@@ -427,7 +427,9 @@
     gap: 12px;  
     background-color: var(--ckt-gray-1);
     padding: 12px;
-    overflow: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px - env(safe-area-inset-bottom,12px));
+    flex: 1;
 }
 
 .pattern-preview-dialog-content-name{
@@ -436,4 +438,12 @@
     color: var(--ckt-gray-12);
     border-bottom: 1px solid var(--ckt-gray-3);
     padding-bottom: 12px;
+}
+
+.pattern-preview-canvas{
+    width: 100%;
+    background-color: var(--ckt-gray-0);
+    border-radius: 8px;
+    min-height: 200px;
+    flex-shrink: 0;
 }

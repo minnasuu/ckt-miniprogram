@@ -106,25 +106,12 @@
             <close-icon bindtap="handlePreviewDialogClose" top="4" right="-4" size="16px"/>
         </view>
         <view class="pattern-preview-dialog-content">
-            <view class="pattern-preview-dialog-content-name">{{patternTitle}}</view>
-            <view wx:for="{{previewData}}" wx:for-item="item" wx:key="{{item.id}}" class="pattern-preview-section">
-                <view class="pattern-preview-section-title">{{item.title}}</view>
-                <view wx:if="{{item.lines && item.lines.length > 0}}" class="pattern-preview-section-content">
-                    <view wx:for="{{item.lines}}" wx:for-item="lineData" wx:key="{{index}}" class="pattern-preview-line">
-                        <text class="line-number">{{lineData.lineNumber}}</text>
-                        <text class="line-content">{{lineData.content}}</text>
-                        <text wx:if="{{showStich && lineData.stitch !== null}}" class="line-stitch">{{lineData.stitch}}</text>
-                        <view class="line-stitch-line" wx:if="{{showStich && lineData.stitch !== null}}">
-                            <text class="line-number">{{lineData.lineNumber}}</text>
-                            <text class="line-content">{{lineData.content}}</text>
-                            <view class="line-dash"></view>
-                        </view>
-                    </view>
-                </view>
-                <view wx:else class="pattern-preview-empty">
-                    暂无内容
-                </view>
-            </view>
+            <canvas 
+                canvas-id="{{canvasId}}" 
+                class="pattern-preview-canvas" 
+                style="width: 100%; height: {{canvasHeight}}px;"
+                disable-scroll="true">
+            </canvas>
         </view>
         <view class="dialog-btns">
             <button bindtap="handleDownloadPattern">{{downloadLoading ? '下载中...':'下载图解'}}</button>
