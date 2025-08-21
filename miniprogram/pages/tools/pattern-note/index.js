@@ -600,47 +600,7 @@ Page({
       }
     });
   },
-  
-  // 保存图解到仓库功能
-  handleSavePatternImg(){
-    if (this.data.saveLoading) return;
-    
-    // 检查用户是否登录
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    if (!userInfo.openId) {
-      this.showMessage('请先登录');
-      return;
-    }
-    
-    // 检查标题是否为空
-    if (!this.data.patternTitle || this.data.patternTitle.trim() === '') {
-      this.showMessage('请设置图解标题');
-      return;
-    }
-    
-    this.setData({
-      saveLoading: true
-    });
-    
-    const that = this;
-    // 获取 canvas 的临时文件路径
-    wx.canvasToTempFilePath({
-      canvasId: this.data.canvasId,
-      success: (res) => {
-        const tempFilePath = res.tempFilePath;
-        // 上传图片到云存储
-        that.uploadPatternToCloud(tempFilePath);
-      },
-      fail: (err) => {
-        console.error('获取 canvas 临时文件路径失败:', err);
-        this.setData({ saveLoading: false });
-        wx.showToast({
-          title: '保存失败，请重试',
-          icon: 'error'
-        });
-      }
-    });
-  },
+
 
   // 上传图解到云存储
   async uploadPatternToCloud(tempFilePath) {

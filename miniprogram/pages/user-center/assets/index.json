@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index"
+  },
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}
