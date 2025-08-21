@@ -63,7 +63,7 @@ Page({
           {
             id: "pattern-2",
             icon: '🧩',
-            title: '配色',
+            title: '图案配色',
             description: '内置常用图样、线材色卡',
             new: false,
             path: '/pages/tools/color-palette/index'

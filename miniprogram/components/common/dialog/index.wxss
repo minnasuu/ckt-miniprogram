@@ -1,0 +1,117 @@
+/* 遮罩层 */
+.dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 对话框容器 */
+.dialog-container {
+  position: relative;
+  width: 600rpx;
+  max-width: 90vw;
+  background-color: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* 关闭按钮 */
+.dialog-close {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dialog-close-icon {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1;
+}
+
+/* 标题区域 */
+.dialog-header {
+  padding: 40rpx 40rpx 20rpx;
+  text-align: center;
+}
+
+.dialog-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 内容区域 */
+.dialog-body {
+  padding: 0 40rpx 40rpx;
+  text-align: center;
+}
+
+.dialog-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+/* 按钮区域 */
+.dialog-footer {
+  display: flex;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.dialog-btn {
+  flex: 1;
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 32rpx;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-btn::after {
+  border: none;
+}
+
+.dialog-btn-cancel {
+  color: #666;
+  border-right: 1rpx solid #f0f0f0;
+}
+
+.dialog-btn-cancel:active {
+  background-color: #f8f8f8;
+}
+
+.dialog-btn-confirm {
+  color: #007aff;
+  font-weight: 600;
+}
+
+.dialog-btn-confirm:active {
+  background-color: #f8f8f8;
+}
+
+/* 只有一个按钮时的样式 */
+.dialog-footer .dialog-btn:only-child {
+  border-right: none;
+}

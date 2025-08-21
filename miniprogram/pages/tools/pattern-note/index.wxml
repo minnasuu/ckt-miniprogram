@@ -1,3 +1,49 @@
+<wxs module="utils">
+function formatHistoryTime(isoString) {
+  var date = getDate(isoString);
+  var now = getDate();
+  var diff = now.getTime() - date.getTime();
+  
+  // 小于1分钟
+  if (diff < 60 * 1000) {
+    return '刚刚';
+  }
+  
+  // 小于1小时
+  if (diff < 60 * 60 * 1000) {
+    var minutes = Math.floor(diff / (60 * 1000));
+    return minutes + '分钟前';
+  }
+  
+  // 小于1天
+  if (diff < 24 * 60 * 60 * 1000) {
+    var hours = Math.floor(diff / (60 * 60 * 1000));
+    return hours + '小时前';
+  }
+  
+  // 小于7天
+  if (diff < 7 * 24 * 60 * 60 * 1000) {
+    var days = Math.floor(diff / (24 * 60 * 60 * 1000));
+    return days + '天前';
+  }
+  
+  // 超过7天显示具体日期
+  var month = ('0' + (date.getMonth() + 1)).slice(-2);
+  var day = ('0' + date.getDate()).slice(-2);
+  var hours = ('0' + date.getHours()).slice(-2);
+  var minutes = ('0' + date.getMinutes()).slice(-2);
+  
+  // 如果是今年，不显示年份
+  if (date.getFullYear() === now.getFullYear()) {
+    return month + '-' + day + ' ' + hours + ':' + minutes;
+  } else {
+    return date.getFullYear() + '-' + month + '-' + day;
+  }
+}
+
+module.exports.formatHistoryTime = formatHistoryTime;
+</wxs>
+
 <block>
     <view class="pattern-note-view">
   <custom-header title="图解笔记本" showBack background="transparent"></custom-header>
@@ -83,9 +129,28 @@
                 </view>
             </view>
             <view class="pn-bottom-btns">
-              <button bindtap="handleHistoryBtnTap" class="default">查看历史</button>
+              <view class="pn-bottom-btns-left">
+                <view class="save-btn-container">
+                  <button bindtap="handleSaveBtnTap" class="default {{isDocumentNew ? 'new-document' : 'saved-document'}}">
+                    {{isDocumentNew ? '保存文档' : '更新文档'}}
+                  </button>
+                  <view class="save-quota-info" wx:if="{{saveQuota.level !== 'guest' && saveQuota.level !== 'admin'}}">
+                    <text class="quota-text">{{saveQuota.used}} / {{saveQuota.limit}}</text>
+                    <view class="quota-level-badge {{saveQuota.level}}">
+                      {{saveQuota.level === 'normal' ? '普通' : '高级'}}
+                    </view>
+                  </view>
+                  <view class="save-quota-info" wx:elif="{{saveQuota.level === 'admin'}}">
+                    <text class="quota-text">{{saveQuota.used}} / ∞</text>
+                    <view class="quota-level-badge admin">minna</view>
+                  </view>
+                  <view class="save-quota-info guest" wx:elif="{{saveQuota.level === 'guest'}}">
+                    <text class="quota-text">未登录</text>
+                  </view>
+                </view>
+                <button disabled="{{!isDocumentNew || saveQuota.level === 'guest'}}" bindtap="handleHistoryBtnTap" class="history-btn default">查看历史</button>
+              </view>
               <button bindtap="handlePreviewBtnTap" class="default">预览 下载</button>
-              <button bindtap="handleSaveBtnTap" class="primary">保存图解</button>
             </view>
         </view>
     </view>
@@ -95,6 +160,96 @@
           show="{{showAlert}}" 
           type="success"
         ></alert-message>
+</view>
+
+<!-- 历史图解抽屉 -->
+<drawer-layout 
+    wx:if="{{showHistoryDrawer}}"
+    title="历史图解"
+    showCancelBtn="{{true}}"
+    showSubmitBtn="{{true}}"
+    bind:close="handleHistoryDrawerClose"
+    bind:cancel="handleHistoryDrawerClose"
+    bind:submit="handleCreateNewDocument"
+>
+    <view class="history-drawer-body">
+        <block wx:if="{{historyDocuments.length > 0}}">
+            <view wx:for="{{historyDocuments}}" wx:key="id" class="history-document-item {{item.id === currentDocumentId ? 'current' : ''}}" 
+                  bindtap="handleHistoryDocumentTap" data-id="{{item.id}}">
+                <view class="history-document-info">
+                    <view class="history-document-title">{{item.patternTitle}}</view>
+                    <view class="history-document-meta">
+                        <text class="history-document-time">{{utils.formatHistoryTime(item.saveTime)}}</text>
+                        <text class="history-document-parts">{{item.data.length}} 个部分</text>
+                    </view>
+                </view>
+                <view class="history-document-actions">
+                    <view class="history-document-current" wx:if="{{item.id === currentDocumentId}}">当前</view>
+                    <view class="history-document-delete" bindtap="handleDeleteHistoryDocument" data-id="{{item.id}}">
+                        <view class="delete-icon"></view>
+                    </view>
+                </view>
+            </view>
+        </block>
+        <view wx:else class="history-empty">
+            <view class="history-empty-text">暂无历史图解</view>
+            <view class="history-empty-tip">保存文档后会在这里显示</view>
+        </view>
+    </view>
+</drawer-layout>
+
+<!-- 切换确认弹窗 -->
+<view class="switch-confirm-dialog {{!showSwitchConfirmDialog ? 'hide':''}}" bindtap="handleSwitchConfirmDialogClose">
+    <view class="switch-confirm-dialog-body" catchtap="">
+        <view class="switch-confirm-dialog-header">
+            <view class="switch-confirm-title">确定切换文档？</view>
+        </view>
+        <view class="switch-confirm-dialog-content">
+            <view class="switch-confirm-message">
+                当前文档有未保存的更改，切换后将丢失这些更改。
+            </view>
+            <view class="switch-confirm-info" wx:if="{{switchTargetDocument}}">
+                <view class="switch-info-item">
+                    <text class="switch-info-label">目标文档：</text>
+                    <text class="switch-info-value">{{switchTargetDocument.patternTitle}}</text>
+                </view>
+            </view>
+        </view>
+        <view class="switch-confirm-dialog-btns">
+            <button bindtap="handleSwitchConfirmDialogClose" class="cancel">取消</button>
+            <button bindtap="handleConfirmSwitch" class="confirm">确定切换</button>
+        </view>
+    </view>
+</view>
+
+<!-- 确认保存弹窗 -->
+<view class="save-confirm-dialog {{!showSaveConfirmDialog ? 'hide':''}}" bindtap="handleSaveConfirmDialogClose">
+    <view class="save-confirm-dialog-body" catchtap="">
+        <view class="save-confirm-dialog-header">
+            <view class="save-confirm-title">确定保存？</view>
+        </view>
+        <view class="save-confirm-dialog-content">
+            <view class="save-confirm-message">
+                确定要保存当前的图解笔记吗？
+            </view>
+            <view class="save-confirm-info">
+                <view class="save-info-item">
+                    <text class="save-info-label">标题：</text>
+                    <text class="save-info-value">{{patternTitle}}</text>
+                </view>
+                <view class="save-info-item">
+                    <text class="save-info-label">部分数：</text>
+                    <text class="save-info-value">{{data.length}} 个部分</text>
+                </view>
+            </view>
+        </view>
+        <view class="save-confirm-dialog-btns">
+            <button bindtap="handleSaveConfirmDialogClose" class="cancel">取消</button>
+            <button bindtap="handleConfirmSave" class="confirm" disabled="{{saving}}">
+                {{saving ? '保存中...' : '确定保存'}}
+            </button>
+        </view>
+    </view>
 </view>
  <view
     class="pattern-preview-dialog {{!showPreviewDialog? 'hide':''}}"
@@ -119,4 +274,5 @@
         </view>
     </view>
 </view>
+
 </block>

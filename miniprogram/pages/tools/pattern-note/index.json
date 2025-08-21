@@ -3,7 +3,8 @@
     "custom-header": "/components/custom-header/index",
     "custom-checkbox": "/components/common/checkbox/index",
     "alert-message": "/components/common/alert-message/index",
-    "close-icon": "/components/icon/close-icon/index"
+    "close-icon": "/components/icon/close-icon/index",
+    "drawer-layout": "/components/common/drawer-layout/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "图解笔记本"

@@ -25,6 +25,7 @@ Component({
     },
     onItemTap(e) {
       const { id } = e.currentTarget.dataset;
+      this.triggerEvent('itemTap', { id });
     },
     onItemLongTap(e) {
       const { id } = e.currentTarget.dataset;
@@ -44,6 +45,10 @@ Component({
     onPublish(e) {
       const { id } = e.currentTarget.dataset;
       this.triggerEvent('itemPublishTap', { id });
+    },
+    onView(e) {
+      const { id } = e.currentTarget.dataset;
+      this.triggerEvent('itemTap', { id });
     }
   }
 }); 

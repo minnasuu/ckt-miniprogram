@@ -21,16 +21,39 @@ Page({
     previewData: [], // 预览数据
     isShowStichDisabled: true, // 控制显示针数功能是否禁用
     canvasHeight: 0, // Canvas高度
-    canvasId: 'pattern-preview-canvas' // Canvas ID
+    canvasId: 'pattern-preview-canvas', // Canvas ID
+    showSaveConfirmDialog: false, // 控制确认保存弹窗显示
+    showAlert: false, // 控制提示消息显示
+    alertMessage: '', // 提示消息内容
+    // 历史文档相关
+    showHistoryDrawer: false, // 控制历史文档抽屉显示
+    historyDocuments: [], // 历史文档列表
+    currentDocumentId: null, // 当前文档ID
+    showSwitchConfirmDialog: false, // 控制切换确认弹窗显示
+    switchTargetDocument: null, // 要切换到的目标文档
+    hasUnsavedChanges: false, // 是否有未保存的更改
+    isDocumentNew: true, // 当前文档是否为新文档
+    // 用户等级和保存限制相关
+    userInfo: null, // 用户信息
+    saveQuota: { // 保存配额信息
+      used: 0, // 已使用数量
+      limit: 0, // 限制数量
+      level: 'guest' // 用户等级：guest, normal, premium, admin
+    }
   },
 
   onLoad() {
     const systemInfo = wx.getSystemInfoSync();
     // 生成默认标题（当前时间）
     const defaultTitle = this.formatDateTime(new Date());
+    // 生成新文档ID
+    const documentId = this.generateDocumentId();
+    
     this.setData({
       statusBarHeight: systemInfo.statusBarHeight,
-      patternTitle: defaultTitle
+      patternTitle: defaultTitle,
+      currentDocumentId: documentId,
+      isDocumentNew: true
     });
     if(this.data.data.length === 0){
       this.setData({
@@ -39,6 +62,97 @@ Page({
       this.updateCurItem();
       this.calculateLineNumbers();
       this.caculateStiches();
+    }
+    // 初始化用户信息和保存配额
+    this.initUserInfo();
+    // 加载历史文档
+    this.loadHistoryDocuments();
+  },
+
+  onShow() {
+    // 页面显示时重新检查用户信息，以防用户在其他页面登录
+    this.initUserInfo();
+  },
+
+  // 初始化用户信息和保存配额
+  initUserInfo() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo') || null;
+      this.setData({
+        userInfo: userInfo
+      });
+      // 更新保存配额
+      this.updateSaveQuota();
+    } catch (error) {
+      console.error('初始化用户信息失败:', error);
+    }
+  },
+
+  // 获取用户等级
+  getUserLevel(userInfo) {
+    if (!userInfo || !userInfo.openId) {
+      return 'guest'; // 未登录用户
+    }
+    
+    // 管理员判断（使用项目中现有的管理员openId）
+    if (userInfo.openId === 'od7SO5Pt8HG7dDS5A_1Uuv7ky_Mg') {
+      return 'admin';
+    }
+    
+    // 高级用户判断（这里可以根据实际业务逻辑调整）
+    // 例如：可以根据用户的创建时间、活跃度等判断
+    if (userInfo.isPremium || userInfo.level === 'premium') {
+      return 'premium';
+    }
+    
+    // 普通用户
+    return 'normal';
+  },
+
+  // 获取保存限制数量
+  getSaveLimit(level) {
+    const limits = {
+      guest: 0,     // 未登录不允许保存
+      normal: 2,    // 普通用户最多2个
+      premium: 20,  // 高级用户最多20个
+      admin: -1     // 管理员无限制
+    };
+    return limits[level] || 0;
+  },
+
+  // 更新保存配额信息
+  updateSaveQuota() {
+    const userLevel = this.getUserLevel(this.data.userInfo);
+    const saveLimit = this.getSaveLimit(userLevel);
+    const usedCount = this.data.historyDocuments.length;
+    
+    this.setData({
+      saveQuota: {
+        used: usedCount,
+        limit: saveLimit,
+        level: userLevel
+      }
+    });
+  },
+
+  // 生成文档ID
+  generateDocumentId() {
+    return 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  },
+
+  // 加载历史文档
+  loadHistoryDocuments() {
+    try {
+      const historyDocuments = wx.getStorageSync('pattern-notes') || [];
+      this.setData({
+        historyDocuments: historyDocuments
+      });
+      // 更新文档新旧状态
+      this.updateDocumentNewStatus();
+      // 更新保存配额
+      this.updateSaveQuota();
+    } catch (error) {
+      console.error('加载历史文档失败:', error);
     }
   },
 
@@ -50,6 +164,49 @@ Page({
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}`;
+  },
+
+  // 格式化历史文档的时间显示
+  formatHistoryTime(isoString) {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    
+    // 小于1分钟
+    if (diff < 60 * 1000) {
+      return '刚刚';
+    }
+    
+    // 小于1小时
+    if (diff < 60 * 60 * 1000) {
+      const minutes = Math.floor(diff / (60 * 1000));
+      return `${minutes}分钟前`;
+    }
+    
+    // 小于1天
+    if (diff < 24 * 60 * 60 * 1000) {
+      const hours = Math.floor(diff / (60 * 60 * 1000));
+      return `${hours}小时前`;
+    }
+    
+    // 小于7天
+    if (diff < 7 * 24 * 60 * 60 * 1000) {
+      const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+      return `${days}天前`;
+    }
+    
+    // 超过7天显示具体日期
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    // 如果是今年，不显示年份
+    if (date.getFullYear() === now.getFullYear()) {
+      return `${month}-${day} ${hours}:${minutes}`;
+    } else {
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
   },
 
   // 更新 curItem 的方法
@@ -450,7 +607,7 @@ Page({
     
     // 检查用户是否登录
     const userInfo = wx.getStorageSync('userInfo') || {};
-    if (!userInfo.openid) {
+    if (!userInfo.openId) {
       this.showMessage('请先登录');
       return;
     }
@@ -525,7 +682,7 @@ Page({
           imageUrl: fileID,
           content: JSON.stringify(this.data.previewData),
           author: userInfo.nickName || '匿名用户',
-          authorId: userInfo.openid || '',
+          authorId: userInfo.openId || '',
           createTime: new Date(),
           tag: '图解笔记',
           type: 'pattern-note'
@@ -612,6 +769,418 @@ Page({
         });
       }).exec();
     }, 100);
+  },
+
+  // 处理保存按钮点击
+  handleSaveBtnTap() {
+    // 检查用户登录状态和保存权限
+    if (!this.checkSavePermission()) {
+      return;
+    }
+
+    // 检查是否有内容需要保存
+    const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
+    if (!hasContent) {
+      this.showAlert('请先添加一些内容再保存', 'warning');
+      return;
+    }
+
+    // 检查标题是否为空
+    if (!this.data.patternTitle || this.data.patternTitle.trim() === '') {
+      this.showAlert('请设置图解标题', 'warning');
+      return;
+    }
+
+    // 智能保存逻辑：检查是否为新文档
+    if (this.isNewDocument()) {
+      // 新文档：显示确认保存弹窗，让用户确认是否要保存
+      this.setData({
+        showSaveConfirmDialog: true
+      });
+    } else {
+      // 已保存的文档：直接更新保存，无需弹窗确认
+      this.performDirectSave();
+    }
+  },
+
+  // 检查保存权限
+  checkSavePermission() {
+    const { saveQuota, userInfo } = this.data;
+    
+    // 检查是否登录 - 未登录用户不允许保存
+    if (saveQuota.level === 'guest') {
+      this.showLoginRequiredDialog();
+      return false;
+    }
+    
+    // 检查保存数量限制（仅对新文档检查，更新已有文档不受限制）
+    // 管理员无限制，普通用户最多2个，高级用户最多20个
+    if (saveQuota.level !== 'admin' && this.isNewDocument()) {
+      if (saveQuota.used >= saveQuota.limit) {
+        this.showSaveLimitDialog();
+        return false;
+      }
+    }
+    
+    return true;
+  },
+
+  // 显示登录提示弹窗
+  showLoginRequiredDialog() {
+    wx.showModal({
+      title: '需要登录',
+      content: '保存文档需要先登录账号，是否前往登录？',
+      confirmText: '去登录',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          // 跳转到用户中心页面进行登录
+          wx.switchTab({
+            url: '/pages/user-center/index'
+          });
+        }
+      }
+    });
+  },
+
+  // 显示保存限制提示弹窗
+  showSaveLimitDialog() {
+    const { saveQuota } = this.data;
+    let levelText = '';
+    let upgradeText = '';
+    
+    switch (saveQuota.level) {
+      case 'normal':
+        levelText = '普通用户';
+        upgradeText = '升级到高级用户可保存20个文档';
+        break;
+      case 'premium':
+        levelText = '高级用户';
+        upgradeText = '感谢您的支持！';
+        break;
+    }
+    
+    wx.showModal({
+      title: '保存数量已达上限',
+      content: `${levelText}最多可保存 ${saveQuota.limit} 个文档，当前已保存 ${saveQuota.used} 个。\n\n${upgradeText}\n\n您可以删除一些历史文档后再保存新文档。`,
+      confirmText: '查看历史',
+      cancelText: '知道了',
+      success: (res) => {
+        if (res.confirm) {
+          // 打开历史文档抽屉
+          this.handleHistoryBtnTap();
+        }
+      }
+    });
+  },
+
+  // 检查是否为新文档
+  isNewDocument() {
+    return this.data.isDocumentNew;
+  },
+
+  // 更新文档新旧状态
+  updateDocumentNewStatus() {
+    // 如果没有当前文档ID，肯定是新文档
+    if (!this.data.currentDocumentId) {
+      this.setData({
+        isDocumentNew: true
+      });
+      return;
+    }
+    
+    // 检查当前文档ID是否存在于历史记录中
+    const existsInHistory = this.data.historyDocuments.some(doc => doc.id === this.data.currentDocumentId);
+    this.setData({
+      isDocumentNew: !existsInHistory
+    });
+  },
+
+  // 执行直接保存（不显示弹窗）
+  performDirectSave() {
+    this.setData({
+      saving: true
+    });
+
+    // 显示保存中的提示
+    this.showAlert('保存中...', 'loading');
+
+    // 模拟保存过程
+    setTimeout(() => {
+      // 保存到本地存储
+      this.saveToLocalStorage();
+      
+      this.setData({
+        saving: false
+      });
+      
+      this.showAlert('保存成功！', 'success');
+    }, 800); // 稍微缩短保存时间，提升用户体验
+  },
+
+  // 处理历史按钮点击
+  handleHistoryBtnTap() {
+    this.loadHistoryDocuments();
+    this.setData({
+      showHistoryDrawer: true
+    });
+  },
+
+  // 处理历史文档抽屉关闭
+  handleHistoryDrawerClose() {
+    this.setData({
+      showHistoryDrawer: false
+    });
+  },
+
+  // 注意：drawer-layout组件的"确定"按钮会触发handleCreateNewDocument方法
+
+  // 创建新文档
+  handleCreateNewDocument() {
+    // 检查是否有未保存的更改
+    if (this.hasUnsavedChanges()) {
+      wx.showModal({
+        title: '确认创建新文档',
+        content: '当前文档有未保存的更改，创建新文档后将丢失这些更改。',
+        success: (res) => {
+          if (res.confirm) {
+            this.createNewDocument();
+          }
+        }
+      });
+    } else {
+      this.createNewDocument();
+    }
+  },
+
+  // 创建新文档的实际逻辑
+  createNewDocument() {
+    const defaultTitle = this.formatDateTime(new Date());
+    const documentId = this.generateDocumentId();
+    
+    this.setData({
+      patternTitle: defaultTitle,
+      data: [...this.data.initData], // 复制初始数据
+      currentDocumentId: documentId,
+      showHistoryDrawer: false,
+      cur: '1',
+      isDocumentNew: true // 新创建的文档
+    });
+    
+    this.updateCurItem();
+    this.calculateLineNumbers();
+    this.caculateStiches();
+    this.updateShowStichDisabled();
+    
+    this.showAlert('已创建新文档', 'success');
+  },
+
+  // 处理历史文档点击
+  handleHistoryDocumentTap(e) {
+    const documentId = e.currentTarget.dataset.id;
+    const targetDocument = this.data.historyDocuments.find(doc => doc.id === documentId);
+    
+    if (!targetDocument) return;
+    
+    // 检查是否有未保存的更改
+    if (this.hasUnsavedChanges()) {
+      this.setData({
+        switchTargetDocument: targetDocument,
+        showSwitchConfirmDialog: true
+      });
+    } else {
+      this.switchToDocument(targetDocument);
+    }
+  },
+
+  // 检查是否有未保存的更改
+  hasUnsavedChanges() {
+    // 简单检查：如果有任何内容且当前文档不在历史记录中，则认为有未保存更改
+    const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
+    if (!hasContent) return false;
+    
+    const currentExists = this.data.historyDocuments.some(doc => doc.id === this.data.currentDocumentId);
+    return !currentExists;
+  },
+
+  // 切换到指定文档
+  switchToDocument(document) {
+    this.setData({
+      patternTitle: document.patternTitle,
+      data: document.data,
+      currentDocumentId: document.id,
+      showHistoryDrawer: false,
+      showSwitchConfirmDialog: false,
+      switchTargetDocument: null,
+      isDocumentNew: false // 切换到已保存的文档
+    });
+    
+    // 重置当前选中项为第一个
+    if (document.data && document.data.length > 0) {
+      this.setData({
+        cur: document.data[0].id
+      });
+    }
+    
+    this.updateCurItem();
+    this.calculateLineNumbers();
+    this.caculateStiches();
+    this.updateShowStichDisabled();
+    
+    this.showAlert('文档已切换', 'success');
+  },
+
+  // 处理切换确认弹窗关闭
+  handleSwitchConfirmDialogClose() {
+    this.setData({
+      showSwitchConfirmDialog: false,
+      switchTargetDocument: null
+    });
+  },
+
+  // 处理确认切换
+  handleConfirmSwitch() {
+    if (this.data.switchTargetDocument) {
+      this.switchToDocument(this.data.switchTargetDocument);
+    }
+  },
+
+  // 删除历史文档
+  handleDeleteHistoryDocument(e) {
+    e.stopPropagation(); // 阻止事件冒泡
+    const documentId = e.currentTarget.dataset.id;
+    
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这个历史文档吗？删除后无法恢复。',
+      success: (res) => {
+        if (res.confirm) {
+          this.deleteDocument(documentId);
+        }
+      }
+    });
+  },
+
+  // 删除文档
+  deleteDocument(documentId) {
+    try {
+      const historyDocuments = this.data.historyDocuments.filter(doc => doc.id !== documentId);
+      
+      // 更新本地存储
+      wx.setStorageSync('pattern-notes', historyDocuments);
+      
+      // 更新页面数据
+      this.setData({
+        historyDocuments: historyDocuments
+      });
+      
+      // 更新保存配额
+      this.updateSaveQuota();
+      
+      this.showAlert('文档已删除', 'success');
+    } catch (error) {
+      console.error('删除文档失败:', error);
+      this.showAlert('删除失败，请重试', 'error');
+    }
+  },
+
+  // 处理确认保存弹窗关闭
+  handleSaveConfirmDialogClose() {
+    if (this.data.saving) return; // 如果正在保存，不允许关闭
+    this.setData({
+      showSaveConfirmDialog: false
+    });
+  },
+
+  // 处理确认保存
+  handleConfirmSave() {
+    if (this.data.saving) return;
+
+    this.setData({
+      saving: true
+    });
+
+    // 模拟保存过程
+    setTimeout(() => {
+      // 保存到本地存储
+      this.saveToLocalStorage();
+      
+      this.setData({
+        saving: false,
+        showSaveConfirmDialog: false
+      });
+      
+      this.showAlert('保存成功！', 'success');
+    }, 1000);
+  },
+
+  // 保存到本地存储
+  saveToLocalStorage() {
+    try {
+      const saveData = {
+        patternTitle: this.data.patternTitle,
+        data: this.data.data,
+        saveTime: new Date().toISOString(),
+        id: this.data.currentDocumentId || this.generateDocumentId() // 使用当前文档ID或生成新ID
+      };
+
+      // 获取现有的保存记录
+      const existingSaves = wx.getStorageSync('pattern-notes') || [];
+      
+      // 检查是否已存在相同ID的记录
+      const existingIndex = existingSaves.findIndex(item => item.id === saveData.id);
+      
+      if (existingIndex > -1) {
+        // 更新现有记录
+        existingSaves[existingIndex] = saveData;
+      } else {
+        // 添加新记录
+        existingSaves.unshift(saveData);
+      }
+
+      // 限制最多保存20条记录
+      if (existingSaves.length > 20) {
+        existingSaves.splice(20);
+      }
+
+      // 保存到本地存储
+      wx.setStorageSync('pattern-notes', existingSaves);
+      
+      // 更新当前文档ID和状态
+      if (!this.data.currentDocumentId) {
+        this.setData({
+          currentDocumentId: saveData.id
+        });
+      }
+      
+      // 保存成功后，文档不再是新文档
+      this.setData({
+        isDocumentNew: false
+      });
+      
+      // 刷新历史文档列表
+      this.loadHistoryDocuments();
+      
+      console.log('保存成功:', saveData);
+    } catch (error) {
+      console.error('保存失败:', error);
+      this.showAlert('保存失败，请重试', 'error');
+    }
+  },
+
+  // 显示提示消息
+  showAlert(message, type = 'info') {
+    this.setData({
+      alertMessage: message,
+      showAlert: true
+    });
+
+    // 3秒后自动隐藏
+    setTimeout(() => {
+      this.setData({
+        showAlert: false
+      });
+    }, 3000);
   },
 
   // 执行Canvas绘制

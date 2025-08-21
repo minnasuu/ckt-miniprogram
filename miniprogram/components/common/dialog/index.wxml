@@ -1,0 +1,36 @@
+<view class="dialog-mask" wx:if="{{visible}}" bindtap="onMaskTap">
+  <view class="dialog-container" bindtap="preventTap">
+    <!-- 关闭按钮 -->
+    <view class="dialog-close" wx:if="{{showClose}}" bindtap="onClose">
+      <text class="dialog-close-icon">✕</text>
+    </view>
+    
+    <!-- 标题 -->
+    <view class="dialog-header" wx:if="{{title}}">
+      <text class="dialog-title">{{title}}</text>
+    </view>
+    
+    <!-- 内容 -->
+    <view class="dialog-body">
+      <text class="dialog-content">{{content}}</text>
+    </view>
+    
+    <!-- 按钮区域 -->
+    <view class="dialog-footer" wx:if="{{showCancel || showConfirm}}">
+      <button 
+        class="dialog-btn dialog-btn-cancel" 
+        wx:if="{{showCancel}}"
+        bindtap="onCancel"
+      >
+        {{cancelText}}
+      </button>
+      <button 
+        class="dialog-btn dialog-btn-confirm" 
+        wx:if="{{showConfirm}}"
+        bindtap="onConfirm"
+      >
+        {{confirmText}}
+      </button>
+    </view>
+  </view>
+</view>

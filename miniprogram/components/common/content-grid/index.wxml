@@ -2,12 +2,41 @@
     <view class="grid-column" wx:for="{{[0,1]}}" wx:for-index="columnIndex">
       <view class="grid-item" wx:for="{{list}}" wx:key="id" wx:if="{{index % 2 === columnIndex}}" data-id="{{item._id}}" catchtap="onItemTap" catch:longtap="onItemLongTap">
         <view class="item-image">
-          <image src="{{item.image}}" style="width:{{screenWidth/2-42}}px;height:{{(screenWidth/2-42)/(item.width/item.height)}}px" mode="aspectFit"></image>
+          <!-- 根据不同类型显示不同的图片样式 -->
+          <image 
+            wx:if="{{item.type === 'pattern-note'}}" 
+            src="{{item.image}}" 
+            style="width:{{screenWidth/2-42}}px;height:{{(screenWidth/2-42)*0.75}}px" 
+            mode="aspectFill"
+            class="pattern-image">
+          </image>
+          <image 
+            wx:elif="{{item.type === 'tutorial'}}" 
+            src="{{item.image}}" 
+            style="width:{{screenWidth/2-42}}px;height:{{(screenWidth/2-42)*0.6}}px" 
+            mode="aspectFill"
+            class="tutorial-image">
+          </image>
+          <image 
+            wx:else 
+            src="{{item.image}}" 
+            style="width:{{screenWidth/2-42}}px;height:{{(screenWidth/2-42)/(item.width/item.height)}}px" 
+            mode="aspectFit">
+          </image>
+          
+          <!-- 图解笔记类型标识 -->
+          <view wx:if="{{item.type === 'pattern-note'}}" class="pattern-badge">
+            <text class="badge-text">图解</text>
+          </view>
+          <!-- 教程类型标识 -->
+          <view wx:elif="{{item.type === 'tutorial'}}" class="tutorial-badge">
+            <text class="badge-text">教程</text>
+          </view>
         </view>
         <view class="item-info">
           <view wx:if="{{item.title}}" class="item-title">{{item.title}}</view>
           <view class="item-meta">
-            <view class="author">
+            <view wx:if="{{item.author}}" class="author">
               <image class="author-avatar" src="{{item.author.avatar}}" mode="aspectFill"></image>
               <text class="author-name">{{item.author.username}}</text>
             </view>
@@ -15,9 +44,15 @@
           </view>
         </view>
         <view class="button-mask" wx:if="{{showMask === item._id}}">
-          <view class="btn" bind:tap="onDownload" data-id="{{item._id}}">下载</view>
-          <view class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>
-          <view class="btn" bind:tap="onPublish" data-id="{{item._id}}">发布</view>
+          <!-- 图片类型的按钮 -->
+          <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDownload" data-id="{{item._id}}">下载</view>
+          <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>
+          <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onPublish" data-id="{{item._id}}">发布</view>
+          <!-- 图解笔记类型的按钮 -->
+          <view wx:if="{{item.type === 'pattern-note'}}" class="btn pattern-btn" bind:tap="onView" data-id="{{item._id}}">查看</view>
+          <view wx:if="{{item.type === 'pattern-note'}}" class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>
+          <!-- 教程类型的按钮 -->
+          <view wx:if="{{item.type === 'tutorial'}}" class="btn tutorial-btn" bind:tap="onView" data-id="{{item._id}}">查看</view>
         </view>
     </view>
     </view>

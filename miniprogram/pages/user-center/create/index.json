@@ -1,7 +1,9 @@
 {
-  "navigationBarTitleText": "我的发布",
+  "navigationBarTitleText": "我的创作",
   "usingComponents": {
     "content-grid": "/components/common/content-grid/index",
-    "custom-header": "/components/custom-header/index"
+    "custom-header": "/components/custom-header/index",
+    "nav": "/components/common/nav/index",
+    "loading": "/components/common/loading/index"
   }
 }
