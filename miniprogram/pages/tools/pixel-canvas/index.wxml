@@ -82,7 +82,7 @@
     <view class="toolbar">
       <button class="tool-button" bindtap="clearCanvas">清除画布</button>
       <button class="tool-button" bindtap="downloadCanvas">下载图片</button>
-       <button class="tool-button primary" bindtap="saveCanvas">保存图片</button>
+       <button class="tool-button primary" bindtap="saveCanvas" disabled="{{saveLoading}}">{{saveLoading?'保存中...':'保存图片'}}</button>
     </view>
   </view>
   <movable-area scale-area class="full-pixel-canvas-container {{fullCanvas?'fullCanvas':''}}" style="padding-top: {{statusBarHeight + 44 + 12}}px;width:100vw;height:100vh;">

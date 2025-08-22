@@ -1,4 +1,6 @@
 // 像素画板页面
+const LoginUtils = require('../../../utils/loginUtils');
+
 Page({
   data: {
     statusBarHeight: 0,
@@ -25,7 +27,8 @@ Page({
     // 颜色选择器相关
     showColorPicker: false,
     currentPickerColor: '#202020',
-    currentPickerType: '' // 'brush' 或 'canvas'
+    currentPickerType: '', // 'brush' 或 'canvas'
+    saveLoading: false
   },
   
   onLoad() {
@@ -227,9 +230,37 @@ Page({
     const that = this;
     // 检查用户是否登录
     if(!that.data.author){
-      that.showMessage('请先登录☺️');
+      // 使用登录工具类显示登录弹窗
+      LoginUtils.showLoginModal({
+        title: '需要登录',
+        content: '保存像素画需要先登录账号，是否立即登录？',
+        confirmText: '立即登录',
+        onLoginStart: () => {
+          wx.showLoading({
+            title: '登录中...',
+          });
+        },
+        onLoginSuccess: (userInfo) => {
+          // 更新页面的用户信息
+          that.setData({
+            author: userInfo
+          });
+          // 登录成功后自动执行保存操作
+          that.saveCanvas();
+        },
+        onLoginFail: (error) => {
+          that.showMessage('登录失败，请重试');
+          console.error('登录失败：', error);
+        },
+        onCancel: () => {
+          that.showMessage('已取消登录');
+        }
+      });
       return;
     }
+    this.setData({
+      saveLoading: true
+    });
     
     const { canvasData, canvasWidth, canvasHeight, borderStyle, canvasColor } = this.data;
     const pixelSize = 32; // 每个像素的大小，与result-canvas的样式一致
@@ -269,23 +300,34 @@ Page({
                     height: canvasHeight
                   },
                   success: function() {
-                    that.showMessage(`保存成功🎉\n前往个人中心-我的创作查看`);
+                    that.showMessage(`保存成功🎉\n前往个人中心-图片查看`);
                   },
                   fail: function(err) {
                     console.error('保存到云数据库失败', err);
                     that.showMessage('保存失败💔');
+                  },
+                  complete: function () {
+                    that.setData({
+                      saveLoading: false
+                    });
                   }
                 });
               },
               fail: function(err) {
                 console.error('上传到云存储失败', err);
                 that.showMessage('上传失败💔');
+                that.setData({
+                  saveLoading: false
+                });
               }
             });
           },
           fail: (err) => {
             console.error('canvas 转临时文件失败', err);
             that.showMessage('生成图片失败');
+            that.setData({
+              saveLoading: false
+            });
           }
         });
       });

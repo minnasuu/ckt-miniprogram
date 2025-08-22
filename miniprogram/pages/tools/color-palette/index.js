@@ -1,4 +1,6 @@
 // 配色页面
+const LoginUtils = require('../../../utils/loginUtils');
+
 const ColorFill_Path_List_Data = [
   {
     id: 1,
@@ -1645,7 +1647,33 @@ Page({
   onSave() {
     const that = this;
     if(!that.data.author){
-      that.showMessage('请先登录☺️');
+        // 使用登录工具类显示登录弹窗
+        LoginUtils.showLoginModal({
+            title: '需要登录',
+            content: '保存配色方案需要先登录账号，是否立即登录？',
+            confirmText: '立即登录',
+            onLoginStart: () => {
+                wx.showLoading({
+                    title: '登录中...',
+                    mask: true
+                });
+            },
+            onLoginSuccess: (userInfo) => {
+                // 更新页面的用户信息
+                that.setData({
+                    author: userInfo
+                });
+                // 登录成功后自动执行保存操作
+                that.onSave();
+            },
+            onLoginFail: (error) => {
+                that.showMessage('登录失败，请重试');
+                console.error('登录失败：', error);
+            },
+            onCancel: () => {
+                that.showMessage('已取消登录');
+            }
+        });
       return;
     }
     
@@ -1679,7 +1707,7 @@ Page({
             },
             success: function() {
               wx.hideLoading();
-              that.showMessage('保存成功🎉');
+                that.showMessage('保存成功🎉\n前往个人中心-图片查看');
               that.setData({
                 saveLoading: false
               });
