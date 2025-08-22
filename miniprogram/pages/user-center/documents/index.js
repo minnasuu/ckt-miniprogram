@@ -204,42 +204,6 @@ Page({
     });
   },
 
-  // 处理文档项目点击事件
-  onItemTap(e) {
-    const { id } = e.detail;
-    const document = this.data.documentList.find(doc => doc._id === id);
-    
-    if (document && document.type === 'pattern-note') {
-      // 图解笔记类型，可以选择预览或编辑
-      wx.showActionSheet({
-        itemList: ['预览图解', '编辑图解'],
-        success: (res) => {
-          if (res.tapIndex === 0) {
-            // 预览图解 - 显示图片预览
-            if (document.image) {
-              wx.previewImage({
-                urls: [document.image],
-                current: document.image
-              });
-            } else {
-              wx.showToast({
-                title: '图片加载失败',
-                icon: 'none'
-              });
-            }
-          } else if (res.tapIndex === 1) {
-            // 编辑图解 - 跳转到pattern-note页面
-            // 注意：这里需要传递文档数据，让pattern-note页面能够加载
-            wx.showToast({
-              title: '编辑功能开发中',
-              icon: 'none'
-            });
-          }
-        }
-      });
-    }
-  },
-
   // 跳转到图解笔记本
   gotoPatternNote() {
     wx.navigateTo({

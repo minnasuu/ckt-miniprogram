@@ -1,7 +1,7 @@
 <!--components/common/drawer-layout/index.wxml-->
 <view class="drawer-layout">
     <view class="drawer-content">
-        <view class="drawer-header">{{title}}<close-icon right="{{12}}" bind:close="onClose"></close-icon></view>
+        <view class="drawer-header">{{title}}<close-icon top="{{4}}" right="{{12}}" bind:close="onClose"></close-icon></view>
          <view class="drawer-body">
             <slot></slot>
          </view>

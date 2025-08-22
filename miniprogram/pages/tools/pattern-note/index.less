@@ -717,6 +717,10 @@
 }
 
 .history-document-title{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12rpx;
     font-size: 16px;
     font-weight: 600;
     color: var(--ckt-gray-12);
@@ -726,9 +730,10 @@
 }
 
 .history-document-meta{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12rpx;
     align-items: center;
-    gap: 12px;
     font-size: 12px;
     color: var(--ckt-gray-8);
 }

@@ -41,27 +41,22 @@ Page({
     }
   },
 
-  async onLoad() {
+  async onLoad(options) {
     const systemInfo = wx.getSystemInfoSync();
-    // 生成默认标题（当前时间）
-    const defaultTitle = this.formatDateTime(new Date());
-    // 生成新文档ID
-    const documentId = this.generateDocumentId();
-    
+
     this.setData({
-      statusBarHeight: systemInfo.statusBarHeight,
-      patternTitle: defaultTitle,
-      currentDocumentId: documentId,
-      isDocumentNew: true
+      statusBarHeight: systemInfo.statusBarHeight
     });
-    if(this.data.data.length === 0){
-      this.setData({
-        data: this.data.initData
-      });
-      this.updateCurItem();
-      this.calculateLineNumbers();
-      this.caculateStiches();
+
+    // 检查是否有传入的图解ID
+    if (options.id) {
+      // 有传入ID，加载指定的图解文档
+      await this.loadSpecificDocument(options.id);
+    } else {
+      // 没有传入ID，创建新文档
+      this.createNewDocumentOnLoad();
     }
+
     // 初始化用户信息和保存配额
     this.initUserInfo();
     // 加载历史文档
@@ -71,6 +66,107 @@ Page({
   onShow() {
     // 页面显示时重新检查用户信息，以防用户在其他页面登录
     this.initUserInfo();
+  },
+
+  // 创建新文档（onLoad时调用）
+  createNewDocumentOnLoad() {
+    // 生成默认标题（当前时间）
+    const defaultTitle = this.formatDateTime(new Date());
+    // 生成新文档ID
+    const documentId = this.generateDocumentId();
+    
+    this.setData({
+      patternTitle: defaultTitle,
+      currentDocumentId: documentId,
+      isDocumentNew: true
+    });
+
+    if(this.data.data.length === 0){
+      this.setData({
+        data: this.data.initData
+      });
+      this.updateCurItem();
+      this.calculateLineNumbers();
+      this.caculateStiches();
+    }
+  },
+
+  // 加载指定的图解文档
+  async loadSpecificDocument(documentId) {
+    try {
+      // 获取用户信息
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      if (!userInfo.openId) {
+        // 如果用户未登录，显示提示并创建新文档
+        this.showAlert('请先登录以编辑图解文档', 'warning');
+        this.createNewDocumentOnLoad();
+        return;
+      }
+
+      const db = wx.cloud.database();
+
+      // 从数据库获取指定文档
+      const res = await db.collection('patternList')
+        .doc(documentId)
+        .get();
+
+      if (!res.data) {
+        // 文档不存在，显示提示并创建新文档
+        this.showAlert('图解文档不存在或已被删除', 'error');
+        this.createNewDocumentOnLoad();
+        return;
+      }
+
+      const document = res.data;
+
+      // 检查文档是否属于当前用户
+      if (document.authorId !== userInfo.openId) {
+        // 不是当前用户的文档，显示提示并创建新文档
+        this.showAlert('无权限编辑此图解文档', 'error');
+        this.createNewDocumentOnLoad();
+        return;
+      }
+
+      // 解析文档数据
+      let patternData = [];
+      try {
+        const contentData = JSON.parse(document.data || '[]');
+        patternData = contentData.map(section => ({
+          id: section.id || '1',
+          title: section.title,
+          values: section.values,
+          nums: section.nums,
+          edited: false
+        }));
+      } catch (parseError) {
+        console.warn('解析文档内容失败:', parseError);
+        // 如果解析失败，使用默认数据
+        patternData = [{ id: '1', title: '第 1 部分', values: '', nums: [], edited: false }];
+      }
+
+      // 设置文档数据
+      this.setData({
+        patternTitle: document.title || '未命名图解',
+        data: patternData,
+        currentDocumentId: documentId,
+        isDocumentNew: false, // 加载的是已存在的文档
+        cur: patternData.length > 0 ? patternData[0].id : '1'
+      });
+
+      // 更新相关状态
+      this.updateCurItem();
+      this.calculateLineNumbers();
+      this.caculateStiches();
+      this.updateShowStichDisabled();
+
+      this.showAlert('图解文档已加载', 'success');
+
+    } catch (error) {
+      console.error('加载指定文档失败:', error);
+      this.showAlert('加载图解文档失败', 'error');
+      // 加载失败时创建新文档
+      this.createNewDocumentOnLoad();
+    }
   },
 
   // 初始化用户信息和保存配额

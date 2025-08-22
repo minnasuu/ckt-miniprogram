@@ -453,11 +453,9 @@ Page({
                 });
               }
             } else if (res.tapIndex === 1) {
-              // 编辑图解 - 跳转到pattern-note页面
-              // 注意：这里需要传递文档数据，让pattern-note页面能够加载
-              wx.showToast({
-                title: '编辑功能开发中',
-                icon: 'none'
+              // 编辑图解 - 跳转到pattern-note页面并传递文档ID
+              wx.navigateTo({
+                url: `/pages/tools/pattern-note/index?id=${document._id}`
               });
             }
           }

@@ -178,15 +178,17 @@ module.exports.formatHistoryTime = formatHistoryTime;
             <view wx:for="{{historyDocuments}}" wx:key="id" class="history-document-item {{item.id === currentDocumentId ? 'current' : ''}}">
                 <view class="history-document-content" bindtap="handleHistoryDocumentTap" data-id="{{item.id}}">
                     <view class="history-document-info">
-                        <view class="history-document-title">{{item.patternTitle}}</view>
+                        <view class="history-document-title">
+                        {{item.patternTitle}}
+                        <view class="history-document-current" wx:if="{{item.id === currentDocumentId}}">当前</view>
+                        </view>
                         <view class="history-document-meta">
+                            <text class="history-document-parts">部分：{{item.data.length}}</text>
+                            <text class="history-document-parts">字符：{{item.dataStrs}}</text>
                             <text class="history-document-time">创建：{{item.createTimeFormatted}}</text>
                             <text class="history-document-time">更新：{{item.updateTimeFormatted}}</text>
-                            <text class="history-document-parts">{{item.data.length}} 个部分</text>
-                            <text class="history-document-parts">{{item.dataStrs}} 字符</text>
                         </view>
                     </view>
-                    <view class="history-document-current" wx:if="{{item.id === currentDocumentId}}">当前</view>
                 </view>
                 <view class="history-document-delete"  data-id="{{item.id}}" catchtap="handleDeleteHistoryDocument">
                     <view class="delete-icon"></view>
