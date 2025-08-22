@@ -13,7 +13,12 @@ Page({
     imageErrorMsg: '',
     
     // 用户登录状态
-    isLoggedIn: false
+    isLoggedIn: false,
+
+    // 提示信息
+    alertMessage: '',
+    showAlert: false,
+    alertType: 'info'
   },
 
   onLoad() {
@@ -48,7 +53,9 @@ Page({
     
     const db = wx.cloud.database();
     try {
-      const res = await db.collection('colorCards').get();
+      const res = await db.collection('colorCards').where({
+        author: wx.getStorageSync('userInfo').author
+      }).orderBy('createTime', 'desc').get();
       const images = res.data;
       const resData = [];
 
@@ -129,18 +136,12 @@ Page({
             db.collection('colorCards').doc(id).remove({
               success: res => {
                 console.log('删除成功:', res);
-                wx.showToast({
-                  title: '删除成功',
-                  icon: 'success'
-                });
+                this.showMessage('删除成功', 'success');
                 this.loadImageData();
               },
               fail: err => {
                 console.error('删除失败:', err);
-                wx.showToast({
-                  title: '删除失败',
-                  icon: 'error'
-                });
+                this.showMessage('删除失败', 'error');
               }
             });
           } catch (error) {
@@ -162,6 +163,13 @@ Page({
   onPullDownRefresh() {
     this.loadData().then(() => {
       wx.stopPullDownRefresh();
+    });
+  },
+  showMessage(msg, type) {
+    this.setData({
+      alertMessage: msg,
+      showAlert: true,
+      alertType: type
     });
   }
 });

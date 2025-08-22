@@ -47,7 +47,7 @@
           <!-- 图片类型的按钮 -->
           <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDownload" data-id="{{item._id}}">下载</view>
           <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>
-          <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onPublish" data-id="{{item._id}}">发布</view>
+          <!--<view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onPublish" data-id="{{item._id}}">发布</view>-->
           <!-- 图解笔记类型的按钮 -->
           <view wx:if="{{item.type === 'pattern-note'}}" class="btn pattern-btn" bind:tap="onView" data-id="{{item._id}}">查看</view>
           <view wx:if="{{item.type === 'pattern-note'}}" class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>

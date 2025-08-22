@@ -90,21 +90,16 @@ Page({
       // 为每个图解文档获取临时文件URL
       for (let i = 0; i < patterns.length; i++) {
         try {
-          const tempUrl = await wx.cloud.getTempFileURL({
-            fileList: [patterns[i].imageUrl]
-          });
           resData.push({
             _id: patterns[i]._id,
             title: patterns[i].title,
             type: 'pattern-note',
-            image: tempUrl.fileList[0].tempFileURL,
-            createTime: patterns[i].createTime,
+            createTime: this.formatHistoryTime(patterns[i].createTime),
+            updateTime: this.formatHistoryTime(patterns[i].updateTime),
             tag: patterns[i].tag || '图解笔记',
-            author: {
-              username: patterns[i].author,
-              avatar: userInfo.avatar || '/assets/images/default-avatar.png'
-            },
-            content: patterns[i].content // 保存原始内容数据
+            author: patterns[i].author,
+            data: JSON.parse(patterns[i].data), // 保存原始内容数据
+            dataStrs: patterns[i].data.length
           });
         } catch (urlError) {
           console.error('获取图片临时URL失败:', urlError);
@@ -113,14 +108,12 @@ Page({
             _id: patterns[i]._id,
             title: patterns[i].title,
             type: 'pattern-note',
-            image: '', // 空图片
-            createTime: patterns[i].createTime,
+            createTime: this.formatHistoryTime(patterns[i].createTime),
+            updateTime: this.formatHistoryTime(patterns[i].updateTime),
             tag: patterns[i].tag || '图解笔记',
-            author: {
-              username: patterns[i].author,
-              avatar: userInfo.avatar || '/assets/images/default-avatar.png'
-            },
-            content: patterns[i].content
+            author: patterns[i].author,
+            data: JSON.parse(patterns[i].data),
+            dataStrs: patterns[i].data.length
           });
         }
       }
@@ -266,5 +259,99 @@ Page({
     this.loadData().then(() => {
       wx.stopPullDownRefresh();
     });
+  },
+  // 格式化历史文档的时间显示
+  formatHistoryTime(dateInput) {
+    console.log('formatHistoryTime 输入:', dateInput, typeof dateInput, dateInput instanceof Date);
+    let date;
+
+    // 处理各种可能的日期格式
+    try {
+      if (dateInput instanceof Date) {
+        // 如果已经是Date对象
+        date = dateInput;
+        console.log('使用Date对象:', date);
+      } else if (typeof dateInput === 'string') {
+        // 如果是字符串，尝试解析
+        // 处理类似 "Fri Aug 22 2025 22:00:42 GMT+0800 (中国标准时间) {}" 的格式
+        const cleanDateString = dateInput.replace(/\s*\{\}$/, ''); // 移除末尾的 {}
+        date = new Date(cleanDateString);
+        console.log('从字符串解析:', cleanDateString, '->', date);
+      } else if (typeof dateInput === 'object' && dateInput.$date) {
+        // 处理MongoDB的日期格式
+        date = new Date(dateInput.$date);
+        console.log('从MongoDB格式解析:', dateInput.$date, '->', date);
+      } else {
+        // 其他情况直接尝试创建Date对象
+        date = new Date(dateInput);
+        console.log('其他格式解析:', dateInput, '->', date);
+      }
+
+      // 检查日期是否有效
+      if (isNaN(date.getTime())) {
+        console.warn('无效的日期格式:', dateInput, '解析结果:', date);
+        return '时间未知';
+      }
+    } catch (error) {
+      console.error('解析日期失败:', error, dateInput);
+      return '时间未知';
+    }
+
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+
+    // 如果时间差为负数（未来时间），直接显示具体日期
+    if (diff < 0) {
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${date.getFullYear()}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    // 小于1分钟
+    if (diff < 60 * 1000) {
+      return '刚刚';
+    }
+
+    // 小于1小时
+    if (diff < 60 * 60 * 1000) {
+      const minutes = Math.floor(diff / (60 * 1000));
+      return `${minutes}分钟前`;
+    }
+
+    // 小于1天
+    if (diff < 24 * 60 * 60 * 1000) {
+      const hours = Math.floor(diff / (60 * 60 * 1000));
+      return `${hours}小时前`;
+    }
+
+    // 小于7天
+    if (diff < 7 * 24 * 60 * 60 * 1000) {
+      const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+      return `${days}天前`;
+    }
+
+    // 超过7天显示具体日期
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    // 如果是今年，不显示年份
+    if (date.getFullYear() === now.getFullYear()) {
+      return `${month}-${day} ${hours}:${minutes}`;
+    } else {
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+  },
+  onEditTap(e) {
+    const { id } = e.currentTarget.dataset;
+    const document = this.data.documentList.find(doc => doc._id === id);
+    if (document && document.type === 'pattern-note') {
+      wx.navigateTo({
+        url: `/pages/tools/pattern-note/index?id=${id}`
+      });
+    }
   }
 });

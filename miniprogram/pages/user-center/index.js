@@ -40,6 +40,135 @@ Page({
     this.checkLoginStatus();
     // 初始化打卡数据
     this.initCheckInData();
+    this.initUserAssetsData();
+  },
+
+  onShow() {
+    // 页面显示时检查登录状态和刷新资产数据
+    this.checkLoginStatus();
+    this.initUserAssetsData();
+  },
+
+  // 初始化用户资产数据
+  async initUserAssetsData() {
+    // 检查用户是否登录
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    if (!userInfo || !userInfo.openId) {
+      // 未登录时重置所有数量为0
+      this.setData({
+        imageNum: 0,
+        documentNum: 0,
+        assetNum: 0,
+        favoriteNum: 0
+      });
+      return;
+    }
+
+    try {
+      const db = wx.cloud.database();
+
+      // 并行获取各种数据的数量
+      const [imageCount, documentCount, assetCount, favoriteCount] = await Promise.allSettled([
+        this.getImageCount(db, userInfo),
+        this.getDocumentCount(db, userInfo),
+        this.getAssetCount(db, userInfo),
+        this.getFavoriteCount(db, userInfo)
+      ]);
+
+      // 更新数据，如果获取失败则保持原值或设为0
+      this.setData({
+        imageNum: imageCount.status === 'fulfilled' ? imageCount.value : 0,
+        documentNum: documentCount.status === 'fulfilled' ? documentCount.value : 0,
+        assetNum: assetCount.status === 'fulfilled' ? assetCount.value : 0,
+        favoriteNum: favoriteCount.status === 'fulfilled' ? favoriteCount.value : 0
+      });
+
+    } catch (error) {
+      console.error('获取用户资产数据失败:', error);
+      // 发生错误时，保持现有数据不变
+    }
+  },
+
+  // 获取图片数量（colorCards集合）
+  async getImageCount(db, userInfo) {
+    try {
+      const res = await db.collection('colorCards')
+        .where({
+          author: userInfo.author || userInfo // 兼容不同的author字段格式
+        })
+        .count();
+      return res.total || 0;
+    } catch (error) {
+      if (error.errCode === -502005) {
+        // 集合不存在
+        return 0;
+      }
+      throw error;
+    }
+  },
+
+  // 获取文档数量（patternList集合）
+  async getDocumentCount(db, userInfo) {
+    try {
+      const res = await db.collection('patternList')
+        .where({
+          authorId: userInfo.openId,
+          type: 'pattern-note'
+        })
+        .count();
+      return res.total || 0;
+    } catch (error) {
+      if (error.errCode === -502005) {
+        // 集合不存在
+        return 0;
+      }
+      throw error;
+    }
+  },
+
+  // 获取资产数量（预留接口，目前返回0）
+  async getAssetCount(db, userInfo) {
+    try {
+      // 资产功能暂未实现，预留接口
+      // 未来可能使用 assets 集合
+      const res = await db.collection('assets')
+        .where({
+          authorId: userInfo.openId
+        })
+        .count();
+      return res.total || 0;
+    } catch (error) {
+      if (error.errCode === -502005) {
+        // 集合不存在，资产功能还未实现
+        return 0;
+      }
+      throw error;
+    }
+  },
+
+  // 获取收藏数量（预留接口，目前返回0）
+  async getFavoriteCount(db, userInfo) {
+    try {
+      // 收藏功能暂时使用模拟数据，预留接口
+      // 未来可能使用 favorites 集合
+      const res = await db.collection('favorites')
+        .where({
+          authorId: userInfo.openId
+        })
+        .count();
+      return res.total || 0;
+    } catch (error) {
+      if (error.errCode === -502005) {
+        // 集合不存在，收藏功能还未完全实现
+        return 0;
+      }
+      throw error;
+    }
+  },
+
+  // 刷新用户资产数据（供其他页面调用）
+  refreshUserAssetsData() {
+    this.initUserAssetsData();
   },
 
   // 检查登录状态
@@ -100,6 +229,8 @@ Page({
         this.showCheckInPanelWithDelay();
         // 记录登录打卡
         this.recordCheckIn('login');
+        // 更新用户资产数据
+        this.initUserAssetsData();
 
         wx.showToast({
           title: '登录成功',
@@ -301,6 +432,8 @@ Page({
       userInfo: null,
       showCheckInPanel: false
     });
+    // 重置用户资产数据
+    this.initUserAssetsData();
     wx.showToast({
       title: '退出登录成功',
       icon: 'none'

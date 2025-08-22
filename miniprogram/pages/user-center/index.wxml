@@ -29,10 +29,10 @@
           <text class="button-text">资产</text>
           <view class="button-num {{assetNum > 0 ? '' : 'empty'}}"><span>{{assetNum > 0 ? assetNum : '-'}}</span></view>
       </view>
-      <view class="function-button" bindtap="onFunctionTap" data-type="favorite">
+      <!--<view class="function-button" bindtap="onFunctionTap" data-type="favorite">
           <text class="button-text">收藏</text>
           <view class="button-num {{favoriteNum > 0 ? '' : 'empty'}}"><span>{{favoriteNum > 0 ? favoriteNum : '-'}}</span></view>
-      </view>
+      </view>-->
     </view>
     <!-- 后台入口（仅作者可见） -->
     <navigator wx:if="{{userInfo.openId === 'od7SO5Pt8HG7dDS5A_1Uuv7ky_Mg'}}" url="/pages/management/index" class="management-entry">后台入口（仅minna可见）<arrow color="var(--ckt-gray-5)"></arrow></navigator>
