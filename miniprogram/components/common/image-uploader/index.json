@@ -1,4 +1,6 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "alert-message": "/components/common/alert-message/index"
+  }
 }

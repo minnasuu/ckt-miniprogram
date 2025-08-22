@@ -4,3 +4,4 @@
   </block>
   <image wx:else class="preview-image" src="{{imageUrl}}" mode="aspectFit"></image>
 </view>
+<alert-message message="{{alertMessage}}" show="{{showAlert}}" type="{{alertType}}" />

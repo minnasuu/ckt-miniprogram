@@ -133,7 +133,9 @@ class LoginUtils {
    * @param {string} options.title 弹窗标题
    * @param {string} options.content 弹窗内容
    * @param {string} options.confirmText 确认按钮文字
+   * @param {Function} options.onLoginStart 登录开始回调
    * @param {Function} options.onLoginSuccess 登录成功回调
+   * @param {Function} options.onLoginFail 登录失败回调
    * @param {Function} options.onCancel 取消登录回调
    */
   static showLoginModal(options = {}) {
@@ -141,7 +143,9 @@ class LoginUtils {
       title = '需要登录',
       content = '此功能需要先登录账号，是否立即登录？',
       confirmText = '立即登录',
+      onLoginStart = () => { },
       onLoginSuccess = () => {},
+      onLoginFail = () => { },
       onCancel = () => {}
     } = options;
 
@@ -155,11 +159,14 @@ class LoginUtils {
         if (res.confirm) {
           // 用户点击确认，执行登录
           this.performLogin({
+            onLoginStart: () => {
+              onLoginStart();
+            },
             onLoginSuccess: (userInfo) => {
               onLoginSuccess(userInfo);
             },
             onLoginFail: (error) => {
-              console.error('登录失败:', error);
+              onLoginFail(error);
             }
           });
         } else {

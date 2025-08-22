@@ -7,7 +7,7 @@
         subTitle="点击上传图片，以图片大小为基础自动调整像素格范围"
       ></part-title>
       <view class="upload-section">
-        <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" bind:imageSelected="onImageSelected"></image-uploader>
+        <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" maxSize="{{500*1024}}" bind:imageSelected="onImageSelected"></image-uploader>
       </view>
     </view>
 
@@ -30,7 +30,6 @@
         />
         </view>
         <view class="filter-right">
-          <custom-checkbox text="网格" checked="{{showGrid}}" catch:change="onCheckboxChange"></custom-checkbox>
           <button 
             class="start-button"
             bind:tap="onPixelate" 
@@ -53,9 +52,11 @@
             </view>
           </view>
           <!-- <text>合并算法</text> -->
-          <view wx:if="{{pixelatedImageSrc}}" class="bottom-buttons">
-            <button bind:tap="onDownload" data-type="merge" class="download">下载</button>
-            <button bind:tap="onSave" data-type="merge" class="save" disabled="{{saveLoading}}">{{saveLoading?'保存中...':'保存到仓库'}}</button>
+          <view class="bottom-buttons">
+            <button disabled="{{!pixelatedImageSrc}}" bind:tap="onDownload" data-type="merge" class="download">下载</button>
+            <button bind:tap="onSave" data-type="merge" class="save" disabled="{{saveLoading || loginLoading || !pixelatedImageSrc}}">
+              {{loginLoading ? '登录中...' : (saveLoading ? '保存中...' : '保存')}}
+            </button>
           </view>
         </view>
       </view>

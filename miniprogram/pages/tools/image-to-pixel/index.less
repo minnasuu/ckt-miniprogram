@@ -74,7 +74,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 40rpx;
   align-items: center;
   font-size: 24rpx;
   color: var(--ckt-gray-10);
@@ -112,23 +112,25 @@
     gap: 24rpx;
     width: 100%;
     button{
-      width: fit-content;
       border-radius: 16rpx;
       height: 72rpx;
       padding-inline: 48rpx;
       font-size: 28rpx;
       &.download{
-        width: fit-content;
+        flex: 1;
         background-color: var(--ckt-gray-1);
         color: var(--ckt-gray-10);
+        &[disabled]{
+          background-color: var(--ckt-gray-2);
+          color: var(--ckt-gray-5);
+        }
       }
       &.save{
         flex: 1;
         background-color: var(--ckt-theme-6);
         color: var(--ckt-gray-0);
         &[disabled]{
-            background-color: var(--ckt-gray-2);
-            color: var(--ckt-gray-5);
+            background-color: var(--ckt-theme-3);
         }
       }
     }

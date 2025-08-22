@@ -1,4 +1,6 @@
 // 图片转像素页面
+const LoginUtils = require('../../../utils/loginUtils');
+
 Page({
   data: {
     statusBarHeight: 0,
@@ -8,8 +10,7 @@ Page({
       h: 100
     },
     imgData:null,
-    finished:false,
-    showGrid: false,
+    finished: false,
     pixelSize: 10,
     pixelMax: 100,
     loading:false,
@@ -19,7 +20,8 @@ Page({
     showAlert: false,
     alertMessage: '',
     author:null,
-    saveLoading:false
+    saveLoading: false,
+    loginLoading: false
   },
   
   onLoad() {
@@ -54,11 +56,7 @@ Page({
   onImageSelected(e) {
     const { imageUrl,width,height,size } = e.detail;
     const info = wx.getWindowInfo();
-    const resultWidth = info.screenWidth-48;
-    if(size>500*1024){
-      this.showMessage('图片不能超过500KB💔');
-      return;
-    }
+    const resultWidth = info.screenWidth - 48;
     this.setData({
       imageUrl,
       pixelImage: '', // 清除之前的像素图
@@ -76,6 +74,16 @@ Page({
       .fields({ node: true, size: true })
       .exec((res) => {
        const canvas = res[0].node;
+        // 设置canvas的实际尺寸
+        canvas.width = width;
+        canvas.height = height;
+
+        // 设置canvas的显示尺寸（CSS像素）
+        const dpr = wx.getSystemInfoSync().pixelRatio || 1;
+        canvas.style = canvas.style || {};
+        canvas.style.width = width / dpr + 'px';
+        canvas.style.height = height / dpr + 'px';
+
        const img = canvas.createImage();
        img.src = imageUrl;
        img.onload = () => {
@@ -93,13 +101,11 @@ Page({
     this.setData({
       finished: true,
       loading: true,
-    })
-    this.pixelateImage?.();
-  },
-  onCheckboxChange() {
-    this.setData({
-      showGrid: !this.data.showGrid
-    })
+    });
+    // 立即开始像素化处理，无延时
+    setTimeout(() => {
+      this.pixelateImage();
+    }, 0);
   },
   onSliderChange(e) {
     const {value}=e.detail
@@ -121,9 +127,16 @@ Page({
           const pixelatedCtx = pixelatedCanvas.getContext('2d');
       
           if (!pixelatedCtx) return;
+          // 确保canvas尺寸正确设置
           pixelatedCanvas.width = imgSize.w;
           pixelatedCanvas.height = imgSize.h;
-      
+
+          // 设置canvas的显示尺寸（CSS像素）
+          const dpr = wx.getSystemInfoSync().pixelRatio || 1;
+          pixelatedCanvas.style = pixelatedCanvas.style || {};
+          pixelatedCanvas.style.width = imgSize.w / dpr + 'px';
+          pixelatedCanvas.style.height = imgSize.h / dpr + 'px';
+
           pixelatedCtx.clearRect(0, 0, imgSize.w, imgSize.h);
       
           // 计算实际的像素块数量
@@ -249,19 +262,54 @@ Page({
   },
   // 保存图片到云数据库
   async onSave(e) {
-    this.setData({
-      saveLoading:true
-    })
     // 获取点击的按钮类型（merge 或 average）
     const type = e.currentTarget.dataset.type;
     const that = this;
     
     // 检查用户是否登录
     if (!that.data.author) {
-      that.showMessage('请先登录☺️');
+      // 未登录时直接调用公共登录逻辑
+      LoginUtils.showLoginModal({
+        title: '需要登录',
+        content: '保存图片需要先登录账号，是否立即登录？',
+        confirmText: '立即登录',
+        onLoginStart: () => {
+          // 开始登录，显示加载状态
+          that.setData({
+            loginLoading: true
+          });
+        },
+        onLoginSuccess: (userInfo) => {
+          // 登录成功后更新用户信息并继续保存
+          that.setData({
+            author: userInfo,
+            loginLoading: false
+          });
+          // 重新触发保存操作
+          that.onSave(e);
+        },
+        onLoginFail: (error) => {
+          // 登录失败，重置加载状态
+          that.setData({
+            loginLoading: false
+          });
+          console.error('登录失败:', error);
+        },
+        onCancel: () => {
+          // 用户取消登录，重置加载状态
+          that.setData({
+            loginLoading: false
+          });
+          console.log('用户取消登录');
+        }
+      });
       return;
     }
     
+    this.setData({
+      saveLoading: true
+    });
+
     // 根据类型选择对应的 canvas ID
     const canvasId = type ==='merge'? 'pixelatedCanvasRef' : 'pixelatedCanvasRef2';
     const tag = type === 'merge' ? '像素化(合并算法)' : '像素化(平均算法)';
@@ -294,24 +342,33 @@ Page({
                 success: function() {
                   that.showMessage(`保存成功🎉\n前往个人中心-我的创作查看`);
                   that.setData({
-                    saveLoading:false
-                  })
+                    saveLoading: false
+                  });
                 },
                 fail: function(err) {
                   console.error('保存到云数据库失败', err);
                   that.showMessage('保存失败💔');
+                  that.setData({
+                    saveLoading: false
+                  });
                 }
               });
             },
             fail: function(err) {
               console.error('上传图片失败', err);
               that.showMessage('上传图片失败💔');
+              that.setData({
+                saveLoading: false
+              });
             }
           });
         },
         fail: function(err) {
           console.error('canvas 转临时文件失败', err);
           that.showMessage('转换失败💔');
+          that.setData({
+            saveLoading: false
+          });
         }
       });
     })
