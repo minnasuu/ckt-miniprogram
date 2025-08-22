@@ -16,6 +16,10 @@ Component({
     showSubmitBtn:{
       type:Boolean,
       value:true
+    },
+    submitText: {
+      type: String,
+      value: '确定'
     }
   },
 

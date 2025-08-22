@@ -168,6 +168,7 @@ module.exports.formatHistoryTime = formatHistoryTime;
     title="历史图解"
     showCancelBtn="{{true}}"
     showSubmitBtn="{{true}}"
+    submitText="新建文档"
     bind:close="handleHistoryDrawerClose"
     bind:cancel="handleHistoryDrawerClose"
     bind:submit="handleCreateNewDocument"

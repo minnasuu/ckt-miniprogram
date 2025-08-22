@@ -603,32 +603,6 @@ Page({
   },
 
 
-  // 上传图解到云存储
-  async uploadPatternToCloud(tempFilePath) {
-    try {
-      // 生成文件名
-      const fileName = `pattern_${Date.now()}.png`;
-      const cloudPath = `patternList/${fileName}`;
-      
-      // 上传到云存储
-      const uploadResult = await wx.cloud.uploadFile({
-        cloudPath: cloudPath,
-        filePath: tempFilePath
-      });
-
-      // 保存记录到云数据库
-      await this.savePatternRecord(uploadResult.fileID);
-      
-    } catch (error) {
-      console.error('上传失败:', error);
-      this.setData({ saveLoading: false });
-      wx.showToast({
-        title: '保存失败，请重试',
-        icon: 'error'
-      });
-    }
-  },
-
   // 保存图解记录到云数据库
   async savePatternRecord(fileID) {
     try {
@@ -642,7 +616,7 @@ Page({
           title: this.data.patternTitle,
           imageUrl: fileID,
           content: JSON.stringify(this.data.previewData),
-          author: userInfo.nickName || '匿名用户',
+          author: userInfo.username || '匿名用户',
           authorId: userInfo.openId || '',
           createTime: new Date(),
           tag: '图解笔记',
@@ -879,17 +853,14 @@ Page({
     // 显示保存中的提示
     this.showAlert('保存中...', 'loading');
 
-    // 模拟保存过程
-    setTimeout(() => {
-      // 保存到本地存储
-      this.saveToLocalStorage();
-      
+    this.savePatternRecord().then(() => {
       this.setData({
-        saving: false
+        saving: false,
+        showSaveConfirmDialog: false
       });
       
       this.showAlert('保存成功！', 'success');
-    }, 800); // 稍微缩短保存时间，提升用户体验
+    });
   },
 
   // 处理历史按钮点击
@@ -1039,11 +1010,6 @@ Page({
   // 删除文档
   async deleteDocument(documentId) {
     try {
-      const db = wx.cloud.database();
-      
-      // 从云数据库中删除记录
-      await db.collection('patternList').doc(documentId).remove();
-      
       // 从本地存储中删除
       const historyDocuments = this.data.historyDocuments.filter(doc => doc.id !== documentId);
       
@@ -1081,72 +1047,14 @@ Page({
       saving: true
     });
 
-    // 模拟保存过程
-    setTimeout(() => {
-      // 保存到本地存储
-      this.saveToLocalStorage();
-      
+    this.savePatternRecord().then(() => {
       this.setData({
         saving: false,
         showSaveConfirmDialog: false
       });
       
       this.showAlert('保存成功！', 'success');
-    }, 1000);
-  },
-
-  // 保存到本地存储
-  saveToLocalStorage() {
-    try {
-      const saveData = {
-        patternTitle: this.data.patternTitle,
-        data: this.data.data,
-        saveTime: new Date().toISOString(),
-        id: this.data.currentDocumentId || this.generateDocumentId() // 使用当前文档ID或生成新ID
-      };
-
-      // 获取现有的保存记录
-      const existingSaves = wx.getStorageSync('pattern-notes') || [];
-      
-      // 检查是否已存在相同ID的记录
-      const existingIndex = existingSaves.findIndex(item => item.id === saveData.id);
-      
-      if (existingIndex > -1) {
-        // 更新现有记录
-        existingSaves[existingIndex] = saveData;
-      } else {
-        // 添加新记录
-        existingSaves.unshift(saveData);
-      }
-
-      // 限制最多保存20条记录
-      if (existingSaves.length > 20) {
-        existingSaves.splice(20);
-      }
-
-      // 保存到本地存储
-      wx.setStorageSync('pattern-notes', existingSaves);
-      
-      // 更新当前文档ID和状态
-      if (!this.data.currentDocumentId) {
-        this.setData({
-          currentDocumentId: saveData.id
-        });
-      }
-      
-      // 保存成功后，文档不再是新文档
-      this.setData({
-        isDocumentNew: false
-      });
-      
-      // 刷新历史文档列表
-      this.loadHistoryDocuments();
-      
-      console.log('保存成功:', saveData);
-    } catch (error) {
-      console.error('保存失败:', error);
-      this.showAlert('保存失败，请重试', 'error');
-    }
+    });
   },
 
   // 显示提示消息
