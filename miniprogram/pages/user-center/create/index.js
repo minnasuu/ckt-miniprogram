@@ -161,11 +161,11 @@ Page({
 
       const db = wx.cloud.database();
       
-      // 先检查patterns集合是否存在，如果不存在则创建
+      // 先检查patternList集合是否存在，如果不存在则创建
       let res;
       try {
-        // 从patterns集合获取用户保存的图解文档
-        res = await db.collection('patterns')
+        // 从patternList集合获取用户保存的图解文档
+        res = await db.collection('patternList')
           .where({
             authorId: userInfo.openId,
             type: 'pattern-note'
@@ -175,7 +175,7 @@ Page({
       } catch (collectionError) {
         // 如果是集合不存在的错误
         if (collectionError.errCode === -502005) {
-          console.log('patterns集合不存在，用户暂无图解文档');
+          console.log('patternList集合不存在，用户暂无图解文档');
           this.setData({
             documentList: [],
             documentLoading: false
@@ -401,7 +401,7 @@ Page({
       success: (res) => {
         if (res.confirm) {
           try {
-            db.collection('patterns').doc(id).remove({
+            db.collection('patternList').doc(id).remove({
               success: res => {
                 console.log('图解文档删除成功:', res);
                 wx.showToast({

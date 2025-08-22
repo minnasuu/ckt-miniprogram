@@ -608,7 +608,7 @@ Page({
     try {
       // 生成文件名
       const fileName = `pattern_${Date.now()}.png`;
-      const cloudPath = `patterns/${fileName}`;
+      const cloudPath = `patternList/${fileName}`;
       
       // 上传到云存储
       const uploadResult = await wx.cloud.uploadFile({
@@ -637,7 +637,7 @@ Page({
       // 获取用户信息
       const userInfo = wx.getStorageSync('userInfo') || {};
       
-      await db.collection('patterns').add({
+      await db.collection('patternList').add({
         data: {
           title: this.data.patternTitle,
           imageUrl: fileID,
@@ -788,19 +788,30 @@ Page({
 
   // 显示登录提示弹窗
   showLoginRequiredDialog() {
-    wx.showModal({
+    // 使用公共登录工具直接在当前页面执行登录
+    const LoginUtils = require('../../../utils/loginUtils');
+    
+    LoginUtils.showLoginModal({
       title: '需要登录',
-      content: '保存文档需要先登录账号，是否前往登录？',
-      confirmText: '去登录',
-      confirmColor: '#F35A75',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          // 跳转到用户中心页面进行登录
-          wx.switchTab({
-            url: '/pages/user-center/index'
-          });
-        }
+      content: '保存文档需要先登录账号，是否立即登录？',
+      confirmText: '立即登录',
+      onLoginSuccess: (userInfo) => {
+        // 登录成功后更新用户信息和保存配额
+        this.setData({
+          userInfo: userInfo
+        });
+        this.updateSaveQuota();
+        
+        // 显示成功提示并自动重新尝试保存
+        this.showAlert('登录成功！正在保存文档...', 'success');
+        
+        // 延迟一下再执行保存，让用户看到登录成功的提示
+        setTimeout(() => {
+          this.handleSaveBtnTap();
+        }, 1000);
+      },
+      onCancel: () => {
+        console.log('用户取消登录');
       }
     });
   },
@@ -1011,7 +1022,6 @@ Page({
 
   // 删除历史文档
   handleDeleteHistoryDocument(e) {
-    e.stopPropagation(); // 阻止事件冒泡
     const documentId = e.currentTarget.dataset.id;
     
     wx.showModal({
@@ -1027,8 +1037,14 @@ Page({
   },
 
   // 删除文档
-  deleteDocument(documentId) {
+  async deleteDocument(documentId) {
     try {
+      const db = wx.cloud.database();
+      
+      // 从云数据库中删除记录
+      await db.collection('patternList').doc(documentId).remove();
+      
+      // 从本地存储中删除
       const historyDocuments = this.data.historyDocuments.filter(doc => doc.id !== documentId);
       
       // 更新本地存储
