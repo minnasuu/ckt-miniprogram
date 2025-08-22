@@ -1,4 +1,6 @@
 // pages/tools/color-change/index.js
+const LoginUtils = require('../../../utils/loginUtils');
+
 Page({
 
   /**
@@ -35,6 +37,7 @@ Page({
     totalCanvasHeight: 0,
     // 临时文件路径
     tempFilePath: '',
+    saveLoading: false,
   },
 
   /**
@@ -46,12 +49,25 @@ Page({
       statusBarHeight: systemInfo.statusBarHeight
     });
     // 获取当前登录用户信息
-    const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.setData({
-        author: userInfo
-      });
-    }
+    this.checkAndUpdateLoginStatus();
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    // 每次页面显示时检查登录状态
+    this.checkAndUpdateLoginStatus();
+  },
+
+  /**
+   * 检查并更新登录状态
+   */
+  checkAndUpdateLoginStatus() {
+    const { isLoggedIn, userInfo } = LoginUtils.checkLoginStatus();
+    this.setData({
+      author: isLoggedIn ? userInfo : null
+    });
   },
   // 显示提示框
   showMessage(msg) {
@@ -980,16 +996,52 @@ Page({
   },
 
 
+  // 显示登录提示弹窗
+  showLoginRequiredDialog() {
+    // 使用公共登录工具直接在当前页面执行登录
+    LoginUtils.showLoginModal({
+      title: '需要登录',
+      content: '保存作品需要先登录账号，是否立即登录？',
+      confirmText: '立即登录',
+      onLoginConfirm: () => {
+        this.showMessage('登录中...');
+      },
+      onLoginSuccess: (userInfo) => {
+        // 登录成功后更新用户信息
+        this.setData({
+          author: userInfo
+        });
+
+        // 显示成功提示并自动重新尝试保存
+        this.showMessage('登录成功！开始保存');
+
+        // 延迟一下再执行保存，让用户看到登录成功的提示
+        setTimeout(() => {
+          this.saveColorCard();
+        }, 1000);
+      },
+      onLoginFail: (error) => {
+        console.error('登录失败:', error);
+      },
+      onCancel: () => {
+        console.log('用户取消登录');
+      }
+    });
+  },
+
   // 保存颜色卡至仓库
   async saveColorCard() {
     if (!this.data.author) {
-      this.showMessage('请先登录☺️');
+      this.showLoginRequiredDialog();
       return;
     }
     if (!this.data.hasModified) {
       this.showMessage('请先进行颜色转换☺️');
       return;
     }
+    this.setData({
+      saveLoading: true
+    });
 
     // 如果有临时文件路径，直接使用
     if (this.data.tempFilePath) {
@@ -1034,11 +1086,17 @@ Page({
           fail: (error) => {
             console.error('生成临时文件路径失败:', error);
             this.showMessage('生成临时文件失败，请重试💔');
+            this.setData({
+              saveLoading: false
+            });
           }
         });
       } catch (error) {
         console.error('生成临时文件路径异常:', error);
         this.showMessage('生成临时文件失败，请重试💔');
+        this.setData({
+          saveLoading: false
+        });
       }
     });
   },
@@ -1070,16 +1128,25 @@ Page({
           },
           success: () => {
             this.showMessage(`保存成功🎉\n前往个人中心-我的创作查查看`);
+            this.setData({
+              saveLoading: false
+            });
           },
           fail: (err) => {
             console.error('保存到云数据库失败', err);
             this.showMessage('保存失败💔');
+            this.setData({
+              saveLoading: false
+            });
           }
         });
       },
       fail: (err) => {
         console.error('文件上传失败', err);
         this.showMessage('上传失败💔');
+        this.setData({
+          saveLoading: false
+        });
       }
     });
   },

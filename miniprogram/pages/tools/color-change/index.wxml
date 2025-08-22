@@ -1,7 +1,7 @@
 <!--pages/tools/color-change/index.wxml-->
 <view class="color-change-container">
   <custom-header title="" title="图片换色" showBack background="transparent"></custom-header>
-  <view class="content" style="padding-top: {{statusBarHeight+44}}px;">
+  <view class="color-change-content" style="padding-top: {{statusBarHeight+44}}px;">
     <view class="step-container">
         <part-title title="Step 01：上传图片"></part-title>
         <view class="upload-section">
@@ -15,15 +15,15 @@
         </view>
     </view>
     <view class="buttons-container">
-      <button class="generate-button" bind:tap="generate">{{generateLoading?'转换中...':'开始转换'}}</button>
+      <button class="generate-button" type="primary" bind:tap="generate" disabled="{{!imageUrl || generateLoading || !hasModified}}">{{generateLoading?'转换中...':'开始转换'}}</button>
       <button disabled="{{!hasModified}}" class="clear-button" bind:tap="clearCanvas">清除效果</button>
     </view>
     <view class="canvas-container" wx:if="{{imageUrl}}">
       <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
     </view>
     <view wx:if="{{imageUrl}}" class="buttons-container">
-      <button class="download-button" disabled="{{!hasModified}}" bind:tap="downloadColorCard">下载</button>
-      <button class="save-button" type="primary" disabled="{{!hasModified}}" bind:tap="saveColorCard">保存</button>
+      <button class="download-button" disabled="{{!hasModified||!finished}}" bind:tap="downloadColorCard">下载</button>
+      <button class="save-button" type="primary" disabled="{{!hasModified||!finished || saveLoading}}" bind:tap="saveColorCard">{{saveLoading?'保存中...':'保存'}}</button>
       </view>
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />

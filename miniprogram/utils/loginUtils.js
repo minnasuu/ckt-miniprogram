@@ -53,13 +53,6 @@ class LoginUtils {
         
         // 登录成功回调
         onLoginSuccess(result.userInfo);
-        
-        // 显示成功提示
-        wx.showToast({
-          title: '登录成功',
-          icon: 'success',
-          duration: 2000
-        });
 
         return {
           success: true,
@@ -73,13 +66,7 @@ class LoginUtils {
       
       // 登录失败回调
       onLoginFail(error);
-      
-      // 显示错误提示
-      wx.showToast({
-        title: error.message || '登录失败，请重试',
-        icon: 'none',
-        duration: 2000
-      });
+
 
       return {
         success: false,
@@ -113,13 +100,7 @@ class LoginUtils {
       
       // 执行回调
       callback();
-      
-      wx.showToast({
-        title: '已退出登录',
-        icon: 'success',
-        duration: 2000
-      });
-      
+
       return { success: true };
     } catch (error) {
       console.error('退出登录失败：', error);
@@ -146,7 +127,8 @@ class LoginUtils {
       onLoginStart = () => { },
       onLoginSuccess = () => {},
       onLoginFail = () => { },
-      onCancel = () => {}
+      onCancel = () => { },
+      onLoginConfirm = () => { }
     } = options;
 
     wx.showModal({
@@ -157,15 +139,21 @@ class LoginUtils {
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          // 用户点击确认，执行登录
+          // 用户点击确认，显示登录中状态并执行登录
+          onLoginConfirm();
+
           this.performLogin({
             onLoginStart: () => {
               onLoginStart();
             },
             onLoginSuccess: (userInfo) => {
+              // 登录成功，关闭加载提示
+              wx.hideLoading();
               onLoginSuccess(userInfo);
             },
             onLoginFail: (error) => {
+              // 登录失败，关闭加载提示
+              wx.hideLoading();
               onLoginFail(error);
             }
           });

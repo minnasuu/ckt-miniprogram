@@ -70,6 +70,7 @@
   z-index: 1;
   isolation: isolate;
 }
+
 .canvas-container canvas {
   position: relative;
   z-index: 1;
@@ -77,6 +78,7 @@
 .canvas-container image {
   width: 100%;
 }
+
 /* 清除按钮禁用状态样式 */
 .clear-button:disabled {
   background-color: var(--ckt-gray-2);
@@ -84,7 +86,8 @@
   cursor: not-allowed;
   opacity: 0.6;
 }
-button {
+
+button{
   flex: 1;
   height: 72rpx;
   border-radius: 16rpx;
@@ -93,17 +96,20 @@ button {
 .download-button {
   background-color: var(--ckt-gray-2);
   color: var(--ckt-gray-11);
+  &[disabled] {
+    color: var(--ckt-gray-6);
+  }
 }
-.download-button[disabled] {
-  color: var(--ckt-gray-6);
+
+.generate-button,
+.save-button {
+  &[type="primary"] {
+    background-color: var(--ckt-theme-6);
+    color: var(--ckt-gray-0);
+    &[disabled] {
+      background-color: var(--ckt-theme-4);
+      color: var(--ckt-gray-0);
+    }
+  }
 }
-.generate-button[type="primary"],
-.save-button[type="primary"] {
-  background-color: var(--ckt-theme-6);
-  color: var(--ckt-gray-0);
-}
-.generate-button[type="primary"][disabled],
-.save-button[type="primary"][disabled] {
-  background-color: var(--ckt-theme-4);
-  color: var(--ckt-gray-0);
-}
+
