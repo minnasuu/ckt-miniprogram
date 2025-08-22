@@ -180,8 +180,10 @@ module.exports.formatHistoryTime = formatHistoryTime;
                     <view class="history-document-info">
                         <view class="history-document-title">{{item.patternTitle}}</view>
                         <view class="history-document-meta">
-                            <text class="history-document-time">{{utils.formatHistoryTime(item.saveTime)}}</text>
+                            <text class="history-document-time">创建：{{item.createTimeFormatted}}</text>
+                            <text class="history-document-time">更新：{{item.updateTimeFormatted}}</text>
                             <text class="history-document-parts">{{item.data.length}} 个部分</text>
+                            <text class="history-document-parts">{{item.dataStrs}} 字符</text>
                         </view>
                     </view>
                     <view class="history-document-current" wx:if="{{item.id === currentDocumentId}}">当前</view>

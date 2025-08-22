@@ -12,8 +12,7 @@ Page({
     titleInputId: '-1',
     lineNumbers: [],
     curLine: -1,
-    showStich:false,
-    stiches: [],
+    showStich: false,
     saving: false,
     showPreviewDialog:false,
     saveLoading:false,
@@ -42,7 +41,7 @@ Page({
     }
   },
 
-  onLoad() {
+  async onLoad() {
     const systemInfo = wx.getSystemInfoSync();
     // 生成默认标题（当前时间）
     const defaultTitle = this.formatDateTime(new Date());
@@ -66,7 +65,7 @@ Page({
     // 初始化用户信息和保存配额
     this.initUserInfo();
     // 加载历史文档
-    this.loadHistoryDocuments();
+    await this.loadHistoryDocuments();
   },
 
   onShow() {
@@ -141,9 +140,90 @@ Page({
   },
 
   // 加载历史文档
-  loadHistoryDocuments() {
+  async loadHistoryDocuments() {
     try {
-      const historyDocuments = wx.getStorageSync('pattern-notes') || [];
+      // 获取当前用户信息
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      if (!userInfo.openId) {
+        this.setData({
+          historyDocuments: []
+        });
+        // 更新文档新旧状态
+        this.updateDocumentNewStatus();
+        // 更新保存配额
+        this.updateSaveQuota();
+        return;
+      }
+
+      const db = wx.cloud.database();
+
+      // 从patternList集合获取用户保存的图解文档
+      let res;
+      try {
+        res = await db.collection('patternList')
+          .where({
+            authorId: userInfo.openId,
+            type: 'pattern-note'
+          })
+          .orderBy('createTime', 'desc')
+          .get();
+      } catch (collectionError) {
+        // 如果是集合不存在的错误
+        if (collectionError.errCode === -502005) {
+          console.log('patternList集合不存在，用户暂无图解文档');
+          this.setData({
+            historyDocuments: []
+          });
+          // 更新文档新旧状态
+          this.updateDocumentNewStatus();
+          // 更新保存配额
+          this.updateSaveQuota();
+          return;
+        }
+        // 其他错误继续抛出
+        throw collectionError;
+      }
+
+      const patterns = res.data || [];
+
+      // 转换数据格式以适应现有的历史文档结构
+      const historyDocuments = patterns.map(pattern => {
+        let patternData = [];
+        try {
+          // 解析content字段中的JSON数据
+          const contentData = JSON.parse(pattern.data || '[]');
+          // 从解析的数据中提取实际的pattern数据
+          patternData = contentData.map(section => ({
+            id: section.id || '1',
+            title: section.title,
+            values: section.values,
+            nums: section.nums,
+            edited: false
+          }));
+        } catch (parseError) {
+          console.warn('解析文档内容失败:', parseError);
+          // 如果解析失败，使用默认数据
+          patternData = [{ id: '1', title: '第 1 部分', values: '', nums: [], edited: false }];
+        }
+
+        const createTime = pattern.createTime || new Date();
+        const updateTime = pattern.updateTime || pattern.createTime || new Date();
+
+
+        const createTimeFormatted = this.formatHistoryTime(createTime);
+        const updateTimeFormatted = this.formatHistoryTime(updateTime);
+        return {
+          id: pattern._id, // 使用数据库记录的_id作为文档ID
+          patternTitle: pattern.title || '未命名图解',
+          data: patternData,
+          createTime: createTime,
+          updateTime: updateTime,
+          createTimeFormatted: createTimeFormatted,
+          updateTimeFormatted: updateTimeFormatted,
+          dataStrs: patternData.reduce((total, item) => total + item.values.length, 0)
+        };
+      });
+
       this.setData({
         historyDocuments: historyDocuments
       });
@@ -153,6 +233,14 @@ Page({
       this.updateSaveQuota();
     } catch (error) {
       console.error('加载历史文档失败:', error);
+      // 出错时设置为空数组，避免页面崩溃
+      this.setData({
+        historyDocuments: []
+      });
+      // 更新文档新旧状态
+      this.updateDocumentNewStatus();
+      // 更新保存配额
+      this.updateSaveQuota();
     }
   },
 
@@ -167,11 +255,54 @@ Page({
   },
 
   // 格式化历史文档的时间显示
-  formatHistoryTime(isoString) {
-    const date = new Date(isoString);
+  formatHistoryTime(dateInput) {
+    console.log('formatHistoryTime 输入:', dateInput, typeof dateInput, dateInput instanceof Date);
+    let date;
+
+    // 处理各种可能的日期格式
+    try {
+      if (dateInput instanceof Date) {
+        // 如果已经是Date对象
+        date = dateInput;
+        console.log('使用Date对象:', date);
+      } else if (typeof dateInput === 'string') {
+        // 如果是字符串，尝试解析
+        // 处理类似 "Fri Aug 22 2025 22:00:42 GMT+0800 (中国标准时间) {}" 的格式
+        const cleanDateString = dateInput.replace(/\s*\{\}$/, ''); // 移除末尾的 {}
+        date = new Date(cleanDateString);
+        console.log('从字符串解析:', cleanDateString, '->', date);
+      } else if (typeof dateInput === 'object' && dateInput.$date) {
+        // 处理MongoDB的日期格式
+        date = new Date(dateInput.$date);
+        console.log('从MongoDB格式解析:', dateInput.$date, '->', date);
+      } else {
+        // 其他情况直接尝试创建Date对象
+        date = new Date(dateInput);
+        console.log('其他格式解析:', dateInput, '->', date);
+      }
+
+      // 检查日期是否有效
+      if (isNaN(date.getTime())) {
+        console.warn('无效的日期格式:', dateInput, '解析结果:', date);
+        return '时间未知';
+      }
+    } catch (error) {
+      console.error('解析日期失败:', error, dateInput);
+      return '时间未知';
+    }
+
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     
+    // 如果时间差为负数（未来时间），直接显示具体日期
+    if (diff < 0) {
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${date.getFullYear()}-${month}-${day} ${hours}:${minutes}`;
+    }
+
     // 小于1分钟
     if (diff < 60 * 1000) {
       return '刚刚';
@@ -294,6 +425,7 @@ Page({
     this.calculateLineNumbers();
     this.caculateStiches();
     this.updateShowStichDisabled();
+
   },
   lastTapTime: 0, // 记录上次点击的时间
 
@@ -581,7 +713,7 @@ Page({
       fail: (err) => {
         console.error('获取 canvas 临时文件路径失败:', err);
         this.setData({ downloadLoading: false });
-        this.showMessage('下载失败，请重试', 'error');
+        this.showAlert('下载失败，请重试', 'error');
       }
     });
   },
@@ -592,64 +724,134 @@ Page({
       filePath: tempFilePath,
       success: () => {
         this.setData({ downloadLoading: false });
-        this.showMessage('图片已保存到相册🎉', 'success');
+        this.showAlert('图片已保存到相册🎉', 'success');
       },
       fail: (err) => {
         console.error('保存图片到相册失败:', err);
         this.setData({ downloadLoading: false });
-        this.showMessage('保存失败，请重试', 'error');
+        this.showAlert('保存失败，请重试', 'error');
       }
     });
   },
 
 
   // 保存图解记录到云数据库
-  async savePatternRecord(fileID) {
+  async savePatternRecord() {
+    // 首先生成Canvas图片
+    const fileID = await this.generateCanvasImage();
     try {
       const db = wx.cloud.database();
       
       // 获取用户信息
       const userInfo = wx.getStorageSync('userInfo') || {};
       
-      await db.collection('patternList').add({
-        data: {
-          title: this.data.patternTitle,
-          imageUrl: fileID,
-          content: JSON.stringify(this.data.previewData),
-          author: userInfo.username || '匿名用户',
-          authorId: userInfo.openId || '',
-          createTime: new Date(),
-          tag: '图解笔记',
-          type: 'pattern-note'
-        }
-      });
+      // 检查是否为新文档还是更新现有文档
+      const isNewDoc = this.isNewDocument();
+
+      if (isNewDoc) {
+        // 新文档：使用add方法
+        const result = await db.collection('patternList').add({
+          data: {
+            author: userInfo.username || '匿名用户',
+            authorId: userInfo.openId || '',
+            createTime: new Date(),
+            updateTime: new Date(),
+            title: this.data.patternTitle,
+            data: JSON.stringify(this.data.data),
+            tag: '图解笔记',
+            type: 'pattern-note'
+          }
+        });
+
+        // 更新当前文档ID为数据库生成的ID
+        this.setData({
+          currentDocumentId: result._id,
+          isDocumentNew: false // 保存后不再是新文档
+        });
+      } else {
+        // 更新现有文档：使用update方法
+        await db.collection('patternList').doc(this.data.currentDocumentId).update({
+          data: {
+            title: this.data.patternTitle,
+            data: JSON.stringify(this.data.data),
+            updateTime: new Date()
+          }
+        });
+      }
+
+      // 重新加载历史文档以更新列表
+      await this.loadHistoryDocuments();
 
       this.setData({
         saveLoading: false,
         showPreviewDialog: false
       });
-      
-      wx.showToast({
-        title: '保存成功🎉',
-        icon: 'success'
-      });
+
       
     } catch (error) {
       console.error('保存到数据库失败:', error);
       this.setData({ saveLoading: false });
-      wx.showToast({
-        title: '保存失败，请重试',
-        icon: 'error'
-      });
+      this.showAlert('保存失败，请重试', 'error');
     }
   },
 
-  // 显示消息提示
-  showMessage(message, type = 'none') {
-    wx.showToast({
-      title: message,
-      icon: type,
-      duration: 2000
+  // 生成Canvas图片并上传到云存储
+  async generateCanvasImage() {
+    return new Promise((resolve, reject) => {
+      // 确保预览数据是最新的
+      const data = this.data.data;
+      const updatedData = data.map(item => {
+        const lines = (item.values || '').split('\n');
+        const nums = lines.map(line => this.calculateExpression(line));
+        return Object.assign({}, item, { nums: nums });
+      });
+
+      // 预处理数据
+      const processedData = updatedData.map(item => {
+        const lines = item.values ? item.values.split('\n') : [];
+        return {
+          ...item,
+          lines: lines.map((line, index) => ({
+            lineNumber: `R${index + 1}: `,
+            content: line,
+            stitch: item.nums && item.nums[index] !== undefined ? item.nums[index] : null
+          }))
+        };
+      });
+
+      this.setData({
+        previewData: processedData,
+        data: updatedData
+      }, () => {
+        // 绘制Canvas
+        this.drawPatternCanvas();
+
+        // 等待Canvas绘制完成后生成图片
+        setTimeout(() => {
+          wx.canvasToTempFilePath({
+            canvasId: this.data.canvasId,
+            success: (res) => {
+              const tempFilePath = res.tempFilePath;
+              // 上传到云存储
+              wx.cloud.uploadFile({
+                cloudPath: `pattern-notes/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.png`,
+                filePath: tempFilePath,
+                success: (uploadRes) => {
+                  resolve(uploadRes.fileID);
+                },
+                fail: (uploadErr) => {
+                  console.error('上传图片失败:', uploadErr);
+                  reject(uploadErr);
+                }
+              });
+            },
+            fail: (canvasErr) => {
+              console.error('生成Canvas图片失败:', canvasErr);
+              reject(canvasErr);
+            }
+          });
+        }, 1000); // 等待Canvas绘制完成
+      });
     });
   },
 
@@ -845,7 +1047,7 @@ Page({
   },
 
   // 执行直接保存（不显示弹窗）
-  performDirectSave() {
+  async performDirectSave() {
     this.setData({
       saving: true
     });
@@ -853,19 +1055,25 @@ Page({
     // 显示保存中的提示
     this.showAlert('保存中...', 'loading');
 
-    this.savePatternRecord().then(() => {
+    try {
+      await this.savePatternRecord();
       this.setData({
         saving: false,
         showSaveConfirmDialog: false
       });
       
       this.showAlert('保存成功！', 'success');
-    });
+    } catch (error) {
+      this.setData({
+        saving: false
+      });
+      this.showAlert('保存失败，请重试', 'error');
+    }
   },
 
   // 处理历史按钮点击
-  handleHistoryBtnTap() {
-    this.loadHistoryDocuments();
+  async handleHistoryBtnTap() {
+    await this.loadHistoryDocuments();
     this.setData({
       showHistoryDrawer: true
     });
@@ -1010,19 +1218,13 @@ Page({
   // 删除文档
   async deleteDocument(documentId) {
     try {
-      // 从本地存储中删除
-      const historyDocuments = this.data.historyDocuments.filter(doc => doc.id !== documentId);
+      const db = wx.cloud.database();
       
-      // 更新本地存储
-      wx.setStorageSync('pattern-notes', historyDocuments);
+      // 从数据库中删除文档
+      await db.collection('patternList').doc(documentId).remove();
       
-      // 更新页面数据
-      this.setData({
-        historyDocuments: historyDocuments
-      });
-      
-      // 更新保存配额
-      this.updateSaveQuota();
+      // 重新加载历史文档以更新列表
+      await this.loadHistoryDocuments();
       
       this.showAlert('文档已删除', 'success');
     } catch (error) {
@@ -1040,21 +1242,27 @@ Page({
   },
 
   // 处理确认保存
-  handleConfirmSave() {
+  async handleConfirmSave() {
     if (this.data.saving) return;
 
     this.setData({
       saving: true
     });
 
-    this.savePatternRecord().then(() => {
+    try {
+      await this.savePatternRecord();
       this.setData({
         saving: false,
         showSaveConfirmDialog: false
       });
       
       this.showAlert('保存成功！', 'success');
-    });
+    } catch (error) {
+      this.setData({
+        saving: false
+      });
+      this.showAlert('保存失败，请重试', 'error');
+    }
   },
 
   // 显示提示消息
@@ -1154,5 +1362,5 @@ Page({
     
     // 绘制到Canvas
     ctx.draw();
-  }
+  },
 });
