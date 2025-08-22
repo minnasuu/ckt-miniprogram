@@ -19,7 +19,7 @@
       <button disabled="{{!hasModified}}" class="clear-button" bind:tap="clearCanvas">清除效果</button>
     </view>
     <view class="canvas-container" wx:if="{{imageUrl}}">
-      <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
+      <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}};opacity: {{showColorPicker ? 0 : 1}}"></canvas>
     </view>
     <view wx:if="{{imageUrl}}" class="buttons-container">
       <button class="download-button" disabled="{{!hasModified||!finished}}" bind:tap="downloadColorCard">下载</button>
