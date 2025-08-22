@@ -12,6 +12,10 @@ Component({
     right:{
       type: Number,
       value: 0,
+    },
+    color:{
+      type: String,
+      value: 'var(--ckt-gray-9)',
     }
   },
 

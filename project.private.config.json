@@ -7,6 +7,20 @@
     "miniprogram": {
       "list": [
         {
+          "name": "启动",
+          "pathName": "pages/launch/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "启动测试",
+          "pathName": "pages/test-launch/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "工具-换色",
           "pathName": "pages/tools/color-change/index",
           "query": "",

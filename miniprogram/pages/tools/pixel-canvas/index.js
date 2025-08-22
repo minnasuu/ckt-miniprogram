@@ -209,6 +209,7 @@ Page({
     wx.showModal({
       title: '确认清除',
       content: '确定要清除当前画布吗？',
+      confirmColor: '#F35A75',
       success: (res) => {
         if (res.confirm) {
           this.initCanvas();

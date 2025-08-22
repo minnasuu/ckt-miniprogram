@@ -122,6 +122,7 @@ Page({
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个图片吗？删除后无法恢复。',
+      confirmColor: '#F35A75',
       success: (res) => {
         if (res.confirm) {
           try {

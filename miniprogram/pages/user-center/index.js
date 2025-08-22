@@ -280,6 +280,7 @@ Page({
     wx.showModal({
       title: '提示',
       content: '确定要退出登录吗？',
+      confirmColor: '#F35A75',
       success: (res) => {
         if (res.confirm) {
           // 用户点击确定，执行退出登录操作
