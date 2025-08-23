@@ -164,4 +164,5 @@
       <close-icon bind:close="cancelEdit" top="{{12}}" right="{{4}}"></close-icon>
     </view>
   </view>
+  <alert-message show="{{showAlertMessage}}" title="{{alertMessageTitle}}" type="{{alertMessageType}}"></alert-message>
 </view>

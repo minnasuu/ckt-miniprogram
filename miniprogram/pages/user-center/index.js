@@ -30,7 +30,10 @@ Page({
     creationStreak: 0,
     totalCreations: 0,
     feedbackMessage: '',
-    feedbackType: 'normal' // normal, good, excellent
+    feedbackType: 'normal', // normal, good, excellent
+    showAlertMessage: false,
+    alertMessageTitle: '',
+    alertMessageContent: ''
   },
 
   onLoad() {
@@ -99,7 +102,7 @@ Page({
     try {
       const res = await db.collection('colorCards')
         .where({
-          author: userInfo.author || userInfo // 兼容不同的author字段格式
+          _openid: userInfo.openId || userInfo // 兼容不同的author字段格式
         })
         .count();
       return res.total || 0;
@@ -244,20 +247,14 @@ Page({
         // 更新用户资产数据
         this.initUserAssetsData();
 
-        wx.showToast({
-          title: '登录成功',
-          icon: 'none'
-        });
+        this.showMessage('登录成功🎉', 'success');
       } else {
         throw new Error(result.message || '登录失败');
       }
     } catch (error) {
       console.error('登录失败：', error);
       this.setData({ isLoggingIn: false });
-      wx.showToast({
-        title: error.message || '登录失败',
-        icon: 'none'
-      });
+      this.showMessage('登录失败💔', 'error');
     }
   },
 
@@ -295,16 +292,30 @@ Page({
   confirmEdit() {
     if (this.data.isConfirming) return; // 如果正在加载，直接返回
 
+    const { tempAvatar, tempUsername } = this.data;
+
+    // 验证输入
+    if (!tempUsername && !tempAvatar) {
+      this.showMessage('请至少修改一项内容', 'warn');
+      return;
+    }
+
+    if (tempUsername && tempUsername.trim() === '') {
+      this.showMessage('用户名不能为空', 'warn');
+      return;
+    }
+
     this.setData({
       isConfirming: true
     });
 
-    const { tempAvatar, tempUsername } = this.data;
     const newUserInfo = {
       ...this.data.userInfo,
       avatar: tempAvatar || this.data.userInfo.avatar,
       username: tempUsername || this.data.userInfo.username
     };
+
+    console.log('准备更新用户信息:', newUserInfo);
 
     // 调用云函数更新用户信息
     wx.cloud.callFunction({
@@ -312,25 +323,48 @@ Page({
       data: {
         userInfo: newUserInfo
       },
-      success: () => {
-        this.setData({
-          userInfo: newUserInfo,
-          showDialog: false,
-          tempAvatar: '',
-          tempUsername: '',
-          isConfirming: false
-        });
-        wx.showToast({
-          title: '更新成功',
-          icon: 'none'
-        });
+      success: (res) => {
+        console.log('云函数调用成功:', res);
+
+        if (res.result && res.result.success) {
+          // 更新成功
+          this.setData({
+            userInfo: newUserInfo,
+            showDialog: false,
+            tempAvatar: '',
+            tempUsername: '',
+            isConfirming: false
+          });
+
+          // 更新本地存储
+          wx.setStorageSync('userInfo', newUserInfo);
+
+          this.showMessage(res.result.message || '更新成功🎉', 'success');
+        } else {
+          // 业务逻辑失败
+          console.error('更新用户信息业务失败:', res.result);
+          this.showMessage(res.result?.message || '更新失败', 'error');
+          this.setData({
+            isConfirming: false
+          });
+        }
       },
       fail: (err) => {
         console.error('更新用户信息失败', err);
-        wx.showToast({
-          title: '更新失败',
-          icon: 'none'
-        });
+
+        let errorMsg = '更新失败';
+        if (err.errMsg) {
+          if (err.errMsg.includes('FunctionName parameter could not be found')) {
+            errorMsg = '云函数未部署，请先部署updateUserInfo云函数';
+          } else if (err.errMsg.includes('Environment not found')) {
+            errorMsg = '云开发环境未找到';
+          } else {
+            errorMsg = err.errMsg;
+          }
+        }
+
+        this.showMessage(errorMsg, 'error');
+
         this.setData({
           isConfirming: false
         });
@@ -388,10 +422,7 @@ Page({
   onFunctionTap(e) {
     const type = e.currentTarget.dataset.type;
     if (!this.data.userInfo) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
+      this.showMessage('请先登录', 'warn');
       return;
     }
 
@@ -446,10 +477,7 @@ Page({
     });
     // 重置用户资产数据
     this.initUserAssetsData();
-    wx.showToast({
-      title: '退出登录成功',
-      icon: 'none'
-    });
+    this.showMessage('退出登录成功', 'success');
   },
   initWeeklyData() {
     this.setData({
@@ -601,10 +629,7 @@ Page({
   // 显示打卡面板
   showCheckInPanel() {
     if (!this.data.userInfo) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
+      this.showMessage('请先登录', 'warn');
       return;
     }
     
@@ -623,10 +648,7 @@ Page({
   // 点击创作工具时记录打卡
   onCreateTap() {
     if (!this.data.userInfo) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
+      this.showMessage('请先登录', 'warn');
       return;
     }
     
@@ -676,5 +698,12 @@ Page({
     } catch (error) {
       console.error('调试查询失败:', error);
     }
+  },
+  showMessage(title, type = "info") {
+    this.setData({
+      showAlertMessage: true,
+      alertMessageTitle: title,
+      alertMessageType: type
+    });
   },
 });
