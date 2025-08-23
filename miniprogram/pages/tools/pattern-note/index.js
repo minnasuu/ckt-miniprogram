@@ -11,6 +11,7 @@ Page({
     curItem: {},
     titleInputId: '-1',
     lineNumbers: [],
+    lineValues: [],
     curLine: -1,
     showStich: false,
     saving: false,
@@ -88,6 +89,7 @@ Page({
       this.updateCurItem();
       this.calculateLineNumbers();
       this.caculateStiches();
+      this.calculateLineValues();
     }
   },
 
@@ -158,7 +160,7 @@ Page({
       this.calculateLineNumbers();
       this.caculateStiches();
       this.updateShowStichDisabled();
-
+      this.calculateLineValues();
       this.showAlert('图解文档已加载', 'success');
 
     } catch (error) {
@@ -451,6 +453,7 @@ Page({
       curItem: newCurItem
     }, () => {
       this.calculateLineNumbers();
+      this.calculateLineValues();
       this.updateShowStichDisabled();
     });
   },
@@ -473,6 +476,16 @@ Page({
       const lineNumbers = lines.split('\n').map((_, index) => `R${index + 1}: `);
       this.setData({
         lineNumbers: lineNumbers
+      });
+    }
+  },
+  calculateLineValues() {
+    const { curItem } = this.data;
+    if (curItem) {
+      const lines = curItem.values || '';
+      const lineValues = lines.split('\n');
+      this.setData({
+        lineValues: lineValues
       });
     }
   },
@@ -519,6 +532,7 @@ Page({
       curItem: newData.find(i => i.id === cur),
     })
     this.calculateLineNumbers();
+    this.calculateLineValues();
     this.caculateStiches();
     this.updateShowStichDisabled();
 
@@ -579,6 +593,7 @@ Page({
     console.log('显示针数状态:', newShowStich);
     console.log('当前项:', this.data.curItem);
     console.log('行数:', this.data.lineNumbers);
+    console.log('行值:', this.data.lineValues);
     this.setData({
       showStich: newShowStich
     });
@@ -1228,6 +1243,7 @@ Page({
     
     this.updateCurItem();
     this.calculateLineNumbers();
+    this.calculateLineValues();
     this.caculateStiches();
     this.updateShowStichDisabled();
     
@@ -1314,6 +1330,7 @@ Page({
     
     this.updateCurItem();
     this.calculateLineNumbers();
+    this.calculateLineValues();
     this.caculateStiches();
     this.updateShowStichDisabled();
     

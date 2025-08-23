@@ -119,8 +119,8 @@ module.exports.formatHistoryTime = formatHistoryTime;
                         </view>
                     </view>
                     <view class="pn-dash-container {{showStich ? '':'hide'}} transition" >
-                          <view wx:for="{{lineNumbers}}" wx:for-item="numItm" wx:for-index="numIdx" wx:key="numIdx" class="pn-dash-list">
-                            <view class="hide-value">{{numItm}}</view>
+                          <view wx:for="{{lineValues}}" wx:for-item="lineValue" wx:for-index="lineIndex" wx:key="lineIndex" class="pn-dash-list">
+                            <view class="hide-value">{{lineValue}}</view>
                             <view class="dividers">
                                 <view class="divider {{numIdx === curLine ? 'active':''}}"></view>
                             </view>
