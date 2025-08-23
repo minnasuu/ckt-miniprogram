@@ -68,10 +68,10 @@
                   
                   <view class="waterfall-title">{{item.name}}</view>
                   <!-- 修改颜色显示组件的属性值 -->
-                  // <color-display
-                  //   mainColors="{{item.imgUrl ? item.imgUrl.mainColors : item.imgUrls[0].mainColors}}" 
-                  //   colorNum="{{item.imgUrl.mainColors.length||item.imgUrls[0].mainColors.length}} "
-                  // ></color-display>
+                  <!--<color-display
+                  mainColors="{{item.imgUrl ? item.imgUrl.mainColors : item.imgUrls[0].mainColors}}" 
+                  colorNum="{{item.imgUrl.mainColors.length||item.imgUrls[0].mainColors.length}} "
+                  ></color-display>-->
                 </view>
               </view>
             </block>

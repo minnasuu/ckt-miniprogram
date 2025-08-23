@@ -1,8 +1,0 @@
-{
-  "usingComponents": {
-    "custom-header": "/components/custom-header/index",
-    "alert-message": "/components/common/alert-message/index",
-    "loading": "/components/common/loading/index",
-    "deep-think":"/components/tools/deep-think/index"
-  }
-}
