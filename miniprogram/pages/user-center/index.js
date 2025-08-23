@@ -39,6 +39,7 @@ Page({
     });
     // 检查是否已登录
     this.checkLoginStatus();
+    this.initWeeklyData();
     // 初始化打卡数据
     this.initCheckInData();
     this.initUserAssetsData();
@@ -447,6 +448,15 @@ Page({
     wx.showToast({
       title: '退出登录成功',
       icon: 'none'
+    });
+  },
+  initWeeklyData() {
+    this.setData({
+      weeklyData: this.generateEmptyWeeklyData(),
+      checkInStreak: 0,
+      creationStreak: 0,
+      feedbackMessage: '请先登录查看打卡记录',
+      feedbackType: 'normal'
     });
   },
 
