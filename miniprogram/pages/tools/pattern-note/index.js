@@ -1257,8 +1257,7 @@ Page({
     // 如果没有当前文档ID，说明是新文档，检查是否有内容
     if (!this.data.currentDocumentId) {
       const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
-      const hasTitle = this.data.patternTitle && this.data.patternTitle.trim() !== '';
-      return hasContent || hasTitle;
+      return hasContent;
     }
     
     // 查找当前文档在历史记录中的数据
@@ -1424,7 +1423,9 @@ Page({
   // 执行Canvas绘制
   performCanvasDraw(ctx, previewData, patternTitle, showStich, padding, lineHeight, sectionGap, titleHeight, fontSize, smallFontSize, totalHeight, canvasWidth) {
     let currentY = padding;
-    
+    ctx.clearRect(0, 0, canvasWidth, totalHeight);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasWidth, totalHeight);
     // 绘制标题
     ctx.setFillStyle('#333333');
     ctx.setFontSize(16);
