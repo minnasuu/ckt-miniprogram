@@ -40,20 +40,11 @@ Component({
         if (this.properties.customBackHandler) {
           // 触发自定义返回事件
           this.triggerEvent('customBack');
-          return;
-        }
-
-        // 默认返回行为
-        // const pages = getCurrentPages();
-        // if (pages.length > 1) {
+        } else {
           wx.navigateBack({
             delta: 1
           });
-        // } else {
-        //   wx.switchTab({
-        //     url: '/pages/tutorial/index'
-        //   });
-        // }
+        }
       }
     }
   }

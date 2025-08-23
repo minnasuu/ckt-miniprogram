@@ -350,6 +350,10 @@
 .pn-bottom-btns button.default {
   margin-left: auto;
 }
+.pn-bottom-btns button.default[disabled] {
+  color: var(--ckt-gray-6);
+  pointer-events: none;
+}
 .pn-bottom-btns button.primary {
   background-color: var(--ckt-theme-6);
   color: var(--ckt-gray-0);

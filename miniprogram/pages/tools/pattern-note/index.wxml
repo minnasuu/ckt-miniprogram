@@ -131,8 +131,8 @@ module.exports.formatHistoryTime = formatHistoryTime;
             <view class="pn-bottom-btns">
               <view class="pn-bottom-btns-left">
                 <view class="save-btn-container">
-                  <button bindtap="handleSaveBtnTap" class="default {{isDocumentNew ? 'new-document' : 'saved-document'}}">
-                    {{isDocumentNew ? '保存文档' : '更新文档'}}
+                  <button bindtap="handleSaveBtnTap" class="default {{isDocumentNew ? 'new-document' : 'saved-document'}}" disabled="{{saveQuota.level === 'guest'}}">
+                    {{isDocumentNew ? '保存图解' : '更新图解'}}
                   </button>
                   <view class="save-quota-info" wx:if="{{saveQuota.level !== 'guest' && saveQuota.level !== 'admin'}}">
                     <text class="quota-text">{{saveQuota.used}} / {{saveQuota.limit}}</text>

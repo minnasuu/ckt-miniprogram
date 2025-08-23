@@ -535,6 +535,7 @@ Page({
     this.calculateLineValues();
     this.caculateStiches();
     this.updateShowStichDisabled();
+    this.updateUnsavedState();
 
   },
   lastTapTime: 0, // 记录上次点击的时间
@@ -577,6 +578,7 @@ Page({
    this.setData({
     data: newData
    })
+    this.updateUnsavedState();
   },
   handleAddPart(){
     const data = this.data.data;
@@ -587,6 +589,7 @@ Page({
     })
     this.updateCurItem()
     this.updateShowStichDisabled()
+    this.updateUnsavedState();
   },
   handleShowStich(){
     const newShowStich = !this.data.showStich;
@@ -632,6 +635,7 @@ Page({
     this.setData({
       patternTitle: val
     });
+    this.updateUnsavedState();
   },
 
   // 处理针数输入变化
@@ -652,6 +656,7 @@ Page({
       data: newData,
       curItem: newData.find(i => i.id === cur)
     });
+    this.updateUnsavedState();
   },
   calculateExpression(input) {
     if (!input || typeof input !== 'string') return 0;
@@ -1211,7 +1216,7 @@ Page({
   // 创建新文档
   handleCreateNewDocument() {
     // 检查是否有未保存的更改
-    if (this.hasUnsavedChanges()) {
+    if (this.data.hasUnsavedChanges) {
       wx.showModal({
         title: '确认创建新文档',
         content: '当前文档有未保存的更改，创建新文档后将丢失这些更改。',
@@ -1258,7 +1263,7 @@ Page({
     if (!targetDocument) return;
     
     // 检查是否有未保存的更改
-    if (this.hasUnsavedChanges()) {
+    if (this.data.hasUnsavedChanges) {
       this.setData({
         switchTargetDocument: targetDocument,
         showSwitchConfirmDialog: true
@@ -1269,25 +1274,25 @@ Page({
   },
 
   // 检查是否有未保存的更改
-  hasUnsavedChanges() {
+  updateUnsavedState() {
     // 如果没有当前文档ID，说明是新文档，检查是否有内容
-    if (!this.data.currentDocumentId) {
-      const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
-      return hasContent;
-    }
-    
-    // 查找当前文档在历史记录中的数据
+    const historyIds = this.data.historyDocuments.map(doc => doc.id);
     const currentDocument = this.data.historyDocuments.find(doc => doc.id === this.data.currentDocumentId);
-    if (!currentDocument) {
-      // 如果在历史记录中找不到当前文档，说明是新文档，检查是否有内容
-      const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
-      const hasTitle = this.data.patternTitle && this.data.patternTitle.trim() !== '';
-      return hasContent || hasTitle;
-    }
+    if (!historyIds.includes(this.data.currentDocumentId) || !currentDocument) {
 
+      const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
+      if (hasContent) {
+        this.setData({
+          hasUnsavedChanges: true
+        });
+      }
+      console.log('new document', hasContent);
+    } else {
     // 比较标题是否有变化
-    if (this.data.patternTitle !== currentDocument.patternTitle) {
-      return true;
+      if (this.data.patternTitle !== currentDocument.title) {
+        this.setData({
+          hasUnsavedChanges: true
+        });
     }
 
     // 比较数据内容是否有变化
@@ -1306,7 +1311,11 @@ Page({
       nums: item.nums || []
     })));
 
-    return currentDataStr !== savedDataStr;
+      this.setData({
+        hasUnsavedChanges: currentDataStr !== savedDataStr
+      });
+      console.log('hasUnsavedChanges', currentDataStr !== savedDataStr);
+    }
   },
 
   // 切换到指定文档
@@ -1531,17 +1540,26 @@ Page({
 
   // 自定义返回按钮处理（由custom-header触发）
   onCustomBack() {
+    console.log('onCustomBack', this.data.hasUnsavedChanges);
+
     if (this.data.hasUnsavedChanges) {
       // 有未保存的更改，显示确认弹窗
       wx.showModal({
         title: '确认退出',
         content: '当前文档有未保存的更改，退出后将丢失这些更改。',
         confirmColor: '#F35A75',
+        cancelText: '直接退出',
+        confirmText: '保存退出',
         success: (res) => {
           if (res.confirm) {
-            this.savePatternRecord();
+            this.handleSaveAndExit();
           }
-        }
+          if (res.cancel) {
+            wx.navigateBack({
+              delta: 1
+            });
+          }
+        },
       });
     } else {
       wx.navigateBack({
@@ -1553,19 +1571,6 @@ Page({
   // 处理保存后退出
   async handleSaveAndExit() {
     if (!this.checkSavePermission()) {
-      return;
-    }
-
-    // 检查是否有内容需要保存
-    const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
-    if (!hasContent) {
-      this.showAlert('请先添加一些内容再保存', 'warning');
-      return;
-    }
-
-    // 检查标题是否为空
-    if (!this.data.patternTitle || this.data.patternTitle.trim() === '') {
-      this.showAlert('请设置图解标题', 'warning');
       return;
     }
 
@@ -1585,7 +1590,7 @@ Page({
         wx.navigateBack({
           delta: 1
         });
-      }, 1000);
+      }, 500);
     } catch (error) {
       this.setData({
         saving: false

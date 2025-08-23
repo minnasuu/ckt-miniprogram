@@ -358,6 +358,10 @@
         border-radius: 8px;
         &.default{
             margin-left: auto;
+            &[disabled]{
+                color: var(--ckt-gray-6);
+                pointer-events: none;
+            }
         }
         &.primary{
             background-color: var(--ckt-theme-6);
