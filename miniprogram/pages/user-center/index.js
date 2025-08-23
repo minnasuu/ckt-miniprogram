@@ -28,6 +28,7 @@ Page({
     weeklyData: [],
     checkInStreak: 0,
     creationStreak: 0,
+    totalCreations: 0,
     feedbackMessage: '',
     feedbackType: 'normal' // normal, good, excellent
   },
@@ -474,6 +475,7 @@ Page({
           weeklyData: this.generateEmptyWeeklyData(),
           checkInStreak: 0,
           creationStreak: 0,
+          totalCreations: 0,
           feedbackMessage: '请先登录查看打卡记录',
           feedbackType: 'normal'
         });
@@ -498,6 +500,7 @@ Page({
           weeklyData: data.weeklyData,
           checkInStreak: data.checkInStreak,
           creationStreak: data.creationStreak,
+          totalCreations: data.weeklyData.reduce((total, day) => total + day.creationCount, 0),
           feedbackMessage: data.feedbackMessage,
           feedbackType: data.feedbackType
         });
@@ -509,6 +512,7 @@ Page({
           weeklyData: this.generateEmptyWeeklyData(),
           checkInStreak: 0,
           creationStreak: 0,
+          totalCreations: 0,
           feedbackMessage: '获取打卡数据失败',
           feedbackType: 'normal'
         });
@@ -520,6 +524,7 @@ Page({
         weeklyData: this.generateEmptyWeeklyData(),
         checkInStreak: 0,
         creationStreak: 0,
+        totalCreations: 0,
         feedbackMessage: '获取打卡数据失败',
         feedbackType: 'normal'
       });

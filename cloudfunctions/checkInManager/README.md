@@ -91,6 +91,22 @@
 }
 ```
 
+**返回数据**：
+```javascript
+{
+  success: true,
+  data: {
+    weeklyData: [],           // 近一周打卡数据
+    checkInStreak: 0,         // 连续登录天数
+    creationStreak: 0,        // 连续创作天数
+    totalCheckIns: 0,         // 总打卡次数
+    totalCreations: 0,        // 总创作次数
+    feedbackMessage: '',      // 反馈信息
+    feedbackType: 'normal'    // 反馈类型
+  }
+}
+```
+
 ## 使用示例
 
 ```javascript

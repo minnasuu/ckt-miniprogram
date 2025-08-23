@@ -258,35 +258,57 @@ async function getCheckInStats(openId) {
 
     const weeklyData = weeklyResult.data;
     
-      // 计算连续登录天数
-  let checkInStreak = 0;
-  for (let i = weeklyData.length - 1; i >= 0; i--) {
-    const day = weeklyData[i];
-    if (day.hasLogin || day.hasCreate) {
-      checkInStreak++;
-    } else {
-      break;
+    // 计算连续登录天数
+    let checkInStreak = 0;
+    for (let i = weeklyData.length - 1; i >= 0; i--) {
+      const day = weeklyData[i];
+      if (day.hasLogin) {
+        checkInStreak++;
+      } else {
+        break;
+      }
     }
-  }
 
-  // 计算连续创作天数
-  let creationStreak = 0;
-  for (let i = weeklyData.length - 1; i >= 0; i--) {
-    const day = weeklyData[i];
-    if (day.hasCreate) {
-      creationStreak++;
-    } else {
-      break;
+    // 计算连续创作天数
+    let creationStreak = 0;
+    for (let i = weeklyData.length - 1; i >= 0; i--) {
+      const day = weeklyData[i];
+      if (day.hasCreate) {
+        creationStreak++;
+      } else {
+        break;
+      }
     }
-  }
 
-  // 计算总创作数量（近一周）
-  const totalCreations = weeklyData.reduce((total, day) => {
-    return total + day.creationCount;
-  }, 0);
+    // 计算总打卡次数和总创作次数
+    let totalCheckIns = 0;
+    let totalCreations = 0;
 
-  // 生成反馈信息
-  const feedbackData = generateFeedback(checkInStreak, creationStreak, totalCreations);
+    try {
+      // 查询用户的所有打卡记录
+      const allRecords = await db.collection('checkInRecords')
+        .where({
+          openId: openId
+        })
+        .get();
+
+      // 计算总打卡次数（有登录或创作的记录数）
+      totalCheckIns = allRecords.data.filter(record => record.hasLogin || record.hasCreate).length;
+
+      // 计算总创作次数（所有记录的创作数量总和）
+      totalCreations = allRecords.data.reduce((total, record) => {
+        return total + (record.creationCount || 0);
+      }, 0);
+
+    } catch (error) {
+      console.error('计算总统计数据失败:', error);
+      // 如果计算失败，设置为0
+      totalCheckIns = 0;
+      totalCreations = 0;
+    }
+
+    // 生成反馈信息
+    const feedbackData = generateFeedback(checkInStreak, creationStreak);
 
     return {
       success: true,
@@ -294,6 +316,7 @@ async function getCheckInStats(openId) {
         weeklyData,
         checkInStreak,
         creationStreak,
+        totalCheckIns,
         totalCreations,
         feedbackMessage: feedbackData.message,
         feedbackType: feedbackData.type
@@ -309,9 +332,8 @@ async function getCheckInStats(openId) {
  * 生成反馈信息
  * @param {number} streak 连续登录天数
  * @param {number} creationStreak 连续创作天数
- * @param {number} creations 总创作数量
  */
-function generateFeedback(streak, creationStreak, creations) {
+function generateFeedback(streak, creationStreak) {
   if (creationStreak >= 7) {
     return {
       message: `太棒了！你已经连续创作${creationStreak}天，坚持就是胜利！`,
@@ -322,7 +344,7 @@ function generateFeedback(streak, creationStreak, creations) {
       message: `不错哦！连续${creationStreak}天创作，继续保持！`,
       type: 'good'
     };
-  } else if (creationStreak > 0 || creations > 0) {
+  } else if (creationStreak > 0) {
     return {
       message: '加油！每一次创作都是进步的开始',
       type: 'normal'
