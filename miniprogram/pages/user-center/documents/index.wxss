@@ -146,8 +146,9 @@
 }
 
 .pattern-card-info{
-  display: flex;
-  gap: 24rpx;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
 }
 
 .pattern-card-desc{

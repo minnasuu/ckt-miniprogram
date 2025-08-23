@@ -102,36 +102,11 @@ Page({
     });
   },
 
-  // 记录创作打卡
-  recordCreateCheckIn() {
-    const today = new Date().toDateString();
-    const checkInRecords = wx.getStorageSync('checkInRecords') || {};
-    
-    if (!checkInRecords[today]) {
-      checkInRecords[today] = {};
-    }
-    
-    if (!checkInRecords[today].create) {
-      checkInRecords[today].create = true;
-      wx.setStorageSync('checkInRecords', checkInRecords);
-      
-      // 显示创作打卡成功提示
-      wx.showToast({
-        title: '创作打卡成功！',
-        icon: 'success',
-        duration: 1500
-      });
-    }
-  },
-  
   // 卡片点击事件
   onToolTap(e) {
     const { id, path } = e.currentTarget.dataset;
     
     if (path) {
-      // 记录创作打卡
-      this.recordCreateCheckIn();
-      
       wx.navigateTo({
         url: path
       });

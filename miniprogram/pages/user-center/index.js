@@ -1,4 +1,5 @@
 const { envList } = require('../../envList');
+const { recordLoginCheckIn, recordCreationCheckIn } = require('../../utils/checkInUtils');
 const app = getApp();
 
 // pages/me/index.js
@@ -26,7 +27,7 @@ Page({
     showCheckInPanel: false,
     weeklyData: [],
     checkInStreak: 0,
-    totalCheckIns: 0,
+    creationStreak: 0,
     feedbackMessage: '',
     feedbackType: 'normal' // normal, good, excellent
   },
@@ -47,6 +48,8 @@ Page({
     // 页面显示时检查登录状态和刷新资产数据
     this.checkLoginStatus();
     this.initUserAssetsData();
+    // 刷新打卡数据
+    this.initCheckInData();
   },
 
   // 初始化用户资产数据
@@ -225,10 +228,17 @@ Page({
           userInfo: result.userInfo,
           isLoggingIn: false
         });
-        // 登录成功后显示打卡面板
-        this.showCheckInPanelWithDelay();
-        // 记录登录打卡
-        this.recordCheckIn('login');
+
+        // 确保用户信息保存完成后再记录登录打卡
+        setTimeout(async () => {
+          console.log('开始记录登录打卡...');
+          const success = await recordLoginCheckIn();
+          console.log('登录打卡结果:', success);
+
+          // 登录打卡完成后刷新打卡数据
+          this.initCheckInData();
+        }, 100);
+
         // 更新用户资产数据
         this.initUserAssetsData();
 
@@ -440,42 +450,89 @@ Page({
     });
   },
 
-  // 初始化打卡数据
-  initCheckInData() {
-    const weeklyData = this.generateWeeklyData();
-    const checkInStreak = this.calculateStreak(weeklyData);
-    const totalCheckIns = this.calculateTotalCheckIns(weeklyData);
-    const feedbackData = this.generateFeedback(checkInStreak, totalCheckIns);
-    
-    this.setData({
-      weeklyData,
-      checkInStreak,
-      totalCheckIns,
-      feedbackMessage: feedbackData.message,
-      feedbackType: feedbackData.type
-    });
+  // 初始化打卡数据（从云端获取）
+  async initCheckInData() {
+    console.log('开始初始化打卡数据...');
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      console.log('用户信息:', userInfo);
+
+      if (!userInfo || !userInfo.openId) {
+        console.log('用户未登录，显示空数据');
+      // 未登录时显示空数据
+        this.setData({
+          weeklyData: this.generateEmptyWeeklyData(),
+          checkInStreak: 0,
+          creationStreak: 0,
+          feedbackMessage: '请先登录查看打卡记录',
+          feedbackType: 'normal'
+        });
+        return;
+      }
+
+      console.log('调用云函数获取打卡数据...');
+      // 从云端获取打卡统计数据
+      const result = await wx.cloud.callFunction({
+        name: 'checkInManager',
+        data: {
+          action: 'getCheckInStats'
+        }
+      });
+
+      console.log('云函数返回结果:', result);
+
+      if (result.result && result.result.success) {
+        const data = result.result.data;
+        console.log('打卡数据:', data);
+        this.setData({
+          weeklyData: data.weeklyData,
+          checkInStreak: data.checkInStreak,
+          creationStreak: data.creationStreak,
+          feedbackMessage: data.feedbackMessage,
+          feedbackType: data.feedbackType
+        });
+        console.log('打卡数据更新完成');
+      } else {
+        console.error('获取打卡数据失败:', result.result ? result.result.message : '未知错误');
+        // 显示空数据
+        this.setData({
+          weeklyData: this.generateEmptyWeeklyData(),
+          checkInStreak: 0,
+          creationStreak: 0,
+          feedbackMessage: '获取打卡数据失败',
+          feedbackType: 'normal'
+        });
+      }
+    } catch (error) {
+      console.error('初始化打卡数据失败:', error);
+      // 显示空数据
+      this.setData({
+        weeklyData: this.generateEmptyWeeklyData(),
+        checkInStreak: 0,
+        creationStreak: 0,
+        feedbackMessage: '获取打卡数据失败',
+        feedbackType: 'normal'
+      });
+    }
   },
 
-  // 生成近一周数据
-  generateWeeklyData() {
+  // 生成空的近一周数据（未登录时使用）
+  generateEmptyWeeklyData() {
     const today = new Date();
     const weekData = [];
     const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-    
-    // 获取存储的打卡记录
-    const checkInRecords = wx.getStorageSync('checkInRecords') || {};
-    
+
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
-      const dateStr = date.toDateString();
       
       weekData.push({
-        date: dateStr,
+        date: this.formatDate(date),
         day: weekdays[date.getDay()],
         dayNum: date.getDate(),
-        hasLogin: checkInRecords[dateStr]?.login || false,
-        hasCreate: checkInRecords[dateStr]?.create || false,
+        hasLogin: false,
+        hasCreate: false,
+        creationCount: 0,
         isToday: i === 0
       });
     }
@@ -483,76 +540,48 @@ Page({
     return weekData;
   },
 
-  // 计算连续打卡天数
-  calculateStreak(weeklyData) {
-    let streak = 0;
-    for (let i = weeklyData.length - 1; i >= 0; i--) {
-      const day = weeklyData[i];
-      if (day.hasLogin || day.hasCreate) {
-        streak++;
-      } else {
-        break;
+  // 格式化日期为 YYYY-MM-DD 格式
+  formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  },
+
+
+
+  // 记录打卡（云端）
+  async recordCheckIn(type, creationCount = 0) {
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (!userInfo || !userInfo.openId) {
+        console.log('用户未登录，无法记录打卡');
+        return;
       }
-    }
-    return streak;
-  },
 
-  // 计算总打卡次数
-  calculateTotalCheckIns(weeklyData) {
-    return weeklyData.reduce((total, day) => {
-      return total + (day.hasLogin ? 1 : 0) + (day.hasCreate ? 1 : 0);
-    }, 0);
-  },
-
-  // 生成反馈信息
-  generateFeedback(streak, total) {
-    if (streak >= 7) {
-      return {
-        message: `太棒了！你已经连续打卡${streak}天，坚持就是胜利！`,
-        type: 'excellent'
-      };
-    } else if (streak >= 3) {
-      return {
-        message: `不错哦！连续${streak}天打卡，继续保持！`,
-        type: 'good'
-      };
-    } else if (total > 0) {
-      return {
-        message: '加油！每一次使用都是进步的开始',
-        type: 'normal'
-      };
-    } else {
-      return {
-        message: '开始你的创作之旅吧！',
-        type: 'normal'
-      };
-    }
-  },
-
-  // 记录打卡
-  recordCheckIn(type) {
-    const today = new Date().toDateString();
-    const checkInRecords = wx.getStorageSync('checkInRecords') || {};
-    
-    if (!checkInRecords[today]) {
-      checkInRecords[today] = {};
-    }
-    
-    checkInRecords[today][type] = true;
-    wx.setStorageSync('checkInRecords', checkInRecords);
-    
-    // 更新数据
-    this.initCheckInData();
-  },
-
-  // 延迟显示打卡面板
-  showCheckInPanelWithDelay() {
-    setTimeout(() => {
-      this.setData({
-        showCheckInPanel: true
+      const result = await wx.cloud.callFunction({
+        name: 'checkInManager',
+        data: {
+          action: 'recordCheckIn',
+          data: {
+            type: type,
+            creationCount: creationCount
+          }
+        }
       });
-    }, 500);
+
+      if (result.result.success) {
+        console.log('打卡记录成功:', type);
+        // 更新数据
+        this.initCheckInData();
+      } else {
+        console.error('打卡记录失败:', result.result.message);
+      }
+    } catch (error) {
+      console.error('记录打卡失败:', error);
+    }
   },
+
 
   // 显示打卡面板
   showCheckInPanel() {
@@ -586,12 +615,51 @@ Page({
       return;
     }
     
-    // 记录创作打卡
-    this.recordCheckIn('create');
+    // 记录创作打卡（创作数量为1）
+    recordCreationCheckIn(1);
     
     // 跳转到工具页面
     wx.switchTab({
       url: '/pages/tools/index'
     });
+  },
+
+  // 供其他页面调用的创作打卡方法
+  recordCreation(count = 1) {
+    this.recordCheckIn('create', count);
+  },
+
+  // 临时调试方法：直接查看数据库记录
+  async debugCheckInData() {
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (!userInfo || !userInfo.openId) {
+        console.log('用户未登录');
+        return;
+      }
+
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+      console.log('调试 - 查询参数:');
+      console.log('openId:', userInfo.openId);
+      console.log('date:', dateStr);
+
+      const db = wx.cloud.database();
+      const result = await db.collection('checkInRecords')
+        .where({
+          openId: userInfo.openId,
+          date: dateStr
+        })
+        .get();
+
+      console.log('调试 - 数据库查询结果:', result);
+      console.log('调试 - 记录数量:', result.data.length);
+      if (result.data.length > 0) {
+        console.log('调试 - 今日记录:', result.data[0]);
+      }
+    } catch (error) {
+      console.error('调试查询失败:', error);
+    }
   },
 });

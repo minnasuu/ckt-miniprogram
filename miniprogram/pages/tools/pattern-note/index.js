@@ -879,6 +879,10 @@ Page({
       // 重新加载历史文档以更新列表
       await this.loadHistoryDocuments();
 
+      // 记录创作打卡（新建和更新都记录）
+      const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
+      recordCreationCheckIn(1);
+
       this.setData({
         saveLoading: false,
         showPreviewDialog: false
@@ -1154,9 +1158,13 @@ Page({
 
     try {
       await this.savePatternRecord();
+      // 保存成功后更新原始数据
       this.setData({
         saving: false,
-        showSaveConfirmDialog: false
+        showSaveConfirmDialog: false,
+        originalData: JSON.parse(JSON.stringify(this.data.data)),
+        originalTitle: this.data.patternTitle,
+        hasUnsavedChanges: false
       });
       
       this.showAlert('保存成功！', 'success');
@@ -1246,12 +1254,44 @@ Page({
 
   // 检查是否有未保存的更改
   hasUnsavedChanges() {
-    // 简单检查：如果有任何内容且当前文档不在历史记录中，则认为有未保存更改
-    const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
-    if (!hasContent) return false;
+    // 如果没有当前文档ID，说明是新文档，检查是否有内容
+    if (!this.data.currentDocumentId) {
+      const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
+      const hasTitle = this.data.patternTitle && this.data.patternTitle.trim() !== '';
+      return hasContent || hasTitle;
+    }
     
-    const currentExists = this.data.historyDocuments.some(doc => doc.id === this.data.currentDocumentId);
-    return !currentExists;
+    // 查找当前文档在历史记录中的数据
+    const currentDocument = this.data.historyDocuments.find(doc => doc.id === this.data.currentDocumentId);
+    if (!currentDocument) {
+      // 如果在历史记录中找不到当前文档，说明是新文档，检查是否有内容
+      const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
+      const hasTitle = this.data.patternTitle && this.data.patternTitle.trim() !== '';
+      return hasContent || hasTitle;
+    }
+
+    // 比较标题是否有变化
+    if (this.data.patternTitle !== currentDocument.patternTitle) {
+      return true;
+    }
+
+    // 比较数据内容是否有变化
+    // 只比较关键字段：id, title, values, nums
+    const currentDataStr = JSON.stringify(this.data.data.map(item => ({
+      id: item.id,
+      title: item.title,
+      values: item.values || '',
+      nums: item.nums || []
+    })));
+
+    const savedDataStr = JSON.stringify(currentDocument.data.map(item => ({
+      id: item.id,
+      title: item.title,
+      values: item.values || '',
+      nums: item.nums || []
+    })));
+
+    return currentDataStr !== savedDataStr;
   },
 
   // 切换到指定文档
@@ -1348,9 +1388,13 @@ Page({
 
     try {
       await this.savePatternRecord();
+      // 保存成功后更新原始数据
       this.setData({
         saving: false,
-        showSaveConfirmDialog: false
+        showSaveConfirmDialog: false,
+        originalData: JSON.parse(JSON.stringify(this.data.data)),
+        originalTitle: this.data.patternTitle,
+        hasUnsavedChanges: false
       });
       
       this.showAlert('保存成功！', 'success');
@@ -1459,5 +1503,76 @@ Page({
     
     // 绘制到Canvas
     ctx.draw();
+  },
+
+  // 页面卸载时的处理
+  onUnload() {
+    // 页面卸载时不显示弹窗，直接退出
+    // 这里可以做一些清理工作，但不能阻止页面卸载
+  },
+
+  // 自定义返回按钮处理（由custom-header触发）
+  onCustomBack() {
+    if (this.data.hasUnsavedChanges) {
+      // 有未保存的更改，显示确认弹窗
+      wx.showModal({
+        title: '确认退出',
+        content: '当前文档有未保存的更改，退出后将丢失这些更改。',
+        confirmColor: '#F35A75',
+        success: (res) => {
+          if (res.confirm) {
+            this.savePatternRecord();
+          }
+        }
+      });
+    } else {
+      wx.navigateBack({
+        delta: 1
+      });
+    }
+  },
+
+  // 处理保存后退出
+  async handleSaveAndExit() {
+    if (!this.checkSavePermission()) {
+      return;
+    }
+
+    // 检查是否有内容需要保存
+    const hasContent = this.data.data.some(item => item.values && item.values.trim() !== '');
+    if (!hasContent) {
+      this.showAlert('请先添加一些内容再保存', 'warning');
+      return;
+    }
+
+    // 检查标题是否为空
+    if (!this.data.patternTitle || this.data.patternTitle.trim() === '') {
+      this.showAlert('请设置图解标题', 'warning');
+      return;
+    }
+
+    this.setData({
+      saving: true
+    });
+
+    try {
+      await this.savePatternRecord();
+      // 保存成功后直接退出
+      this.setData({
+        saving: false,
+      });
+      this.showAlert('保存成功！', 'success');
+      // 延迟一下让用户看到成功提示
+      setTimeout(() => {
+        wx.navigateBack({
+          delta: 1
+        });
+      }, 1000);
+    } catch (error) {
+      this.setData({
+        saving: false
+      });
+      this.showAlert('保存失败，请重试', 'error');
+    }
   },
 });

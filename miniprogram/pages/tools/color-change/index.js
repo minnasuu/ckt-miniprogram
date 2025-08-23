@@ -1127,6 +1127,10 @@ Page({
             hueMode: this.data.hueMode
           },
           success: () => {
+            // 记录创作打卡
+            const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
+            recordCreationCheckIn(1);
+
             this.showMessage(`保存成功🎉\n前往个人中心-我的创作查查看`);
             this.setData({
               saveLoading: false

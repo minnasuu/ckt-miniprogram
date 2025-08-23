@@ -36,10 +36,10 @@
           <view class="pattern-card-container">
           <view class="pattern-card-title">{{item.title}}</view>
           <view class="pattern-card-info">
-            <view class="pattern-card-time">{{item.createTime}}</view>
-            <view class="pattern-card-time">{{item.updateTime}}</view>
-            <view class="pattern-card-desc">{{item.data.length}} 部分</view>
-            <view class="pattern-card-desc">{{item.dataStrs}} 字符</view>
+          <view class="pattern-card-desc">部分：{{item.data.length}}</view>
+            <view class="pattern-card-desc">字符：{{item.dataStrs}}</view>
+            <view class="pattern-card-time">创建：{{item.createTime}}</view>
+            <view class="pattern-card-time">更新：{{item.updateTime}}</view>
           </view>
           </view>
           <view class="pattern-card-actions">

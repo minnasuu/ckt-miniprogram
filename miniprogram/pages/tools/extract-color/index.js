@@ -507,6 +507,10 @@ Page({
             }
           },
           success: () => {
+            // 记录创作打卡
+            const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
+            recordCreationCheckIn(1);
+
             this.setData({ saving: false });
             this.showMessage(`保存成功🎉\n前往个人中心-我的创作查看`);
           },

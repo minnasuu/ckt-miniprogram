@@ -46,7 +46,7 @@ module.exports.formatHistoryTime = formatHistoryTime;
 
 <block>
     <view class="pattern-note-view">
-  <custom-header title="图解笔记本" showBack background="transparent"></custom-header>
+  <custom-header title="图解笔记本" showBack background="transparent" customBackHandler="{{true}}" bind:customBack="onCustomBack"></custom-header>
     <view class="pn-content" style="padding-top: {{statusBarHeight+44}}px">
         <view class="pn-operate-area">
             <view class="pn-input-area"> 

@@ -37,15 +37,15 @@
     <!-- 后台入口（仅作者可见） -->
     <navigator wx:if="{{userInfo.openId === 'od7SO5Pt8HG7dDS5A_1Uuv7ky_Mg'}}" url="/pages/management/index" class="management-entry">后台入口（仅minna可见）<arrow color="var(--ckt-gray-5)"></arrow></navigator>
 
-    <!-- 打卡记录 -->
+    <!-- 创作记录 -->
     <view class="check-in-record" bindtap="showCheckInPanel">
       <view class="check-in-record-title">
-        <text>打卡记录</text>
+        <text>创作记录</text>
         <view class="view-detail"><arrow color="var(--ckt-gray-5)"></arrow></view>
       </view>
       <view class="check-in-record-list">
         <view class="check-in-record-item" wx:for="{{weeklyData}}" wx:key="date">
-          <view class="check-in-record-item-nums">{{item.creationNums > 0 ? item.creationNums : '-'}}</view>
+          <view class="check-in-record-item-nums">{{item.creationCount > 0 ? item.creationCount : '-'}}</view>
           <view class="day-info">
             <view class="day-name">{{item.day}}</view>
             <view class="day-num {{item.isToday ? 'today' : ''}}">{{item.dayNum}}</view>
@@ -59,11 +59,11 @@
       <view class="check-in-stats">
         <view class="stat-item">
           <view class="stat-num">{{checkInStreak}}</view>
-          <view class="stat-label">连续天数</view>
+          <view class="stat-label">连续登录</view>
         </view>
         <view class="stat-item">
-          <view class="stat-num">{{totalCheckIns}}</view>
-          <view class="stat-label">总打卡次数</view>
+          <view class="stat-num">{{creationStreak}}</view>
+          <view class="stat-label">连续创作</view>
         </view>
       </view>
     </view>
@@ -118,8 +118,8 @@
           <view class="panel-stat-label">连续登录</view>
         </view>
         <view class="panel-stat-item">
-          <view class="panel-stat-num">{{totalCheckIns}}</view>
-          <view class="panel-stat-label">总登录次数</view>
+          <view class="panel-stat-num">{{creationStreak}}</view>
+          <view class="panel-stat-label">连续创作</view>
         </view>
       </view>
     </view>

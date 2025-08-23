@@ -340,6 +340,10 @@ Page({
                   height: that.data.resultWidth * that.data.imgSize.h / that.data.imgSize.w,
                 },
                 success: function() {
+                  // 记录创作打卡
+                  const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
+                  recordCreationCheckIn(1);
+
                   that.showMessage(`保存成功🎉\n前往个人中心-我的创作查看`);
                   that.setData({
                     saveLoading: false
