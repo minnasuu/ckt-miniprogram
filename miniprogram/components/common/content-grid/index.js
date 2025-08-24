@@ -24,8 +24,14 @@ Component({
       })
     },
     onItemTap(e) {
-      const { id } = e.currentTarget.dataset;
-      this.triggerEvent('itemTap', { id });
+      if (this.data.showMask) {
+        this.setData({
+          showMask: false
+        })
+        return;
+      }
+      const { id, image } = e.currentTarget.dataset;
+      this.triggerEvent('itemTap', { id, image });
     },
     onItemLongTap(e) {
       const { id } = e.currentTarget.dataset;

@@ -1,6 +1,6 @@
 <view class="content-grid" bind:tap="onContianerTap">
     <view class="grid-column" wx:for="{{[0,1]}}" wx:for-index="columnIndex">
-      <view class="grid-item" wx:for="{{list}}" wx:key="id" wx:if="{{index % 2 === columnIndex}}" data-id="{{item._id}}" catchtap="onItemTap" catch:longtap="onItemLongTap">
+      <view class="grid-item" wx:for="{{list}}" wx:key="id" wx:if="{{index % 2 === columnIndex}}" data-id="{{item._id}}" data-image="{{item.image}}" catchtap="onItemTap" catch:longpress="onItemLongTap">
         <view class="item-image">
           <!-- 根据不同类型显示不同的图片样式 -->
           <image 
@@ -45,7 +45,7 @@
         </view>
         <view class="button-mask" wx:if="{{showMask === item._id}}">
           <!-- 图片类型的按钮 -->
-          <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDownload" data-id="{{item._id}}">下载</view>
+          <!--<view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDownload" data-id="{{item._id}}">下载</view>-->
           <view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onDelete" data-id="{{item._id}}">删除</view>
           <!--<view wx:if="{{item.type !== 'tutorial' && item.type !== 'pattern-note'}}" class="btn" bind:tap="onPublish" data-id="{{item._id}}">发布</view>-->
           <!-- 图解笔记类型的按钮 -->

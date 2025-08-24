@@ -41,7 +41,7 @@
     <view class="check-in-record" bindtap="showCheckInPanel">
       <view class="check-in-record-title">
         <text>近 7 天创作记录</text>
-        <view class="view-detail"><arrow color="var(--ckt-gray-5)"></arrow></view>
+        <!--<view class="view-detail"><arrow color="var(--ckt-gray-5)"></arrow></view>--> 
       </view>
       <view class="check-in-record-list">
         <view class="check-in-record-item" wx:for="{{weeklyData}}" wx:key="date">
@@ -83,7 +83,7 @@
   <custom-tabbar selected="{{2}}"></custom-tabbar>
 
   <!-- 打卡数据面板 -->
-  <view class="check-in-panel-mask" wx:if="{{showCheckInPanel}}" bindtap="closeCheckInPanel">
+  <view class="check-in-panel-mask" wx:if="{{false}}" bindtap="closeCheckInPanel">
     <view class="check-in-panel" catchtap="">
       <view class="panel-header">
         <view class="panel-title">近 7 天创作情况</view>
@@ -124,10 +124,6 @@
         <view class="panel-stat-item">
           <view class="panel-stat-num">{{creationStreak}}</view>
           <view class="panel-stat-label">连续创作</view>
-        </view>
-        <view class="panel-stat-item">
-          <view class="panel-stat-num">{{totalCheckIns}}</view>
-          <view class="panel-stat-label">总打卡</view>
         </view>
         <view class="panel-stat-item">
           <view class="panel-stat-num">{{totalCreations}}</view>

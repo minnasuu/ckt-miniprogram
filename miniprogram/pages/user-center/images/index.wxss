@@ -73,3 +73,152 @@
   padding: 20rpx 40rpx;
   font-size: 28rpx;
 }
+
+/* 图片预览窗口样式 */
+.preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-image {
+  max-width: 90vw;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.preview-controls {
+  position: absolute;
+  bottom: 120rpx;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  padding: 0 40rpx;
+}
+
+.preview-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.preview-title {
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-align: center;
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-counter {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.preview-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 40rpx;
+  padding: 16rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  backdrop-filter: blur(10px);
+}
+
+.preview-btn .btn-icon {
+  font-size: 24rpx;
+}
+
+.preview-btn .btn-text {
+  color: white;
+  font-size: 24rpx;
+}
+
+.preview-close {
+  position: absolute;
+  top: 120rpx;
+  right: 40rpx;
+  width: 80rpx;
+  height: 80rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.close-icon {
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.preview-hint {
+  position: absolute;
+  top: 120rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+  padding: 12rpx 24rpx;
+  backdrop-filter: blur(10px);
+}
+
+.hint-text {
+  color: white;
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .preview-image {
+    max-width: 95vw;
+    max-height: 75vh;
+  }
+  
+  .preview-controls {
+    bottom: 100rpx;
+    padding: 0 20rpx;
+  }
+  
+  .preview-close {
+    top: 100rpx;
+    right: 20rpx;
+  }
+  
+  .preview-hint {
+    top: 100rpx;
+  }
+}

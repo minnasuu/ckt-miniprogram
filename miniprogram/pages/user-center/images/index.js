@@ -171,5 +171,13 @@ Page({
       showAlert: true,
       alertType: type
     });
+  },
+  onItemTap(e) {
+    const { image } = e.detail;
+    wx.previewImage({
+      current: image, // 当前显示图片
+      urls: this.data.imageList.map(item => item.image), // 所有图片列表
+      showmenu: true // 显示长按菜单
+    });
   }
 });
