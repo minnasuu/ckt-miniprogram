@@ -25,11 +25,29 @@
         <view wx:if="{{list[selectedIndex].imgList.length}}" class="crochet-base-details">
           <view class="crochet-base-details-item" wx:for="{{list[selectedIndex].imgList}}" wx:key="index" wx:for-item="detail">
             <view wx:if="{{detail.img_des}}" class="crochet-base-details-item-desc">{{detail.img_des}}</view>
-            <image wx:if="{{detail.img_src}}" class="crochet-base-details-item-img" src="{{detail.img_src}}" mode="widthFix"></image>
+            <view class="crochet-base-img-wrapper">
+              <view wx:if="{{!detail.isImgLoaded}}" class="crochet-base-img-placeholder">
+              </view>
+              <image
+                wx:if="{{detail.img_src && !detail.hasImgError}}"
+                class="crochet-base-details-item-img {{detail.isImgLoaded ? 'show' : 'hide'}}"
+                src="{{detail.img_src}}"
+                mode="widthFix"
+                data-menuindex="{{selectedIndex}}"
+                data-imgindex="{{index}}"
+                bindload="onImageLoad"
+                binderror="onImageError"
+              ></image>
+              <view wx:if="{{detail.hasImgError}}" class="crochet-base-img-error">图片加载失败</view>
+            </view>
           </view>
         </view>
         </view>
       </view>
     </view>
+  </view>
+  <!-- 页面加载中遮罩 -->
+  <view wx:if="{{isLoading}}" class="crochet-base-loading-mask">
+    <loading></loading>
   </view>
 </view>

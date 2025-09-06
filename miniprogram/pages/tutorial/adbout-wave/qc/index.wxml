@@ -24,12 +24,30 @@
           <view class="xc-item-desc">{{list[selectedIndex].desc}}</view>
         <view wx:if="{{list[selectedIndex].detailList.length}}" class="xc-details">
           <view class="xc-details-item" wx:for="{{list[selectedIndex].detailList}}" wx:key="index" wx:for-item="detail">
-            <image wx:if="{{detail.img}}" class="xc-details-item-img" src="{{detail.img}}" mode="widthFix"></image>
+            <view class="xc-img-wrapper">
+              <view wx:if="{{!detail.isImgLoaded}}" class="xc-img-placeholder">
+              </view>
+              <image
+                wx:if="{{detail.img && !detail.hasImgError}}"
+                class="xc-details-item-img {{detail.isImgLoaded ? 'show' : 'hide'}}"
+                src="{{detail.img}}"
+                mode="widthFix"
+                data-menuindex="{{selectedIndex}}"
+                data-imgindex="{{index}}"
+                bindload="onImageLoad"
+                binderror="onImageError"
+              ></image>
+              <view wx:if="{{detail.hasImgError}}" class="xc-img-error">图片加载失败</view>
+            </view>
             <view wx:if="{{detail.desc}}" class="xc-details-item-desc">{{detail.desc}}</view>
           </view>
         </view>
         </view>
       </view>
     </view>
+  </view>
+  <!-- 页面加载中遮罩 -->
+  <view wx:if="{{isLoading}}" class="xc-loading-mask">
+    <loading></loading>
   </view>
 </view>

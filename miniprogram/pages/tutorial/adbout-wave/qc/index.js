@@ -7,6 +7,7 @@ Page({
   data: {
     list: [],
     selectedIndex: 0, // 当前选中的导航项索引
+    isLoading: true // 页面数据加载态
   },
 
   /**
@@ -17,6 +18,7 @@ Page({
   },
 
   getData(){
+    this.setData({ isLoading: true });
       wx.request({
         url: 'https://suminhan.cn/ckt/api/qcListData.json',
         success: (res) => {
@@ -26,7 +28,9 @@ Page({
               detailList: item.detailList.map(detail => {
                 return {
                   ...detail,
-                  img: detail.img ? detail.img.replace('./', 'https://suminhan.cn/ckt/') : ''
+                  img: detail.img ? detail.img.replace('./', 'https://suminhan.cn/ckt/') : '',
+                  isImgLoaded: false,
+                  hasImgError: false
                 }
               })
             }
@@ -34,8 +38,27 @@ Page({
           this.setData({
             list: newData
           })
+        },
+        fail: () => { },
+        complete: () => {
+          this.setData({ isLoading: false });
         }
       })
+  },
+
+  onImageLoad(e) {
+    const menuIndex = e.currentTarget.dataset.menuindex;
+    const imgIndex = e.currentTarget.dataset.imgindex;
+    const key = `list[${menuIndex}].detailList[${imgIndex}].isImgLoaded`;
+    this.setData({ [key]: true });
+  },
+
+  onImageError(e) {
+    const menuIndex = e.currentTarget.dataset.menuindex;
+    const imgIndex = e.currentTarget.dataset.imgindex;
+    const keyLoaded = `list[${menuIndex}].detailList[${imgIndex}].isImgLoaded`;
+    const keyError = `list[${menuIndex}].detailList[${imgIndex}].hasImgError`;
+    this.setData({ [keyLoaded]: true, [keyError]: true });
   },
 
   // 点击左侧导航项

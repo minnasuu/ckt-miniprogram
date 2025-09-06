@@ -16,7 +16,7 @@ Component({
       {
         key: 'xc',
         title: '线材种类&特性',
-        image: 'https://suminhan.cn/ckt/images/xc/cs01.jpg',
+        image: 'https://suminhan.cn/ckt/images/xc/chn01.jpg',
         content: '适用于钩针编织或棒针编织，常见纱线种类及其特点整理。',
         level: '⭐️⭐️⭐️',
         link: '/pages/tutorial/adbout-wave/xc/index'
