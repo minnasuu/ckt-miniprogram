@@ -1,4 +1,5 @@
 {
+  "enablePullDownRefresh": false,
   "usingComponents": {
     "custom-header": "/components/custom-header/index",
     "custom-tabbar": "/components/custom-tabbar/index",

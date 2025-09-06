@@ -30,6 +30,8 @@
                   src="{{detail.img_src || detail.img}}" 
                   mode="widthFix"
                   data-imgindex="{{index}}"
+                  data-imgurl="{{detail.img_src || detail.img}}"
+                  bindtap="onImageTap"
                   bindload="onImageLoad"
                   binderror="onImageError"
                 ></image>
