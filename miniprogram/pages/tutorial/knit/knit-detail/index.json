@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "custom-header": "/components/custom-header/index",
-    "loading": "/components/common/loading/index"
+    "menu-content-page": "/pages/tutorial/components/menu-content-page/index"
   }
 }

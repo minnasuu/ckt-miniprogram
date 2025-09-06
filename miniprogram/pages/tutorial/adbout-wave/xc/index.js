@@ -7,7 +7,8 @@ Page({
   data: {
     list: [],
     selectedIndex: 0, // 当前选中的导航项索引
-    isLoading: true // 页面数据加载态
+    isLoading: true, // 页面数据加载态
+    currentItem: null
   },
 
   /**
@@ -36,7 +37,8 @@ Page({
             }
           })
           this.setData({
-            list: newData
+            list: newData,
+            currentItem: newData[this.data.selectedIndex]
           })
         },
         fail: () => { },
@@ -47,25 +49,37 @@ Page({
   },
 
   onImageLoad(e) {
-    const menuIndex = e.currentTarget.dataset.menuindex;
-    const imgIndex = e.currentTarget.dataset.imgindex;
-    const key = `list[${menuIndex}].detailList[${imgIndex}].isImgLoaded`;
-    this.setData({ [key]: true });
+    const imgIndex = e.detail?.imgIndex ?? e.currentTarget.dataset.imgindex;
+    const currentItem = this.data.list[this.data.selectedIndex];
+    const nextItem = { ...currentItem };
+    const listKey = currentItem.imgList ? 'imgList' : 'detailList';
+    const newList = nextItem[listKey].slice();
+    newList[imgIndex] = { ...newList[imgIndex], isImgLoaded: true };
+    nextItem[listKey] = newList;
+    const nextAll = this.data.list.slice();
+    nextAll[this.data.selectedIndex] = nextItem;
+    this.setData({ list: nextAll, currentItem: nextItem });
   },
 
   onImageError(e) {
-    const menuIndex = e.currentTarget.dataset.menuindex;
-    const imgIndex = e.currentTarget.dataset.imgindex;
-    const keyLoaded = `list[${menuIndex}].detailList[${imgIndex}].isImgLoaded`;
-    const keyError = `list[${menuIndex}].detailList[${imgIndex}].hasImgError`;
-    this.setData({ [keyLoaded]: true, [keyError]: true });
+    const imgIndex = e.detail?.imgIndex ?? e.currentTarget.dataset.imgindex;
+    const currentItem = this.data.list[this.data.selectedIndex];
+    const nextItem = { ...currentItem };
+    const listKey = currentItem.imgList ? 'imgList' : 'detailList';
+    const newList = nextItem[listKey].slice();
+    newList[imgIndex] = { ...newList[imgIndex], isImgLoaded: true, hasImgError: true };
+    nextItem[listKey] = newList;
+    const nextAll = this.data.list.slice();
+    nextAll[this.data.selectedIndex] = nextItem;
+    this.setData({ list: nextAll, currentItem: nextItem });
   },
 
   // 点击左侧导航项
   onMenuClick(e) {
-    const index = e.currentTarget.dataset.index;
+    const index = e.detail?.index ?? e.currentTarget.dataset.index;
     this.setData({
-      selectedIndex: index
+      selectedIndex: index,
+      currentItem: this.data.list[index]
     });
   },
 

@@ -1,53 +1,10 @@
-<!--pages/tutorial/adbout-wave/crochet-base/index.wxml-->
-<view class="crochet-base-container">
-  <custom-header title="{{title}}" showBack showBorder></custom-header>
-  <view class="crochet-base-content">
-    <!-- 左侧导航 -->
-    <view class="crochet-base-menu">
-      <view 
-        class="crochet-base-menu-item {{selectedIndex === index ? 'crochet-base-menu-item-active' : ''}}" 
-        wx:for="{{list}}" 
-        wx:key="index"
-        data-index="{{index}}"
-        bindtap="onMenuClick"
-      >
-        <view class="crochet-base-menu-item-title">{{item.title}}</view>
-      </view>
-      <view class="crochet-base-menu-indicator" style="transform: translateY({{selectedIndex*48+18}}px);"></view>
-    </view>
-    
-    <!-- 右侧内容 -->
-    <view class="crochet-base-content-right">
-      <view class="crochet-base-item" wx:if="{{list[selectedIndex]}}">
-        <view class="crochet-base-item-title">{{list[selectedIndex].title}}</view>
-        <view class="crochet-base-item-content">
-          <view class="crochet-base-item-desc">{{list[selectedIndex].desc}}</view>
-        <view wx:if="{{list[selectedIndex].imgList.length}}" class="crochet-base-details">
-          <view class="crochet-base-details-item" wx:for="{{list[selectedIndex].imgList}}" wx:key="index" wx:for-item="detail">
-            <view wx:if="{{detail.img_des}}" class="crochet-base-details-item-desc">{{detail.img_des}}</view>
-            <view class="crochet-base-img-wrapper">
-              <view wx:if="{{!detail.isImgLoaded}}" class="crochet-base-img-placeholder">
-              </view>
-              <image
-                wx:if="{{detail.img_src && !detail.hasImgError}}"
-                class="crochet-base-details-item-img {{detail.isImgLoaded ? 'show' : 'hide'}}"
-                src="{{detail.img_src}}"
-                mode="widthFix"
-                data-menuindex="{{selectedIndex}}"
-                data-imgindex="{{index}}"
-                bindload="onImageLoad"
-                binderror="onImageError"
-              ></image>
-              <view wx:if="{{detail.hasImgError}}" class="crochet-base-img-error">图片加载失败</view>
-            </view>
-          </view>
-        </view>
-        </view>
-      </view>
-    </view>
-  </view>
-  <!-- 页面加载中遮罩 -->
-  <view wx:if="{{isLoading}}" class="crochet-base-loading-mask">
-    <loading></loading>
-  </view>
-</view>
+<menu-content-page 
+  title="{{title}}"
+  list="{{list}}"
+  currentItem="{{list[selectedIndex]}}"
+  selectedIndex="{{selectedIndex}}"
+  isLoading="{{isLoading}}"
+  bind:menutap="onMenuClick"
+  bind:imageload="onImageLoad"
+  bind:imageerror="onImageError"
+/>

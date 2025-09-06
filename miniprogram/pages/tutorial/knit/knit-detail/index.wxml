@@ -1,54 +1,11 @@
 <!--pages/tutorial/knit/knit-detail/index.wxml-->
-<view class="knit-detail-container">
-  <custom-header title="{{title}}" showBack showBorder></custom-header>
-  <view class="knit-detail-content">
-    <!-- 左侧导航 -->
-    <view class="knit-detail-menu">
-      <view 
-        class="knit-detail-menu-item {{selectedIndex === index ? 'knit-detail-menu-item-active' : ''}}" 
-        wx:for="{{list}}" 
-        wx:key="index"
-        data-index="{{index}}"
-        bindtap="onMenuClick"
-      >
-        <view class="knit-detail-menu-item-title">{{item.title}}</view>
-      </view>
-      <view class="knit-detail-menu-indicator" style="transform: translateY({{selectedIndex*48+18}}px);"></view>
-    </view>
-    
-    <!-- 右侧内容 -->
-    <view class="knit-detail-content-right">
-      <view class="knit-detail-item" wx:if="{{list[selectedIndex]}}">
-        <view class="knit-detail-item-title">{{list[selectedIndex].title}}</view>
-        <view class="knit-detail-item-content">
-          <view wx:if="{{list[selectedIndex].desc}}" class="knit-detail-item-desc">{{list[selectedIndex].desc}}</view>
-        <view wx:if="{{list[selectedIndex].imgList.length}}" class="knit-detail-details">
-          <view class="knit-detail-details-item" wx:for="{{list[selectedIndex].imgList}}" wx:key="index" wx:for-item="detail">
-            <view wx:if="{{detail.img_des}}" class="knit-detail-details-item-desc">{{detail.img_des}}</view>
-            <view class="knit-detail-img-wrapper">
-              <view wx:if="{{!detail.isImgLoaded}}" class="knit-detail-img-placeholder">
-              </view>
-              <image 
-                wx:if="{{detail.img_src && !detail.hasImgError}}"
-                class="knit-detail-details-item-img {{detail.isImgLoaded ? 'show' : 'hide'}}" 
-                src="{{detail.img_src}}" 
-                mode="widthFix"
-                data-menuindex="{{selectedIndex}}"
-                data-imgindex="{{index}}"
-                bindload="onImageLoad"
-                binderror="onImageError"
-              ></image>
-              <view wx:if="{{detail.hasImgError}}" class="knit-detail-img-error">图片加载失败</view>
-            </view>
-          </view>
-        </view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 页面加载中遮罩 -->
-  <view wx:if="{{isLoading}}" class="knit-detail-loading-mask">
-    <loading></loading>
-  </view>
-</view>
+<menu-content-page 
+  title="{{title}}"
+  list="{{list}}"
+  currentItem="{{list[selectedIndex]}}"
+  selectedIndex="{{selectedIndex}}"
+  isLoading="{{isLoading}}"
+  bind:menutap="onMenuClick"
+  bind:imageload="onImageLoad"
+  bind:imageerror="onImageError"
+/>

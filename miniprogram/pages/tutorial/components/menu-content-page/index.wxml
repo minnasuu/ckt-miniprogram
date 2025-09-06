@@ -1,0 +1,46 @@
+<view class="mcpage-container">
+  <custom-header title="{{title}}" showBack showBorder></custom-header>
+  <view class="mcpage-content">
+    <view class="mcpage-menu">
+      <view 
+        class="mcpage-menu-item {{selectedIndex === index ? 'active' : ''}}" 
+        wx:for="{{list}}" 
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onMenuTap"
+      >
+        <view class="mcpage-menu-item-title">{{item.title}}</view>
+      </view>
+      <view class="mcpage-menu-indicator" style="transform: translateY({{selectedIndex*48+18}}px);"></view>
+    </view>
+
+    <view class="mcpage-content-right">
+      <view class="mcpage-item" wx:if="{{currentItem}}">
+        <view class="mcpage-item-title">{{currentItem.title}}</view>
+        <view class="mcpage-item-content">
+          <view wx:if="{{currentItem.desc}}" class="mcpage-item-desc">{{currentItem.desc}}</view>
+          <view wx:if="{{currentItem.imgList || currentItem.detailList}}" class="mcpage-details">
+            <view class="mcpage-details-item" wx:for="{{(currentItem.imgList || currentItem.detailList)}}" wx:key="index" wx:for-item="detail">
+              <view wx:if="{{detail.img_des || detail.desc}}" class="mcpage-details-item-desc">{{detail.img_des || detail.desc}}</view>
+              <view class="mcpage-img-wrapper">
+                <view wx:if="{{!detail.isImgLoaded}}" class="mcpage-img-placeholder"></view>
+                <image 
+                  wx:if="{{(detail.img_src || detail.img) && !detail.hasImgError}}" 
+                  class="mcpage-details-item-img {{detail.isImgLoaded ? 'show' : 'hide'}}" 
+                  src="{{detail.img_src || detail.img}}" 
+                  mode="widthFix"
+                  data-imgindex="{{index}}"
+                  bindload="onImageLoad"
+                  binderror="onImageError"
+                ></image>
+                <view wx:if="{{detail.hasImgError}}" class="mcpage-img-error">图片加载失败</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{isLoading}}" class="mcpage-loading-mask"></view>
+</view>
+
