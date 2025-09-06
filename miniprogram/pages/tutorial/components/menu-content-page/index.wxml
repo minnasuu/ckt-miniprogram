@@ -22,7 +22,7 @@
           <view wx:if="{{currentItem.imgList || currentItem.detailList}}" class="mcpage-details">
             <view class="mcpage-details-item" wx:for="{{(currentItem.imgList || currentItem.detailList)}}" wx:key="index" wx:for-item="detail">
               <view wx:if="{{detail.img_des || detail.desc}}" class="mcpage-details-item-desc">{{detail.img_des || detail.desc}}</view>
-              <view class="mcpage-img-wrapper">
+              <view wx:if="{{detail.img_src || detail.img}}" class="mcpage-img-wrapper">
                 <view wx:if="{{!detail.isImgLoaded}}" class="mcpage-img-placeholder"></view>
                 <image 
                   wx:if="{{(detail.img_src || detail.img) && !detail.hasImgError}}" 
