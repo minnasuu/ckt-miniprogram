@@ -16,6 +16,7 @@ Component({
       {
         key: "1",
       title:"棒针针法（初级）",
+      image: 'https://suminhan.cn/ckt/images/knit/bzchua.jpg',
       content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
       level:'⭐️⭐️⭐️',
       link: '/pages/tutorial/knit/knit-detail/index?index=0'
@@ -23,6 +24,7 @@ Component({
     {
       key: "2",
     title:"棒针起针与收针",
+    image:'https://suminhan.cn/ckt/images/knit/qzhen1.jpg',
     content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
     level:'⭐️⭐️⭐️',
     link: '/pages/tutorial/knit/knit-detail/index?index=1'

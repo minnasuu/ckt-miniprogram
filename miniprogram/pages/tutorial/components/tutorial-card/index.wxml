@@ -5,7 +5,8 @@
     <!-- 左书页 -->
     <view class="book-page-left">
       <view class="page-content">
-        <view class="tutorial-card-title">
+        <image wx:if="{{item.image}}" src="{{item.image}}" class="tutorial-card-image" mode="aspectFit"/>
+        <view wx:else class="tutorial-card-title">
           <text>{{item.title}}</text>
         </view>
       </view>
@@ -15,6 +16,9 @@
     <view class="book-page-right">
       <view class="page-content">
         <view class="page-body">
+          <view wx:if="{{item.image}}" class="tutorial-card-title">
+          <text>{{item.title}}</text>
+        </view>
           <view class="tutorial-card-content">
             <text>{{item.content}}</text>
           </view>

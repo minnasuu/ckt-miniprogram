@@ -15,7 +15,7 @@ Component({
     list: [
       {key: "1",
       title:"钩针针法（初级）",
-      image:'/assets/images/tutorial/crochet-basic/1.png',
+      image:'https://suminhan.cn/ckt/images/crochet/szhen4.jpg',
       content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
       level:'⭐️⭐️⭐️',
       link: '/pages/tutorial/crochet/crochet-base/index?index=0'
@@ -23,7 +23,7 @@ Component({
     {
       key: "2",
       title:"钩针起针方法",
-      image:'/assets/images/tutorial/crochet-basic/1.png',
+      image:'https://suminhan.cn/ckt/images/crochet/ybzhen3.jpg',
       content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
       level:'⭐️⭐️⭐️',
       link: '/pages/tutorial/crochet/crochet-base/index?index=1'
@@ -31,7 +31,7 @@ Component({
     {
       key: "3",
       title:"钩针符号表",
-      image:'/assets/images/tutorial/crochet-basic/1.png',
+      image:'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
       content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
       level:'⭐️⭐️⭐️',
       link: '/pages/tutorial/crochet/crochet-base/index?index=2'
