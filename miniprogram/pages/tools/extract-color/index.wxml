@@ -1,5 +1,6 @@
-<view class="extract-color-view" style="padding-top: {{statusBarHeight + 44}}px">
+<view class="extract-color-view">
   <custom-header title="提取图片主色" showBack></custom-header>
+  <view class="extract-color-content">
   <!-- 上传框 -->
   <view class="extract-color-step-container">
     <part-title title="Step 01：上传图片" subTitle="点击来上传图片，以像素为单位对颜色计数"></part-title>
@@ -65,6 +66,7 @@
         </button>
       </view>
     </view>
+  </view>
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
 </view>

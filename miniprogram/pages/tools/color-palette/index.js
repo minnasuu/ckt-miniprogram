@@ -1297,7 +1297,6 @@ const ColorFIll_Color_Data = [
 ]
 Page({
   data: {
-    statusBarHeight: 88,
     screenWidth: 375,
     showAlert: false,
     alertMessage: '',
@@ -1349,7 +1348,6 @@ Page({
   onLoad() {
     const systemInfo = wx.getSystemInfoSync();
     this.setData({
-      statusBarHeight: systemInfo.statusBarHeight,
       screenWidth: systemInfo.screenWidth,
       curColorsData: this.data.colorsData.filter(item => item.type === this.data.activeColorTab)[0].colors
     });

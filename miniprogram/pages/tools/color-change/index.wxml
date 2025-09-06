@@ -1,7 +1,7 @@
 <!--pages/tools/color-change/index.wxml-->
 <view class="color-change-container">
   <custom-header title="" title="图片换色" showBack background="transparent"></custom-header>
-  <view class="color-change-content" style="padding-top: {{statusBarHeight+44}}px;">
+  <view class="color-change-content">
     <view class="step-container">
         <part-title title="Step 01：上传图片"></part-title>
         <view class="upload-section">
@@ -28,4 +28,4 @@
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
 </view>
-<color-picker-drawer show="{{showColorPicker}}" value="{{currentColor}}" bind:confirm="onColorConfirm" bind:cancel="onColorCancel" bind:close="onColorCancel"></color-picker-drawer>
+<color-picker-drawer wx:if="{{showColorPicker}}" show="{{showColorPicker}}" value="{{currentColor}}" bind:confirm="onColorConfirm" bind:cancel="onColorCancel" bind:close="onColorCancel"></color-picker-drawer>

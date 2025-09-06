@@ -1,7 +1,6 @@
 // 提取图片主色页面
 Page({
   data: {
-    statusBarHeight: 0,
     unitImageUrl: "https://croknittime.com/images/colorcard_default.jpeg",
     unitColorArr: [ { id: "1", value: "#b9a78f" },
       { id: "2", value: "#7e6d5b" },
@@ -36,10 +35,6 @@ Page({
   
   onLoad() {
     this.WxmlToCanvas = this.selectComponent('#wxml-to-canvas');
-    const systemInfo = wx.getSystemInfoSync();
-    this.setData({
-      statusBarHeight: systemInfo.statusBarHeight
-    });
     // 获取当前登录用户信息
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {

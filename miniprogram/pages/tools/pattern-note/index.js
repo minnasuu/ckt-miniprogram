@@ -1,6 +1,5 @@
 Page({
   data: {
-    statusBarHeight: 0,
     patternTitle: '', // 图解标题
     isEditingTitle: false, // 是否正在编辑标题
     initData:[
@@ -43,11 +42,6 @@ Page({
   },
 
   async onLoad(options) {
-    const systemInfo = wx.getSystemInfoSync();
-
-    this.setData({
-      statusBarHeight: systemInfo.statusBarHeight
-    });
 
     // 检查是否有传入的图解ID
     if (options.id) {

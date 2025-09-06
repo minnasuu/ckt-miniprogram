@@ -3,7 +3,6 @@ const LoginUtils = require('../../../utils/loginUtils');
 
 Page({
   data: {
-    statusBarHeight: 0,
     imageUrl: '',
     imgSize: {
       w: 100,
@@ -25,10 +24,6 @@ Page({
   },
   
   onLoad() {
-    const systemInfo = wx.getSystemInfoSync();
-    this.setData({
-      statusBarHeight: systemInfo.statusBarHeight
-    });
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
       this.setData({

@@ -3,7 +3,6 @@ const LoginUtils = require('../../../utils/loginUtils');
 
 Page({
   data: {
-    statusBarHeight: 0,
     screenWidth: 375,
     screenHeight: 812,
     canvasWidth: 12, // 像素画布列数
@@ -28,13 +27,13 @@ Page({
     showColorPicker: false,
     currentPickerColor: '#202020',
     currentPickerType: '', // 'brush' 或 'canvas'
+    isEraser: false,
     saveLoading: false
   },
   
   onLoad() {
     const systemInfo = wx.getSystemInfoSync();
     this.setData({
-      statusBarHeight: systemInfo.statusBarHeight,
       screenWidth: systemInfo.screenWidth-48,
       screenHeight: systemInfo.windowHeight
     });
@@ -187,11 +186,11 @@ Page({
   // 绘制像素
   drawPixel(e) {
     const { x, y } = e.currentTarget.dataset;
-    const { canvasData, brushColor } = this.data;
+    const { canvasData, brushColor, canvasColor } = this.data;
     
     // 更新画布数据
     const newCanvasData = [...canvasData];
-    newCanvasData[y][x] = brushColor;
+    newCanvasData[y][x] = this.data.isEraser ? canvasColor : brushColor;
     
     this.setData({ canvasData: newCanvasData });
   },
@@ -545,6 +544,11 @@ Page({
     const { color } = e.detail;
     this.setData({
       currentPickerColor: color
+    });
+  },
+  eraserChange() {
+    this.setData({
+      isEraser: !this.data.isEraser
     });
   }
 });

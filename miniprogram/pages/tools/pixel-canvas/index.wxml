@@ -1,6 +1,6 @@
 <view class="pixel-canvas-container">
   <custom-header title="像素画板" showBack></custom-header>
-  <view class="content" style="padding-top: {{statusBarHeight + 44 + 12}}px;">
+  <view class="content">
     <!-- 画布区域 -->
     <view class="canvas-container">
       <view class="pixel-canvas" style="width: 100%;height:{{canvasHeight*Math.min(screenWidth/canvasWidth,24)}}px">
@@ -51,7 +51,7 @@
         <view class="color-block-container" bindtap="showBrushColorPicker">
           <view class="color-block" style="background-color: {{brushColor}}"></view>
         </view>
-        <button class="eraser-button"><view class="eraser-icon"></view></button>
+        <button class="eraser-button {{isEraser?'active':''}}" bindtap="eraserChange"><view class="eraser-icon"></view></button>
       </view>
     </view>
 

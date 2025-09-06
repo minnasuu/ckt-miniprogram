@@ -1,5 +1,6 @@
-<view class="tools-view" style="padding-top: {{statusBarHeight + 44}}px">
+<view class="tools-view">
   <custom-header title="图片转像素" showBack></custom-header>
+    <view class="tools-content">
     <!-- 上传框 -->
     <view class="tools-step-container">
       <part-title
@@ -62,5 +63,6 @@
       </view>
     </view>
     <text class="alert-text">温馨提示：由于不同设备对canvas兼容性不同，转换效果可能存在差异，可以更换设备再次尝试。</text>
+    </view>
      <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
 </view>
