@@ -7,5 +7,6 @@
     "color-picker": "/components/common/color-picker/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "配色"
+  "navigationBarTitleText": "配色",
+  "enablePullDownRefresh": false
 }

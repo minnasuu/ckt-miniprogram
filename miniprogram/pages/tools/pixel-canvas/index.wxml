@@ -3,7 +3,12 @@
   <view class="content">
     <!-- 画布区域 -->
     <view class="canvas-container">
-      <view class="pixel-canvas" style="width: 100%;height:{{canvasHeight*Math.min(screenWidth/canvasWidth,24)}}px">
+      <view class="pixel-canvas" 
+            style="width: 100%;height:{{canvasHeight*Math.min(screenWidth/canvasWidth,24)}}px"
+            bindtouchstart="onTouchStart"
+            bindtouchmove="onTouchMove"
+            bindtouchend="onTouchEnd"
+            catchtouchmove="onTouchMove">
         <view class="canvas-row" wx:for="{{canvasData}}" wx:for-item="row" wx:for-index="y" wx:key="y">
           <view class="pixel" wx:for="{{row}}" wx:for-item="pixel" wx:for-index="x" wx:key="x" 
               style="background-color: {{pixel}}; width: {{screenWidth/canvasWidth}}px; max-width:24px;border-color:{{borderStyle === '1'?'transparent':borderStyle ==='2'?canvasColor:'var(--ckt-gray-4)'}};" 
@@ -86,7 +91,14 @@
     </view>
   </view>
   <movable-area scale-area class="full-pixel-canvas-container {{fullCanvas?'fullCanvas':''}}" style="padding-top: {{statusBarHeight + 44 + 12}}px;width:100vw;height:100vh;">
-    <movable-view direction="all" class="pixel-canvas" x="{{(screenWidth + 48 - canvasWidth * 32)/2}}" y="{{(screenHeight+statusBarHeight - canvasHeight * 32)/2}}" style="width: {{canvasWidth*32}}px;height:{{canvasHeight*32}}px;">
+    <movable-view direction="all" class="pixel-canvas" 
+                  x="{{(screenWidth + 48 - canvasWidth * 32)/2}}" 
+                  y="{{(screenHeight+statusBarHeight - canvasHeight * 32)/2}}" 
+                  style="width: {{canvasWidth*32}}px;height:{{canvasHeight*32}}px;"
+                  bindtouchstart="onTouchStart"
+                  bindtouchmove="onTouchMove"
+                  bindtouchend="onTouchEnd"
+                  catchtouchmove="onTouchMove">
         <view class="canvas-row" wx:for="{{canvasData}}" wx:for-item="row" wx:for-index="y" wx:key="y">
           <view class="pixel" wx:for="{{row}}" wx:for-item="pixel" wx:for-index="x" wx:key="x" 
               style="background-color: {{pixel}}; width: 32px;border-color:{{borderStyle === 1 ?'transparent':borderStyle==='2'? canvasColor:'var(--ckt-gray-4)'}};"

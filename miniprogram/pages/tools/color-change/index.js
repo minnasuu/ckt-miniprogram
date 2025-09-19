@@ -13,6 +13,7 @@ Page({
     imgWidth: 0,
     imgHeight: 0,
     imgRatio: 0,
+    colorCount: 6,
     colorArr:[],
     newColorArr:['#FFF','#FFF','#FFF','#FFF','#FFF','#FFF'],
     showAlert: false,
@@ -147,7 +148,7 @@ Page({
             if (a < 128 || (r > 240 && g > 240 && b > 240)) continue;
 
             // 计算色相
-            const [hue, saturation, lightness] = this.rgbToHsl(r, g, b);
+            const [hue, saturation] = this.rgbToHsl(r, g, b);
 
             // 忽略低饱和度的颜色（接近灰色）
             if (saturation < 15) continue;
@@ -167,7 +168,7 @@ Page({
           // 基于色相选择主要颜色
           const dominantHues = Object.entries(hueMap)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 3)
+            .slice(0, this.data.colorCount)
             .map(([hue]) => parseInt(hue));
 
           // 为每个主要色相选择最具代表性的颜色

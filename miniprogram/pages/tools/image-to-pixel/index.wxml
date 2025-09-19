@@ -49,7 +49,7 @@
             <image wx:if="{{pixelatedImageSrc}}" src="{{pixelatedImageSrc}}" style="width: {{resultWidth}}px;height:{{resultWidth*imgSize.w/imgSize.h}}px;" mode="aspectFit"/>
             <view
               class="pixel-loading {{loading ? '':'hide'}}">
-              <loading></loading>
+              <loading color="rgba(0,0,0,0.1)"></loading>
             </view>
           </view>
           <!-- <text>合并算法</text> -->

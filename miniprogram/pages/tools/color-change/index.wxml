@@ -18,8 +18,8 @@
       <button class="generate-button" type="primary" bind:tap="generate" disabled="{{!imageUrl || generateLoading || !hasModified}}">{{generateLoading?'转换中...':'开始转换'}}</button>
       <button disabled="{{!hasModified}}" class="clear-button" bind:tap="clearCanvas">清除效果</button>
     </view>
-    <view class="canvas-container" wx:if="{{imageUrl}}">
-      <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}};opacity: {{showColorPicker ? 0 : 1}}"></canvas>
+    <view class="canvas-container" wx:if="{{imageUrl}}" style="opacity: {{showColorPicker?0:1}};">
+      <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
     </view>
     <view wx:if="{{imageUrl}}" class="buttons-container">
       <button class="download-button" disabled="{{!hasModified||!finished}}" bind:tap="downloadColorCard">下载</button>
@@ -28,4 +28,4 @@
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
 </view>
-<color-picker-drawer wx:if="{{showColorPicker}}" show="{{showColorPicker}}" value="{{currentColor}}" bind:confirm="onColorConfirm" bind:cancel="onColorCancel" bind:close="onColorCancel"></color-picker-drawer>
+<color-picker-drawer show="{{showColorPicker}}" value="{{currentColor}}" bind:confirm="onColorConfirm" bind:cancel="onColorCancel" bind:close="onColorCancel"></color-picker-drawer>

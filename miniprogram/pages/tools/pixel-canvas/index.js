@@ -28,7 +28,11 @@ Page({
     currentPickerColor: '#202020',
     currentPickerType: '', // 'brush' 或 'canvas'
     isEraser: false,
-    saveLoading: false
+    saveLoading: false,
+    // 连续绘制相关
+    isDrawing: false, // 是否正在绘制
+    lastDrawnPixel: null, // 上一个绘制的像素位置，避免重复绘制
+    canvasRect: null // 画布区域信息，用于坐标转换
   },
   
   onLoad() {
@@ -53,6 +57,23 @@ Page({
         author: userInfo
       });
     }
+
+    // 延迟获取画布区域信息
+    setTimeout(() => {
+      this.updateCanvasRect();
+    }, 100);
+  },
+
+  // 更新画布区域信息
+  updateCanvasRect() {
+    const query = wx.createSelectorQuery();
+    query.select('.pixel-canvas').boundingClientRect((rect) => {
+      if (rect) {
+        this.setData({
+          canvasRect: rect
+        });
+      }
+    }).exec();
   },
   showMessage(msg) {
     this.setData({
@@ -183,27 +204,101 @@ Page({
     });
   },
   
-  // 绘制像素
-  drawPixel(e) {
-    const { x, y } = e.currentTarget.dataset;
-    const { canvasData, brushColor, canvasColor } = this.data;
+  // 开始绘制（触摸开始）
+  onTouchStart(e) {
+    this.setData({
+      isDrawing: true,
+      lastDrawnPixel: null
+    });
+    // 立即绘制当前像素
+    this.drawPixelAtTouch(e);
+  },
+
+  // 绘制过程中（触摸移动）
+  onTouchMove(e) {
+    if (!this.data.isDrawing) return;
+    this.drawPixelAtTouch(e);
+  },
+
+  // 结束绘制（触摸结束）
+  onTouchEnd(e) {
+    this.setData({
+      isDrawing: false,
+      lastDrawnPixel: null
+    });
+  },
+
+  // 根据触摸事件绘制像素
+  drawPixelAtTouch(e) {
+    const pixelInfo = this.getPixelFromTouch(e);
+    if (!pixelInfo) return;
+    
+    const { x, y } = pixelInfo;
+    const { lastDrawnPixel } = this.data;
+    
+    // 避免重复绘制同一个像素
+    if (lastDrawnPixel && lastDrawnPixel.x === x && lastDrawnPixel.y === y) {
+      return;
+    }
+    
+    this.drawPixelAt(x, y);
+    this.setData({
+      lastDrawnPixel: { x, y }
+    });
+  },
+
+  // 根据触摸事件获取像素坐标（优化版本，使用缓存的rect信息）
+  getPixelFromTouch(e) {
+    const touch = e.touches[0];
+    if (!touch) return null;
+    
+    const { canvasRect, canvasWidth, canvasHeight, fullCanvas, screenWidth } = this.data;
+    
+    // 如果没有缓存的rect信息，尝试实时获取（但这会影响性能）
+    if (!canvasRect) {
+      this.updateCanvasRect();
+      return null;
+    }
+    
+    const relativeX = touch.clientX - canvasRect.left;
+    const relativeY = touch.clientY - canvasRect.top;
+    
+    let pixelWidth, pixelHeight;
+    if (fullCanvas) {
+      // 全屏模式下，像素大小固定为32px
+      pixelWidth = pixelHeight = 32;
+    } else {
+      // 普通模式下，像素大小根据屏幕宽度计算
+      pixelWidth = Math.min(screenWidth / canvasWidth, 24);
+      pixelHeight = pixelWidth;
+    }
+    
+    const x = Math.floor(relativeX / pixelWidth);
+    const y = Math.floor(relativeY / pixelHeight);
+    
+    // 检查坐标是否在有效范围内
+    if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
+      return { x, y };
+    } else {
+      return null;
+    }
+  },
+
+  // 在指定坐标绘制像素
+  drawPixelAt(x, y) {
+    const { canvasData, brushColor, canvasColor, isEraser } = this.data;
     
     // 更新画布数据
     const newCanvasData = [...canvasData];
-    newCanvasData[y][x] = this.data.isEraser ? canvasColor : brushColor;
+    newCanvasData[y][x] = isEraser ? canvasColor : brushColor;
     
     this.setData({ canvasData: newCanvasData });
   },
-  // 处理触摸移动事件
-  onTouchMovePixel(e) {
+
+  // 绘制像素（点击事件，保持兼容性）
+  drawPixel(e) {
     const { x, y } = e.currentTarget.dataset;
-    const { canvasData, brushColor } = this.data;
-    
-    // 更新画布数据
-    const newCanvasData = [...canvasData];
-    newCanvasData[y][x] = brushColor;
-    
-    this.setData({ canvasData: newCanvasData });
+    this.drawPixelAt(x, y);
   },
   
   // 清除画布
@@ -347,6 +442,10 @@ Page({
         this.setData({
           previousCanvasColor: this.data.canvasColor
         });
+        // 更新画布区域信息
+        setTimeout(() => {
+          this.updateCanvasRect();
+        }, 100);
       });
     }
   },
@@ -361,18 +460,32 @@ Page({
         this.setData({
           previousCanvasColor: this.data.canvasColor
         });
+        // 更新画布区域信息
+        setTimeout(() => {
+          this.updateCanvasRect();
+        }, 100);
       });
     }
   },
   onFullCanvas(){
     this.setData({
       fullCanvas: true
-    })
+    }, () => {
+      // 切换到全屏模式后更新画布区域信息
+      setTimeout(() => {
+        this.updateCanvasRect();
+      }, 100);
+    });
   },
   onZoomOutCanvas(){
     this.setData({
       fullCanvas: false
-    })
+    }, () => {
+      // 退出全屏模式后更新画布区域信息
+      setTimeout(() => {
+        this.updateCanvasRect();
+      }, 100);
+    });
   },
   // 在canvas上绘制像素数据
   drawCanvasFromPixelData(canvas, canvasData, canvasWidth, canvasHeight, pixelSize, borderStyle = '3', canvasColor = '#FFFFFF') {
@@ -449,12 +562,22 @@ Page({
   onFullCanvas(){
     this.setData({
       fullCanvas: true
-    })
+    }, () => {
+      // 切换到全屏模式后更新画布区域信息
+      setTimeout(() => {
+        this.updateCanvasRect();
+      }, 100);
+    });
   },
   onZoomOutCanvas(){
     this.setData({
       fullCanvas: false
-    })
+    }, () => {
+      // 退出全屏模式后更新画布区域信息
+      setTimeout(() => {
+        this.updateCanvasRect();
+      }, 100);
+    });
   },
   onGridShowChange(e){ 
     const {type} = e.currentTarget.dataset;
@@ -478,6 +601,10 @@ Page({
       this.setData({
         previousCanvasColor: this.data.canvasColor
       });
+      // 更新画布区域信息
+      setTimeout(() => {
+        this.updateCanvasRect();
+      }, 100);
     });
   },
 
