@@ -3,9 +3,9 @@ Page({
   data: {
     statusBarHeight: 0,
     navList: [
-      { name: '关于编织', index: 0 },
       { name: '钩织', index: 1 },
       { name: '棒织', index: 2 },
+      { name: '关于编织', index: 0 },
       // 可以根据需要添加更多导航项
     ],
     currentSwiperIndex: 0

@@ -63,6 +63,7 @@ module.exports.formatHistoryTime = formatHistoryTime;
                             bindinput="handlePatternTitleChange"
                         ></input>
                     </view>
+                    <view class="title-tips">（双击修改图解名称）</view>
                 </view>
                 <view class="pn-header">
                     <view class="pn-header-title-list">
@@ -256,6 +257,7 @@ module.exports.formatHistoryTime = formatHistoryTime;
     </view>
 </view>
  <view
+ wx:if="{{showPreviewDialog}}"
     class="pattern-preview-dialog {{!showPreviewDialog? 'hide':''}}"
     bindtap="handlePreviewDialogClose"
 >

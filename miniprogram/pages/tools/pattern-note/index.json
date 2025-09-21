@@ -1,7 +1,7 @@
 {
   "usingComponents": {
     "custom-header": "/components/custom-header/index",
-    "custom-checkbox": "/components/common/checkbox/index",
+    "custom-checkbox": "/components/common/custom-checkbox/index",
     "alert-message": "/components/common/alert-message/index",
     "close-icon": "/components/icon/close-icon/index",
     "drawer-layout": "/components/common/drawer-layout/index"

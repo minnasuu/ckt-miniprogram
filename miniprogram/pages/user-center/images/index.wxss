@@ -1,6 +1,5 @@
 .images-container {
   min-height: 100vh;
-  padding-top: 144rpx;
 }
 
 .content-container {

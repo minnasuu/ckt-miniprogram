@@ -8,7 +8,7 @@
         subTitle="点击上传图片，以图片大小为基础自动调整像素格范围"
       ></part-title>
       <view class="upload-section">
-        <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" maxSize="{{500*1024}}" bind:imageSelected="onImageSelected"></image-uploader>
+        <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片（200KB以内）" maxSize="{{200*1024}}" bind:imageSelected="onImageSelected"></image-uploader>
       </view>
     </view>
 
@@ -62,7 +62,7 @@
         </view>
       </view>
     </view>
-    <text class="alert-text">温馨提示：由于不同设备对canvas兼容性不同，转换效果可能存在差异，可以更换设备再次尝试。</text>
+    <text class="alert-text">温馨提示：处理能力基于canvas实现，由于不同设备对canvas兼容性不同，转换效果可能存在差异。</text>
     </view>
      <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
 </view>

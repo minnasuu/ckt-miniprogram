@@ -7,14 +7,14 @@
   <view class="tutorial-content">
     <!-- 添加 swiper 组件 -->
     <swiper current="{{currentSwiperIndex}}" class="tutorial-swiper">
-    <swiper-item>
-        <about-wave></about-wave>
-      </swiper-item>
       <swiper-item>
         <crochet></crochet>
       </swiper-item>
       <swiper-item>
         <knit></knit>
+      </swiper-item>
+      <swiper-item>
+        <about-wave></about-wave>
       </swiper-item>
     </swiper>
   </view>

@@ -69,6 +69,9 @@ Page({
       imgRatio:width/height,
       tempFilePath: '' // 上传新图片时清除临时文件路径
     });
+
+    // 清空canvas
+    this.clearCanvas();
   },
   //提取图片主色入口函数
   getImgColor(){
@@ -382,7 +385,7 @@ Page({
   // 中性色开关
   onCheckboxChange(e) {
     this.setData({
-      filterChecked: e.detail,
+      filterChecked: e.detail.checked,
       filter:10
     })
     this.getImgColor();
@@ -639,6 +642,23 @@ Page({
   hideCanvasModal() {
     this.setData({
       showCanvasModal: false
+    });
+  },
+
+  // 清空canvas
+  clearCanvas() {
+    // 获取canvas上下文
+    const ctx = wx.createCanvasContext('colorCardCanvas');
+
+    // 清空canvas内容
+    ctx.clearRect(0, 0, this.data.canvasWidth || 1000, this.data.totalCanvasHeight || 1000);
+    ctx.draw();
+
+    // 重置canvas相关数据
+    this.setData({
+      canvasWidth: 0,
+      canvasHeight: 0,
+      totalCanvasHeight: 0
     });
   },
 });

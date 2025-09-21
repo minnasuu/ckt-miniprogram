@@ -29,7 +29,8 @@ Component({
   data: {
     alertMessage: '',
     showAlert: false,
-    alertType: 'none'
+    alertType: 'none',
+    loading: false // 上传加载状态
   },
   
   methods: {
@@ -44,6 +45,9 @@ Component({
         if(!this.data.multiple){
           const tempFilePath = res.tempFiles[0].tempFilePath;
 
+          // 选择完照片后显示加载状态
+          this.setData({ loading: true });
+
           // 获取图片信息
           const imageInfo = await wx.getImageInfo({
             src: tempFilePath
@@ -57,6 +61,8 @@ Component({
             const maxSizeMB = (this.data.maxSize / (1024 * 1024)).toFixed(1);
             const fileSizeMB = (fileInfo.size / (1024 * 1024)).toFixed(1);
             this.showAlert(`图片过大(${fileSizeMB}MB)，请选择小于${maxSizeMB}MB的图片`, 'error');
+            // 隐藏加载状态
+            this.setData({ loading: false });
             return;
           }
 
@@ -67,7 +73,13 @@ Component({
             height: imageInfo.height,
             size: fileInfo.size
           });
+
+          // 隐藏加载状态
+          this.setData({ loading: false });
         }else{
+          // 选择完照片后显示加载状态
+          this.setData({ loading: true });
+
           const resData = [];
           const oversizedFiles = [];
 
@@ -113,10 +125,15 @@ Component({
             const maxSizeMB = (this.data.maxSize / (1024 * 1024)).toFixed(1);
             this.showAlert(`所有图片都过大，请选择小于${maxSizeMB}MB的图片`, 'error');
           }
+
+          // 隐藏加载状态
+          this.setData({ loading: false });
         }
       } catch (error) {
         console.log('选择图片失败:', error);
         this.handleChooseMediaError(error);
+        // 隐藏加载状态
+        this.setData({ loading: false });
       }
     },
     // 处理chooseMedia的具体错误

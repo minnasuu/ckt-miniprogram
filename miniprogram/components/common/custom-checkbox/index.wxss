@@ -4,6 +4,7 @@
   gap: 12rpx;
   width: fit-content;
   flex-shrink: 0;
+  width: fit-content;
 }
 
 .checkbox {

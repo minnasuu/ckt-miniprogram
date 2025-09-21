@@ -36,6 +36,12 @@
 
 .canvas-row {
   display: flex;
+  &:not(:first-child){
+    margin-top: -1px;
+  }
+  .pixel:not(:first-child){
+    margin-left: -1px;
+  }
 }
 
 .pixel {

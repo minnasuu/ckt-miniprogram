@@ -54,7 +54,9 @@ Page({
     const resultWidth = info.screenWidth - 48;
     this.setData({
       imageUrl,
-      pixelImage: '', // 清除之前的像素图
+      // 清空之前的像素化结果与预览
+      pixelatedImageSrc: '',
+      pixelatedImageSrc2: '',
       imgSize: {
         w: width,
         h: height
@@ -64,6 +66,18 @@ Page({
       pixelSize: Math.ceil(Math.min(width, height) / 50),
       pixelMax: Math.ceil(Math.min(width, height) / 20)
     });
+    // 同步清空像素化画布内容
+    wx.createSelectorQuery()
+      .select('#pixelatedCanvasRef')
+      .fields({ node: true, size: true })
+      .exec((r) => {
+        if (!r || !r[0]) return;
+        const pixelCanvas = r[0].node;
+        const pctx = pixelCanvas.getContext('2d');
+        if (pctx) {
+          pctx.clearRect(0, 0, pixelCanvas.width, pixelCanvas.height);
+        }
+      });
     const query = wx.createSelectorQuery();
     query.select('#canvasRef')
       .fields({ node: true, size: true })
@@ -97,10 +111,8 @@ Page({
       finished: true,
       loading: true,
     });
-    // 立即开始像素化处理，无延时
-    setTimeout(() => {
-      this.pixelateImage();
-    }, 0);
+    // 立即开始像素化处理
+    this.pixelateImage();
   },
   onSliderChange(e) {
     const {value}=e.detail

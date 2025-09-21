@@ -1,6 +1,5 @@
 .assets-container {
   min-height: 100vh;
-  padding-top: 164rpx;
   box-sizing: border-box;
 }
 

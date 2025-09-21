@@ -23,7 +23,9 @@ Component({
       if (this.properties.disabled) {
         return;
       }
-      this.triggerEvent('change');
+      this.triggerEvent('change',{
+        checked: this.properties.checked
+      });
     }
   }
 })

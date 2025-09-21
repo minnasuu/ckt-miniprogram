@@ -32,7 +32,12 @@ Page({
     // 连续绘制相关
     isDrawing: false, // 是否正在绘制
     lastDrawnPixel: null, // 上一个绘制的像素位置，避免重复绘制
-    canvasRect: null // 画布区域信息，用于坐标转换
+    canvasRect: null, // 画布区域信息，用于坐标转换
+    canvasRectUpdateTime: 0, // 画布区域信息最后更新时间，用于节流
+    // 触摸手势相关
+    touchStartTime: 0, // 触摸开始时间
+    initialTouchCount: 0, // 初始触摸点数量
+    isMultiTouch: false // 是否为多点触摸
   },
   
   onLoad() {
@@ -67,7 +72,12 @@ Page({
   // 更新画布区域信息
   updateCanvasRect() {
     const query = wx.createSelectorQuery();
-    query.select('.pixel-canvas').boundingClientRect((rect) => {
+    const { fullCanvas } = this.data;
+
+    // 根据当前模式选择不同的选择器
+    const selector = fullCanvas ? 'movable-view.pixel-canvas' : '.pixel-canvas';
+
+    query.select(selector).boundingClientRect((rect) => {
       if (rect) {
         this.setData({
           canvasRect: rect
@@ -206,26 +216,105 @@ Page({
   
   // 开始绘制（触摸开始）
   onTouchStart(e) {
+    const touchCount = e.touches.length;
+    const currentTime = Date.now();
+    const { fullCanvas } = this.data;
+
+    this.setData({
+      touchStartTime: currentTime,
+      initialTouchCount: touchCount,
+      isMultiTouch: touchCount > 1
+    });
+
+    // 在全屏模式下，多指触摸时不阻止事件，让movable-view处理手势
+    if (fullCanvas && touchCount > 1) {
+      this.setData({
+        isDrawing: false,
+        lastDrawnPixel: null
+      });
+      // 不阻止事件冒泡，让movable-view处理多指手势
+      return false;
+    }
+
+    // 检查触摸点是否在有效的像素区域内
+    const pixelInfo = this.getPixelFromTouch(e);
+    if (!pixelInfo) {
+      // 触摸点不在有效区域内，不开始绘制
+      this.setData({
+        isDrawing: false,
+        lastDrawnPixel: null
+      });
+      // 在全屏模式下，如果是单指但不在像素区域内，不阻止事件，让movable-view处理移动
+      if (fullCanvas) {
+        return false;
+      }
+      return;
+    }
+
+    // 触摸点在有效区域内，开始绘制并阻止事件冒泡
     this.setData({
       isDrawing: true,
       lastDrawnPixel: null
     });
+
     // 立即绘制当前像素
-    this.drawPixelAtTouch(e);
+    this.drawPixelAt(pixelInfo.x, pixelInfo.y);
+    this.setData({
+      lastDrawnPixel: { x: pixelInfo.x, y: pixelInfo.y }
+    });
+
+    // 阻止事件冒泡，防止movable-view处理这个触摸
+    return true;
   },
 
   // 绘制过程中（触摸移动）
   onTouchMove(e) {
-    if (!this.data.isDrawing) return;
+    const touchCount = e.touches.length;
+    const { fullCanvas, isDrawing, isMultiTouch } = this.data;
+
+    // 在全屏模式下，如果检测到多指触摸，停止绘制并不阻止事件
+    if (fullCanvas && (touchCount > 1 || isMultiTouch)) {
+      if (isDrawing) {
+        this.setData({
+          isDrawing: false,
+          lastDrawnPixel: null,
+          isMultiTouch: true
+        });
+      }
+      // 让movable-view处理多指手势
+      return false;
+    }
+
+    // 如果不在绘制状态，在全屏模式下让movable-view处理单指移动
+    if (!isDrawing) {
+      if (fullCanvas) {
+        return false;
+      }
+      return;
+    }
+
+    // 正在绘制状态，继续绘制并阻止事件冒泡
     this.drawPixelAtTouch(e);
+    return true;
   },
 
   // 结束绘制（触摸结束）
   onTouchEnd(e) {
+    const { isDrawing, fullCanvas } = this.data;
+
     this.setData({
       isDrawing: false,
-      lastDrawnPixel: null
+      lastDrawnPixel: null,
+      isMultiTouch: false,
+      initialTouchCount: 0
     });
+
+    // 如果刚才在绘制，阻止事件冒泡；否则在全屏模式下让movable-view处理
+    if (isDrawing) {
+      return true;
+    } else if (fullCanvas) {
+      return false;
+    }
   },
 
   // 根据触摸事件绘制像素
@@ -252,21 +341,35 @@ Page({
     const touch = e.touches[0];
     if (!touch) return null;
     
-    const { canvasRect, canvasWidth, canvasHeight, fullCanvas, screenWidth } = this.data;
+    const { canvasRect, canvasWidth, canvasHeight, fullCanvas, screenWidth, canvasRectUpdateTime } = this.data;
+    const currentTime = Date.now();
     
-    // 如果没有缓存的rect信息，尝试实时获取（但这会影响性能）
-    if (!canvasRect) {
+    // 如果没有缓存的rect信息或者在全屏模式下且超过100ms没有更新（因为movable-view可能移动），实时获取
+    if (!canvasRect || (fullCanvas && (!canvasRectUpdateTime || (currentTime - canvasRectUpdateTime > 100)))) {
       this.updateCanvasRect();
-      return null;
+      this.setData({
+        canvasRectUpdateTime: currentTime
+      });
+
+      // 如果还是没有rect信息，返回null
+      if (!this.data.canvasRect) {
+        return null;
+      }
     }
     
-    const relativeX = touch.clientX - canvasRect.left;
-    const relativeY = touch.clientY - canvasRect.top;
+    // 使用最新的canvasRect
+    const currentRect = this.data.canvasRect;
+    const relativeX = touch.clientX - currentRect.left;
+    const relativeY = touch.clientY - currentRect.top;
     
     let pixelWidth, pixelHeight;
     if (fullCanvas) {
-      // 全屏模式下，像素大小固定为32px
-      pixelWidth = pixelHeight = 32;
+      // 全屏模式下，像素大小为32px，但需要考虑缩放
+      // 通过currentRect的实际尺寸来计算当前的像素大小
+      const actualCanvasWidth = currentRect.width;
+      const actualCanvasHeight = currentRect.height;
+      pixelWidth = actualCanvasWidth / canvasWidth;
+      pixelHeight = actualCanvasHeight / canvasHeight;
     } else {
       // 普通模式下，像素大小根据屏幕宽度计算
       pixelWidth = Math.min(screenWidth / canvasWidth, 24);
@@ -677,5 +780,22 @@ Page({
     this.setData({
       isEraser: !this.data.isEraser
     });
+  },
+
+  // 处理movable-view位置变化事件
+  onMovableViewChange(e) {
+    // 当movable-view位置或缩放改变时，重置画布区域信息缓存
+    this.setData({
+      canvasRect: null,
+      canvasRectUpdateTime: 0
+    });
+
+    // 如果正在进行多点触摸手势，确保停止绘制
+    if (this.data.isMultiTouch) {
+      this.setData({
+        isDrawing: false,
+        lastDrawnPixel: null
+      });
+    }
   }
 });

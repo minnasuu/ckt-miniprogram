@@ -5,7 +5,7 @@
   <view class="extract-color-step-container">
     <part-title title="Step 01：上传图片" subTitle="点击来上传图片，以像素为单位对颜色计数"></part-title>
     <view class="upload-section">
-      <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片" bind:imageSelected="onImageSelected"></image-uploader>
+      <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片（500KB以内）" bind:imageSelected="onImageSelected" size="{{200*1024}}"></image-uploader>
     </view>
   </view>
   <!-- 颜色 -->
@@ -13,13 +13,13 @@
     <!-- 取色配置 -->
     <part-title title="Step 02：取色配置"></part-title>
     <view class="step-desc-list">
-      <view>【过滤颜色】设置过滤中性色的范围</view>
+      <view>【过滤中性色】根据数值（0-35）过滤中性色（黑白灰）</view>
       <view>【提取数量】可一次提取6、8、10个颜色</view>
       <view>【编辑颜色】支持删除、添加、修改提取的颜色列表</view>
     </view>
     <view class="filter-list {{imageUrl?'':'disabled'}}">
-      <custom-checkbox text="过滤中性色" checked="{{filterChecked}}" bind:change="onCheckboxChange" />
-      <number-input value="{{filter}}" min="0" max="35" step="1" bind:change="onFilterNumberChange" />
+      <custom-checkbox text="过滤中性色" checked="{{filterChecked}}" bind:change="onCheckboxChange" ></custom-checkbox>
+      <number-input value="{{filter}}" min="0" max="35" step="5" bind:change="onFilterNumberChange" />
       <custom-select border="{{true}}" width="160rpx" data="{{numberSelectData}}" selected="{{selectedNumber}}" bind:change="onSelectNumberChange"></custom-select>
     </view>
     <!-- 颜色列表 -->

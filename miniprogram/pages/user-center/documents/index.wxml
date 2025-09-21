@@ -44,7 +44,7 @@
           </view>
           <view class="pattern-card-actions">
             <button class="pattern-card-action-btn" bindtap="onEditTap" data-id="{{item._id}}">编辑</button>
-            <button class="pattern-card-action-btn" bindtap="onItemDeleteTap" data-id="{{item._id}}">删除</button>
+            <button class="pattern-card-action-btn delete" bindtap="onItemDeleteTap" data-id="{{item._id}}">删除</button>
           </view>
         </view>
       </view>

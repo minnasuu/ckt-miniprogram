@@ -6,5 +6,6 @@
     "alert-message": "/components/common/alert-message/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "图片转像素"
+  "navigationBarTitleText": "图片转像素",
+  "disableScroll": true
 }
