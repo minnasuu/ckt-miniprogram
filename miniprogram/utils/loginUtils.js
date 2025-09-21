@@ -164,6 +164,64 @@ class LoginUtils {
       }
     });
   }
+
+  /**
+   * 获取用户等级
+   * @param {Object} userInfo 用户信息
+   * @returns {string} 用户等级：guest, normal, premium, admin
+   */
+  static getUserLevel(userInfo) {
+    if (!userInfo || !userInfo.openId) {
+      return 'guest'; // 未登录用户
+    }
+
+    // 管理员判断（使用项目中现有的管理员openId）
+    if (userInfo.openId === 'od7SO5Pt8HG7dDS5A_1Uuv7ky_Mg') {
+      return 'admin';
+    }
+
+    // 高级用户判断（这里可以根据实际业务逻辑调整）
+    // 例如：可以根据用户的创建时间、活跃度等判断
+    if (userInfo.isPremium || userInfo.level === 'premium') {
+      return 'premium';
+    }
+
+    // 普通用户
+    return 'normal';
+  }
+
+  /**
+   * 检查用户保存权限
+   * @param {Object} options 配置选项
+   * @param {Function} options.onPermissionDenied 权限不足时的回调
+   * @param {Function} options.onLoginRequired 需要登录时的回调
+   * @returns {boolean} 是否有保存权限
+   */
+  static checkSavePermission(options = {}) {
+    const {
+      onPermissionDenied = () => { },
+      onLoginRequired = () => { }
+    } = options;
+
+    // 检查用户登录状态
+    const { isLoggedIn, userInfo } = this.checkLoginStatus();
+
+    if (!isLoggedIn) {
+      onLoginRequired();
+      return false;
+    }
+
+    // 获取用户等级
+    const userLevel = this.getUserLevel(userInfo);
+
+    // 只有高级用户和管理员才能保存
+    if (userLevel === 'normal' || userLevel === 'guest') {
+      onPermissionDenied(userLevel);
+      return false;
+    }
+
+    return true;
+  }
 }
 
 module.exports = LoginUtils;

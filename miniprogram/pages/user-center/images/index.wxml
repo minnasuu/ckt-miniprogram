@@ -1,6 +1,15 @@
 <view class="images-container">
   <custom-header title="我的图片" showBack back-url="/pages/user-center/index"></custom-header>
   
+  <!-- 导航栏 -->
+  <view class="nav-container">
+    <nav 
+      navList="{{categoryList}}" 
+      currentNav="{{currentCategory}}" 
+      bind:navChange="onCategoryChange">
+    </nav>
+  </view>
+  
   <!-- 内容区域 -->
   <view class="content-container">
     <!-- 加载状态 -->

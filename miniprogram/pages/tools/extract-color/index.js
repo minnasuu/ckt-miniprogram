@@ -1,4 +1,6 @@
 // 提取图片主色页面
+const LoginUtils = require('../../../utils/loginUtils');
+
 Page({
   data: {
     unitImageUrl: "https://croknittime.com/images/colorcard_default.jpeg",
@@ -31,6 +33,7 @@ Page({
     author:null,
     saving: false, // 保存中状态
     tempFilePath: '', // 临时文件路径
+    showPermissionDialog: false // 控制权限提示弹窗
   },
   
   onLoad() {
@@ -57,6 +60,13 @@ Page({
         alertMessage:''
       });
     }, 1000);
+  },
+
+  // 关闭权限提示弹窗
+  onPermissionDialogClose() {
+    this.setData({
+      showPermissionDialog: false
+    });
   },
   // 处理图片上传事件
   onImageSelected(e) {
@@ -383,9 +393,9 @@ Page({
     });
   },
   // 中性色开关
-  onCheckboxChange(e) {
+  onCheckboxChange() {
     this.setData({
-      filterChecked: e.detail.checked,
+      filterChecked: !this.data.filterChecked,
       filter:10
     })
     this.getImgColor();
@@ -411,21 +421,35 @@ Page({
   },
   // 保存颜色卡至仓库
   async saveColorCard() {
-    if (!this.data.author) {
-      wx.showModal({
-        title: '需要登录',
-        content: '请先登录后再保存作品到仓库',
-        confirmText: '马上登录',
-        cancelText: '取消',
-        success: (res) => {
-          if (res.confirm) {
-            // 跳转到登录页面或触发登录流程
-            wx.navigateTo({
-              url: '/pages/user-center/index'
-            });
+    const that = this;
+
+    // 使用统一的权限检查
+    const hasPermission = LoginUtils.checkSavePermission({
+      onLoginRequired: () => {
+        wx.showModal({
+          title: '需要登录',
+          content: '请先登录后再保存作品到仓库',
+          confirmText: '马上登录',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) {
+              // 跳转到登录页面或触发登录流程
+              wx.navigateTo({
+                url: '/pages/user-center/index'
+              });
+            }
           }
-        }
-      });
+        });
+      },
+      onPermissionDenied: (userLevel) => {
+        // 权限不足时显示提示弹窗
+        that.setData({
+          showPermissionDialog: true
+        });
+      }
+    });
+
+    if (!hasPermission) {
       return;
     }
 

@@ -1338,6 +1338,7 @@ Page({
     numberLeft:100,
     author: null,
     saveLoading:false,
+        showPermissionDialog: false, // 控制权限提示弹窗
     canvasCache: {
       pathDataHash: '',
       colorListHash: '',
@@ -1372,6 +1373,13 @@ Page({
       });
     }, 1000);
   },
+
+    // 关闭权限提示弹窗
+    onPermissionDialogClose() {
+        this.setData({
+            showPermissionDialog: false
+        });
+    },
   onTabChange(e){
     const {type} = e.detail;
     this.setData({
@@ -1644,7 +1652,10 @@ Page({
   // 优化后的保存事件
   onSave() {
     const that = this;
-    if(!that.data.author){
+
+      // 使用统一的权限检查
+      const hasPermission = LoginUtils.checkSavePermission({
+          onLoginRequired: () => {
         // 使用登录工具类显示登录弹窗
         LoginUtils.showLoginModal({
             title: '需要登录',
@@ -1672,6 +1683,16 @@ Page({
                 that.showMessage('已取消登录');
             }
         });
+        },
+        onPermissionDenied: (userLevel) => {
+            // 权限不足时显示提示弹窗
+            that.setData({
+                showPermissionDialog: true
+            });
+        }
+    });
+
+      if (!hasPermission) {
       return;
     }
     

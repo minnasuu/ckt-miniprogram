@@ -4,7 +4,8 @@
     "custom-number-input":"/components/common/number-input/index",
     "alert-message": "/components/common/alert-message/index",
     "custom-switch": "/components/common/switch/index",
-    "color-picker-drawer": "/components/common/color-picker-drawer/index"
+    "color-picker-drawer": "/components/common/color-picker-drawer/index",
+    "dialog": "/components/common/dialog/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "像素画板",

@@ -20,7 +20,8 @@ Page({
     alertMessage: '',
     author:null,
     saveLoading: false,
-    loginLoading: false
+    loginLoading: false,
+    showPermissionDialog: false // 控制权限提示弹窗
   },
   
   onLoad() {
@@ -46,6 +47,13 @@ Page({
         alertMessage:''
       });
     }, 1000);
+  },
+
+  // 关闭权限提示弹窗
+  onPermissionDialogClose() {
+    this.setData({
+      showPermissionDialog: false
+    });
   },
   // 处理图片选择事件
   onImageSelected(e) {
@@ -273,43 +281,54 @@ Page({
     const type = e.currentTarget.dataset.type;
     const that = this;
     
-    // 检查用户是否登录
-    if (!that.data.author) {
-      // 未登录时直接调用公共登录逻辑
-      LoginUtils.showLoginModal({
-        title: '需要登录',
-        content: '保存图片需要先登录账号，是否立即登录？',
-        confirmText: '立即登录',
-        onLoginStart: () => {
-          // 开始登录，显示加载状态
-          that.setData({
-            loginLoading: true
-          });
-        },
-        onLoginSuccess: (userInfo) => {
-          // 登录成功后更新用户信息并继续保存
-          that.setData({
-            author: userInfo,
-            loginLoading: false
-          });
-          // 重新触发保存操作
-          that.onSave(e);
-        },
-        onLoginFail: (error) => {
-          // 登录失败，重置加载状态
-          that.setData({
-            loginLoading: false
-          });
-          console.error('登录失败:', error);
-        },
-        onCancel: () => {
-          // 用户取消登录，重置加载状态
-          that.setData({
-            loginLoading: false
-          });
-          console.log('用户取消登录');
-        }
-      });
+    // 使用统一的权限检查
+    const hasPermission = LoginUtils.checkSavePermission({
+      onLoginRequired: () => {
+        // 未登录时直接调用公共登录逻辑
+        LoginUtils.showLoginModal({
+          title: '需要登录',
+          content: '保存图片需要先登录账号，是否立即登录？',
+          confirmText: '立即登录',
+          onLoginStart: () => {
+            // 开始登录，显示加载状态
+            that.setData({
+              loginLoading: true
+            });
+          },
+          onLoginSuccess: (userInfo) => {
+            // 登录成功后更新用户信息并继续保存
+            that.setData({
+              author: userInfo,
+              loginLoading: false
+            });
+            // 重新触发保存操作
+            that.onSave(e);
+          },
+          onLoginFail: (error) => {
+            // 登录失败，重置加载状态
+            that.setData({
+              loginLoading: false
+            });
+            console.error('登录失败:', error);
+          },
+          onCancel: () => {
+            // 用户取消登录，重置加载状态
+            that.setData({
+              loginLoading: false
+            });
+            console.log('用户取消登录');
+          }
+        });
+      },
+      onPermissionDenied: (userLevel) => {
+        // 权限不足时显示提示弹窗
+        that.setData({
+          showPermissionDialog: true
+        });
+      }
+    });
+
+    if (!hasPermission) {
       return;
     }
     

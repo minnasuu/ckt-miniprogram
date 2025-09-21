@@ -29,6 +29,7 @@ Page({
     currentPickerType: '', // 'brush' 或 'canvas'
     isEraser: false,
     saveLoading: false,
+    showPermissionDialog: false, // 控制权限提示弹窗
     // 连续绘制相关
     isDrawing: false, // 是否正在绘制
     lastDrawnPixel: null, // 上一个绘制的像素位置，避免重复绘制
@@ -98,6 +99,13 @@ Page({
         alertMessage:''
       });
     }, 1000);
+  },
+
+  // 关闭权限提示弹窗
+  onPermissionDialogClose() {
+    this.setData({
+      showPermissionDialog: false
+    });
   },
   // 初始化画布数据
   initCanvas() {
@@ -425,34 +433,46 @@ Page({
   // 保存画布
   saveCanvas() {
     const that = this;
-    // 检查用户是否登录
-    if(!that.data.author){
-      // 使用登录工具类显示登录弹窗
-      LoginUtils.showLoginModal({
-        title: '需要登录',
-        content: '保存像素画需要先登录账号，是否立即登录？',
-        confirmText: '立即登录',
-        onLoginStart: () => {
-          wx.showLoading({
-            title: '登录中...',
-          });
-        },
-        onLoginSuccess: (userInfo) => {
-          // 更新页面的用户信息
-          that.setData({
-            author: userInfo
-          });
-          // 登录成功后自动执行保存操作
-          that.saveCanvas();
-        },
-        onLoginFail: (error) => {
-          that.showMessage('登录失败，请重试');
-          console.error('登录失败：', error);
-        },
-        onCancel: () => {
-          that.showMessage('已取消登录');
-        }
-      });
+
+    // 使用统一的权限检查
+    const hasPermission = LoginUtils.checkSavePermission({
+      onLoginRequired: () => {
+        // 需要登录时显示登录弹窗
+        LoginUtils.showLoginModal({
+          title: '需要登录',
+          content: '保存像素画需要先登录账号，是否立即登录？',
+          confirmText: '立即登录',
+          onLoginStart: () => {
+            wx.showLoading({
+              title: '登录中...',
+            });
+          },
+          onLoginSuccess: (userInfo) => {
+            // 更新页面的用户信息
+            that.setData({
+              author: userInfo
+            });
+            // 登录成功后自动执行保存操作
+            that.saveCanvas();
+          },
+          onLoginFail: (error) => {
+            that.showMessage('登录失败，请重试');
+            console.error('登录失败：', error);
+          },
+          onCancel: () => {
+            that.showMessage('已取消登录');
+          }
+        });
+      },
+      onPermissionDenied: (userLevel) => {
+        // 权限不足时显示提示弹窗
+        that.setData({
+          showPermissionDialog: true
+        });
+      }
+    });
+
+    if (!hasPermission) {
       return;
     }
     this.setData({

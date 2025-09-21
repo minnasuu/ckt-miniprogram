@@ -1,10 +1,25 @@
 .images-container {
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 导航栏样式 */
+.nav-container {
+  display: inline-flex;
+  width: 100vw;
+  padding: 16rpx 32rpx;
+  border-bottom: 1rpx solid var(--ckt-gray-3);
+  background: #fff;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .content-container {
+  flex: 1;
+  height: 1%;
   padding: 20rpx;
-  min-height: calc(100vh - 88rpx);
+  overflow: auto;
 }
 
 /* 加载状态 */
@@ -13,7 +28,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 42vh;
+  padding-top: 30vh;
 }
 
 .loading-text {
@@ -28,7 +43,7 @@
   justify-content: center;
   align-items: center;
   gap: 8rpx;
-  padding-top: 42vh;
+  padding-top: 30vh;
   color: var(--ckt-gray-9);
   font-size: 28rpx;
 }
@@ -48,7 +63,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 42vh;
+  padding-top: 30vh;
 }
 
 .empty-title {

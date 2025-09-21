@@ -65,4 +65,15 @@
     <text class="alert-text">温馨提示：处理能力基于canvas实现，由于不同设备对canvas兼容性不同，转换效果可能存在差异。</text>
     </view>
      <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
+     
+     <!-- 权限不足提示弹窗 -->
+     <dialog
+       visible="{{showPermissionDialog}}"
+       title="权限不足"
+       content="保存功能仅限高级用户和管理员使用，基础用户暂不支持此功能。"
+       showCancel="{{false}}"
+       confirmText="我知道了"
+       bindconfirm="onPermissionDialogClose"
+       bindclose="onPermissionDialogClose"
+     />
 </view>

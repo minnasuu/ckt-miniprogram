@@ -2,6 +2,19 @@ Page({
   data: {
     // 数据列表
     imageList: [], // 图片数据
+    allImageList: [], // 全部图片数据（用于筛选）
+
+    // 类别相关
+    categoryList: [
+      { name: '全部', type: 'all' },
+      { name: '提取主色', type: 'extract-color', tag: '提取主色' },
+      { name: '图片换色', type: 'color-change', tag: '图片换色' },
+      { name: '图片转像素', type: 'image-to-pixel', tag: ['像素化(合并算法)', '像素化(平均算法)'] },
+      { name: '像素画板', type: 'pixel-canvas', tag: '像素画板' },
+      { name: '图案配色', type: 'color-palette', tag: '配色' },
+      { name: '图解笔记', type: 'pattern-note', tag: '图解笔记' }
+    ],
+    currentCategory: 'all', // 当前选中的类别
     
     // 加载状态
     imageLoading: true,
@@ -77,9 +90,13 @@ Page({
       }
       
       this.setData({
+        allImageList: resData,
         imageList: resData,
         imageLoading: false
       });
+
+      // 应用当前选中的类别筛选
+      this.filterImagesByCategory(this.data.currentCategory);
     } catch (error) {
       console.error('获取图片数据失败:', error);
       
@@ -89,6 +106,7 @@ Page({
       if (error.errCode === -502005) {
         // 集合不存在，说明用户还没有创建过任何图片
         this.setData({
+          allImageList: [],
           imageList: [],
           imageLoading: false
         });
@@ -179,5 +197,55 @@ Page({
       urls: this.data.imageList.map(item => item.image), // 所有图片列表
       showmenu: true // 显示长按菜单
     });
+  },
+
+  // 处理类别切换
+  onCategoryChange(e) {
+    const { type } = e.detail;
+    console.log('切换到类别:', type);
+
+    this.setData({
+      currentCategory: type
+    });
+
+    // 根据类别筛选图片
+    this.filterImagesByCategory(type);
+  },
+
+  // 根据类别筛选图片
+  filterImagesByCategory(category) {
+    const { allImageList, categoryList } = this.data;
+
+    if (category === 'all') {
+      // 显示全部图片
+      this.setData({
+        imageList: allImageList
+      });
+    } else {
+      // 找到对应的类别配置
+      const categoryConfig = categoryList.find(item => item.type === category);
+
+      if (!categoryConfig) {
+        this.setData({ imageList: [] });
+        return;
+      }
+
+      // 根据tag字段筛选图片
+      const filteredList = allImageList.filter(item => {
+        if (!item.tag) return false;
+
+        // 如果tag是数组，检查是否包含任一标签
+        if (Array.isArray(categoryConfig.tag)) {
+          return categoryConfig.tag.includes(item.tag);
+        } else {
+          // 如果tag是字符串，直接匹配
+          return item.tag === categoryConfig.tag;
+        }
+      });
+
+      this.setData({
+        imageList: filteredList
+      });
+    }
   }
 });

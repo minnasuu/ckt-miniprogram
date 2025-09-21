@@ -1,3 +1,5 @@
+const LoginUtils = require('../../../utils/loginUtils');
+
 Page({
   data: {
     patternTitle: '', // 图解标题
@@ -31,6 +33,7 @@ Page({
     showSwitchConfirmDialog: false, // 控制切换确认弹窗显示
     switchTargetDocument: null, // 要切换到的目标文档
     hasUnsavedChanges: false, // 是否有未保存的更改
+    showPermissionDialog: false, // 控制权限提示弹窗
     isDocumentNew: true, // 当前文档是否为新文档
     // 用户等级和保存限制相关
     userInfo: null, // 用户信息
@@ -1057,31 +1060,27 @@ Page({
 
   // 检查保存权限
   checkSavePermission() {
-    const { saveQuota, userInfo } = this.data;
+    const that = this;
     
-    // 检查是否登录 - 未登录用户不允许保存
-    if (saveQuota.level === 'guest') {
-      this.showLoginRequiredDialog();
-      return false;
-    }
-    
-    // 检查保存数量限制（仅对新文档检查，更新已有文档不受限制）
-    // 管理员无限制，普通用户最多2个，高级用户最多20个
-    if (saveQuota.level !== 'admin' && this.isNewDocument()) {
-      if (saveQuota.used >= saveQuota.limit) {
-        this.showSaveLimitDialog();
-        return false;
+    // 使用统一的权限检查
+    return LoginUtils.checkSavePermission({
+      onLoginRequired: () => {
+        that.showLoginRequiredDialog();
+      },
+      onPermissionDenied: (userLevel) => {
+        // 基础用户显示权限提示弹窗
+        if (userLevel === 'normal') {
+          that.setData({
+            showPermissionDialog: true
+          });
+        }
       }
-    }
-    
-    return true;
+    });
   },
 
   // 显示登录提示弹窗
   showLoginRequiredDialog() {
     // 使用公共登录工具直接在当前页面执行登录
-    const LoginUtils = require('../../../utils/loginUtils');
-    
     LoginUtils.showLoginModal({
       title: '需要登录',
       content: '保存文档需要先登录账号，是否立即登录？',
@@ -1438,6 +1437,13 @@ Page({
         showAlert: false
       });
     }, 3000);
+  },
+
+  // 关闭权限提示弹窗
+  onPermissionDialogClose() {
+    this.setData({
+      showPermissionDialog: false
+    });
   },
 
   // 执行Canvas绘制

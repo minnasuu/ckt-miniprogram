@@ -121,12 +121,23 @@
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
   
   <!-- 颜色选择器抽屉 -->
-  <color-picker-drawer 
+  <color-picker-drawer
     show="{{showColorPicker}}"
     value="{{currentPickerColor}}"
     bindclose="onColorPickerClose"
     bindcancel="onColorPickerCancel"
     bindconfirm="onColorPickerConfirm"
     bindchange="onColorPickerChange"
+  />
+
+  <!-- 权限不足提示弹窗 -->
+  <dialog
+    visible="{{showPermissionDialog}}"
+    title="权限不足"
+    content="保存功能仅限高级用户和管理员使用，基础用户暂不支持此功能。"
+    showCancel="{{false}}"
+    confirmText="我知道了"
+    bindconfirm="onPermissionDialogClose"
+    bindclose="onPermissionDialogClose"
   />
 </view>

@@ -39,6 +39,7 @@ Page({
     // 临时文件路径
     tempFilePath: '',
     saveLoading: false,
+    showPermissionDialog: false, // 控制权限提示弹窗
   },
 
   /**
@@ -84,6 +85,13 @@ Page({
         alertMessage:''
       });
     }, 1000);
+  },
+
+  // 关闭权限提示弹窗
+  onPermissionDialogClose() {
+    this.setData({
+      showPermissionDialog: false
+    });
   },
   // 处理图片上传事件
   onImageSelected(e) {
@@ -1032,8 +1040,22 @@ Page({
 
   // 保存颜色卡至仓库
   async saveColorCard() {
-    if (!this.data.author) {
-      this.showLoginRequiredDialog();
+    const that = this;
+
+    // 使用统一的权限检查
+    const hasPermission = LoginUtils.checkSavePermission({
+      onLoginRequired: () => {
+        that.showLoginRequiredDialog();
+      },
+      onPermissionDenied: (userLevel) => {
+        // 权限不足时显示提示弹窗
+        that.setData({
+          showPermissionDialog: true
+        });
+      }
+    });
+
+    if (!hasPermission) {
       return;
     }
     if (!this.data.hasModified) {
