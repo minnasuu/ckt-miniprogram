@@ -1559,8 +1559,12 @@ Page({
       currentStyleId: pathid,
       curPathData:curItem,
       colorList: newColorList,
+        currentPathId: 0  // 切换图案时自动选择第一个路径
     })
     this.clearCanvasCache();
+
+      // 更新数字位置到第一个路径
+      this.updateNumberPosition(0);
   },
   onColorClick(e){
     const {color} = e.currentTarget.dataset;
@@ -1571,6 +1575,9 @@ Page({
       colorList: resColorList
     })
     this.clearCanvasCache();
+
+      // 自动切换到下一个未替换颜色的路径
+      this.switchToNextUncoloredPath();
   },
 
     // 颜色选择器变化事件处理
@@ -1590,10 +1597,58 @@ Page({
                 colorList: resColorList
             });
             this.clearCanvasCache();
+
+            // 自动切换到下一个未替换颜色的路径
+            this.switchToNextUncoloredPath();
         }
 
         console.log('颜色选择器变化:', color);
     },
+
+    // 判断某个路径的颜色是否为默认颜色（未被替换）
+    isDefaultColor(colorValue, index) {
+        // 默认颜色格式为 rgba(0,0,0,${(index+1)/20})
+        const defaultColor = `rgba(0,0,0,${(index + 1) / 20})`;
+        return colorValue === defaultColor;
+    },
+
+    // 查找下一个未替换颜色的路径索引
+    findNextUncoloredPath() {
+        const currentIndex = this.data.currentPathId;
+        const totalPaths = this.data.colorList.length;
+
+        // 从当前路径的下一个开始查找
+        for (let i = 1; i < totalPaths; i++) {
+            const nextIndex = (currentIndex + i) % totalPaths;
+            if (this.isDefaultColor(this.data.colorList[nextIndex], nextIndex)) {
+                return nextIndex;
+            }
+        }
+
+        // 如果没有找到未替换的路径，返回-1
+        return -1;
+    },
+
+    // 自动切换到下一个未替换颜色的路径
+    switchToNextUncoloredPath() {
+        const nextUncoloredIndex = this.findNextUncoloredPath();
+
+        if (nextUncoloredIndex !== -1) {
+            // 更新当前选中的路径ID
+            this.setData({
+                currentPathId: nextUncoloredIndex
+            });
+
+            // 更新数字位置
+            this.updateNumberPosition(nextUncoloredIndex);
+        } else {
+            // 如果所有路径都已经被替换，清除当前选择
+            this.setData({
+                currentPathId: -1
+            });
+        }
+    },
+
   updateNumberPosition(index){
     let top=0;
     let left=0;
