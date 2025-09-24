@@ -1642,10 +1642,9 @@ Page({
             // 更新数字位置
             this.updateNumberPosition(nextUncoloredIndex);
         } else {
-            // 如果所有路径都已经被替换，清除当前选择
-            this.setData({
-                currentPathId: -1
-            });
+            // 如果所有路径都已经被替换，保持当前选择不变
+            // 这样序号会始终显示最后一个填充的路径
+            console.log('所有路径都已填充完成，保持当前选择:', this.data.currentPathId);
         }
     },
 
