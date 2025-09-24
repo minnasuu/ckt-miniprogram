@@ -7,11 +7,11 @@
                 <block wx:for="{{curPathData}}" key="{{index}}">
                 <view 
                   class="canvas-path" 
-                  style="clip-path: path('{{item}}');background-color: {{colorList[index]}};"
+                  style="clip-path: path('{{item.path}}');background-color: {{colorList[index]}};"
                   catch:tap="onCanvasPathTap"
                   data-index="{{index}}"
                 ></view>
-                <text wx:if="{{currentPathId===index}}" class="path-number" style="top:{{numberTop}}px;left:{{numberLeft}}px">{{index+1}}</text>
+                <text wx:if="{{currentPathId===index}}" class="path-number" style="top:{{item.top}}px;left:{{item.left}}px">{{index+1}}</text>
               </block>
               </view>
              </view>
