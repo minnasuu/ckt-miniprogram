@@ -1,9 +1,21 @@
 /* pages/tutorial/index.wxss */
 .tutorial-view{
+  position: relative;
   height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+
+.mask{
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 47px);
+  width: 100vw;
+  height: 48px;
+  background: linear-gradient(to top, #fff,rgba(255,255,255,0));
+  mask-image: linear-gradient(to top, #fff 20%,rgba(255,255,255,0) 100%);
+  -webkit-mask-image: linear-gradient(to top, #fff 20%,rgba(255,255,255,0) 100%);
+  backdrop-filter: blur(1px);
 }
 
 .tutorial-nav{

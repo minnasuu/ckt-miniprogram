@@ -103,7 +103,7 @@
 }
 
 .dialog-btn-confirm {
-  color: #007aff;
+  color: var(--ckt-theme-6);
   font-weight: 600;
 }
 

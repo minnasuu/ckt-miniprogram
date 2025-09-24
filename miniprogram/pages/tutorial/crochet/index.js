@@ -13,43 +13,68 @@ Component({
    */
   data: {
     list: [
-      {key: "1",
-      title:"钩针针法（初级）",
-      image:'https://suminhan.cn/ckt/images/crochet/szhen4.jpg',
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
-      link: '/pages/tutorial/crochet/crochet-base/index?index=0'
-    },
-    {
-      key: "2",
-      title:"钩针起针方法",
-      image:'https://suminhan.cn/ckt/images/crochet/ybzhen3.jpg',
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
-      link: '/pages/tutorial/crochet/crochet-base/index?index=1'
-    },
-    {
-      key: "3",
-      title:"钩针符号表",
-      image:'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
-      link: '/pages/tutorial/crochet/crochet-base/index?index=2'
-    },
-    {
-      key: "4",
-      title:"钩针案例（初级）",
-      image:'/assets/images/tutorial/crochet-basic/1.png',
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
-    },
-    {
-      key: "5",
-      title:"钩针案例（进阶）",
-      image:'/assets/images/tutorial/crochet-basic/1.png',
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️'
-    },
+      {
+        key: "1",
+        title: "插图版",
+        image: 'https://suminhan.cn/ckt/images/crochet/szhen4.jpg',
+        level: '⭐️⭐️⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=0'
+      },
+      {
+        key: "2",
+        title: "实物图片版",
+        image: 'https://suminhan.cn/ckt/images/knit/szhen2-1.jpg',
+        level: '⭐️⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=2'
+      },
+      {
+        key: "3",
+        title: "视频版",
+        image: 'https://suminhan.cn/ckt/images/knit/ysdxian.jpg',
+        level: '⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=2'
+      },
+    ],
+    testList: [
+      {
+        key: "5",
+        title: "起针方法",
+        image: 'https://suminhan.cn/ckt/images/crochet/sshi1.jpg',
+        level: '⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=1'
+      },
+      {
+        key: "3",
+        title: "钩针符号表",
+        image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
+        level: '⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=2'
+      },
+    ],
+    proList: [
+      {
+        key: "2",
+        title: "实物图片版",
+        image: 'https://suminhan.cn/ckt/images/crochet/szhen4.jpg',
+        level: '⭐️⭐️⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=3'
+      },
+    ],
+    materialList: [
+      {
+        key: "1",
+        title: "图示符号表",
+        image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
+        level: '⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=2'
+      },
+      {
+        key: "2",
+        title: "英文符号表",
+        image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
+        level: '⭐️⭐️⭐️',
+        link: '/pages/tutorial/crochet/crochet-base/index?index=2'
+      },
     ]
   },
 

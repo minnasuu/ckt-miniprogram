@@ -18,8 +18,21 @@
       <view class="mcpage-item" wx:if="{{currentItem}}">
         <view class="mcpage-item-title">{{currentItem.title}}</view>
         <view class="mcpage-item-content">
-          <view wx:if="{{currentItem.desc}}" class="mcpage-item-desc">{{currentItem.desc}}</view>
           <view wx:if="{{currentItem.imgList || currentItem.detailList}}" class="mcpage-details">
+           <view class="mcpage-details-table">
+                <view class="mcpage-details-table-header">
+                    <view class="cell">图解</view>
+                    <view class="cell">英文</view>
+                    <view class="cell">描述</view>
+                </view>
+                <view class="mcpage-details-table-body">
+                    <view class="cell">
+                      <view style="width:24px;height:24px;background-image: url('https://suminhan.cn/ckt/images/crochet/ckt-crochet-symbols.png');background-size:240px 24px;background-repeat: no-repeat;background-position: -{{(currentItem.symbol-1)*24}}px 0;"></view>
+                    </view>
+                    <view class="cell">{{currentItem.englishSymbol}}</view>
+                    <view class="cell">{{currentItem.desc}}</view>
+                </view>
+              </view>
             <view class="mcpage-details-item" wx:for="{{(currentItem.imgList || currentItem.detailList)}}" wx:key="index" wx:for-item="detail">
               <view wx:if="{{detail.img_des || detail.desc}}" class="mcpage-details-item-desc">{{detail.img_des || detail.desc}}</view>
               <view wx:if="{{detail.img_src || detail.img}}" class="mcpage-img-wrapper">

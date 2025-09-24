@@ -50,7 +50,7 @@ Page({
       },
       {
         id: 'pattern',
-        type: "图案",
+        type: "图案工具",
         data: [
           {
             id: "pattern-1",

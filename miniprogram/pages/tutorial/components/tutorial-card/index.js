@@ -8,6 +8,10 @@ Component({
     item: {
       type: Object,
       value: {}
+    },
+    full:{
+      type: Boolean,
+      value: false
     }
   },
 

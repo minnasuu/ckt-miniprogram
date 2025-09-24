@@ -1,32 +1,33 @@
 <!--pages/tutorial/components/tutorial-card/index.wxml-->
-<view class="tutorial-card">
+<view class="tutorial-card {{full ? 'full':''}}">
   <!-- 书本容器 -->
   <view class="book-container">
     <!-- 左书页 -->
-    <view class="book-page-left">
+    <!-- <view class="book-page-left">
       <view class="page-content">
         <image wx:if="{{item.image}}" src="{{item.image}}" class="tutorial-card-image" mode="aspectFit"/>
         <view wx:else class="tutorial-card-title">
           <text>{{item.title}}</text>
         </view>
       </view>
-    </view>
+    </view> -->
     
     <!-- 右书页 -->
     <view class="book-page-right">
       <view class="page-content">
+        <image wx:if="{{item.image}}" src="{{item.image}}" class="tutorial-card-image" mode="aspectFit"/>
         <view class="page-body">
-          <view wx:if="{{item.image}}" class="tutorial-card-title">
-          <text>{{item.title}}</text>
-        </view>
-          <view class="tutorial-card-content">
-            <text>{{item.content}}</text>
-          </view>
           <view class="tutorial-card-level">
             <text>{{item.level}}</text>
           </view>
+          <view wx:if="{{item.image}}" class="tutorial-card-title">
+          <text>{{item.title}}</text>
+        </view>
+          <view wx:if="{{item.content}}" class="tutorial-card-content">
+            <text>{{item.content}}</text>
+          </view>
           <navigator url="{{item.link}}" class="tutorial-card-button">
-            <text>进入</text>
+            <text>查看</text>
           </navigator>
         </view>
       </view>

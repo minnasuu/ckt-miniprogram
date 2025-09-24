@@ -11,6 +11,8 @@ class LoginUtils {
    * @param {Function} options.onLoginSuccess 登录成功回调
    * @param {Function} options.onLoginFail 登录失败回调
    * @param {string} options.desc 获取用户信息的描述文本
+   * @param {Object} options.currentPage 当前页面实例（用于显示欢迎弹窗）
+   * @param {boolean} options.showWelcome 登录成功后是否显示欢迎弹窗
    * @returns {Promise<Object>} 登录结果
    */
   static async performLogin(options = {}) {
@@ -18,7 +20,9 @@ class LoginUtils {
       onLoginStart = () => {},
       onLoginSuccess = () => {},
       onLoginFail = () => {},
-      desc = '用于完善用户资料'
+      desc = '用于完善用户资料',
+      currentPage = null,
+      showWelcome = true
     } = options;
 
     try {
@@ -53,6 +57,15 @@ class LoginUtils {
         
         // 登录成功回调
         onLoginSuccess(result.userInfo);
+
+        // 如果需要显示欢迎弹窗且有页面实例
+        if (showWelcome && currentPage) {
+          setTimeout(() => {
+            // 动态引入避免循环依赖
+            const WelcomeUtils = require('./welcomeUtils');
+            WelcomeUtils.showWelcomeOnLogin(result.userInfo, currentPage);
+          }, 500);
+        }
 
         return {
           success: true,

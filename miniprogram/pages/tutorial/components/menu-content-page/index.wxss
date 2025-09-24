@@ -41,6 +41,47 @@
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
+.mcpage-details-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--ckt-gray-3);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mcpage-details-table .mcpage-details-table-header,
+.mcpage-details-table .mcpage-details-table-body {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.mcpage-details-table .mcpage-details-table-header view,
+.mcpage-details-table .mcpage-details-table-body view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-block: 8px;
+  font-size: 12px;
+  color: var(--ckt-gray-11);
+}
+.mcpage-details-table .mcpage-details-table-header view:not(:last-child),
+.mcpage-details-table .mcpage-details-table-body view:not(:last-child) {
+  border-right: 1px solid var(--ckt-gray-3);
+}
+.mcpage-details-table .mcpage-details-table-header {
+  background-color: var(--ckt-gray-11);
+}
+.mcpage-details-table .mcpage-details-table-header view {
+  color: var(--ckt-gray-1);
+  font-weight: bold;
+}
+.mcpage-details-table .mcpage-details-table-header view:not(:last-child) {
+  border-color: var(--ckt-gray-10);
+}
+.mcpage-details-table .mcpage-details-table-body {
+  border-top: 1px solid var(--ckt-gray-3);
+}
 .mcpage-menu-item.active .mcpage-menu-item-title {
   color: var(--ckt-theme-6);
 }
@@ -80,15 +121,6 @@
   padding-inline: 20px;
   padding-top: 20px;
 }
-.mcpage-item-desc {
-  padding: 12px;
-  font-size: 14px;
-  color: var(--ckt-gray-7);
-  line-height: 1.6;
-  background-color: var(--ckt-gray-1);
-  border-radius: 8px;
-  box-sizing: border-box;
-}
 .mcpage-details {
   width: 100%;
   display: flex;
@@ -99,6 +131,18 @@
   display: flex;
   flex-direction: column;
   gap: 16rpx;
+}
+.mcpage-details-table {
+  display: flex;
+  flex-direction: column;
+}
+.mcpage-details-table thead,
+.mcpage-details-table tbody {
+  display: flex;
+}
+.mcpage-details-table thead td,
+.mcpage-details-table tbody td {
+  flex: 1;
 }
 .mcpage-details-item-img {
   width: 100%;

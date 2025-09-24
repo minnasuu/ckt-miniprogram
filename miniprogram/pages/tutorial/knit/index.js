@@ -15,43 +15,25 @@ Component({
     list: [
       {
         key: "1",
-      title:"棒针针法（初级）",
+      title:"图解版",
       image: 'https://suminhan.cn/ckt/images/knit/bzchua.jpg',
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
+      level:'⭐️⭐️⭐️⭐️⭐️',
       link: '/pages/tutorial/knit/knit-detail/index?index=0'
     },
     {
       key: "2",
-    title:"棒针起针与收针",
-    image:'https://suminhan.cn/ckt/images/knit/qzhen1.jpg',
-    content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-    level:'⭐️⭐️⭐️',
-    link: '/pages/tutorial/knit/knit-detail/index?index=1'
-  },
-      {
-        key: "3",
-      title:"棒针针法（进阶）",
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
+      title:"实物图片版",
+      image:'https://suminhan.cn/ckt/images/knit/qzhen1.jpg',
+      level:'⭐️⭐️⭐️⭐️',
+      link: '/pages/tutorial/knit/knit-detail/index?index=1'
     },
-      {
-        key: "4",
-      title:"棒针符号表",
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
+    {
+      key: "3",
+      title:"视频版",
+      image:'https://suminhan.cn/ckt/images/knit/qzhen1.jpg',
       level:'⭐️⭐️⭐️',
-    },
-      {
-        key: "5",
-      title:"棒针案例（初级）",
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️',
-    },
-      {
-        key: "6",
-      title:"棒针案例（进阶）",
-      content:'基础针法是编织的基础，选择合适的线材可以提高编织的舒适度和效果。',
-      level:'⭐️⭐️⭐️'},
+      link: '/pages/tutorial/knit/knit-detail/index?index=1'
+    }
     ]
   },
 

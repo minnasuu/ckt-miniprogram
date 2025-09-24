@@ -1,9 +1,12 @@
 /* pages/tutorial/components/tutorial-card/index.wxss */
 .tutorial-card {
     position: relative;
-    height: 240px;
+    width: 100%;
+    height: 200px;
     display: flex;
-    perspective: 1000px;
+    &.full{
+      height: 240px;
+    }
 }
 
 /* 书本容器 */
@@ -18,16 +21,16 @@
     transform-style: preserve-3d;
     transition: transform 0.3s ease;
     box-sizing: border-box;
-    &::before{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 10%;
-        height: 100%;
-        background-color: var(--ckt-gray-4);
-    }
+    // &::before{
+    //     content: '';
+    //     position: absolute;
+    //     top: 0;
+    //     left: 50%;
+    //     transform: translateX(-50%);
+    //     width: 10%;
+    //     height: 100%;
+    //     background-color: var(--ckt-gray-4);
+    // }
 }
 
 /* 左书页 */
@@ -45,7 +48,7 @@
 .book-page-left,
 .book-page-right {
     position: relative;
-    width: 50%;
+    width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     box-sizing: border-box;
@@ -57,27 +60,32 @@
 }
 
 .book-page-right{
-    padding: 20px 16px;
-    border-radius: 0 12px 12px 0;
+    border-radius: 12px;
+    overflow: hidden;
     .tutorial-card-title{
       font-size: 32rpx;
       padding: 0;
-      margin-bottom: 16rpx;
     }
 }
 
 .tutorial-card-image{
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 16rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 108px;
+  overflow: hidden;
+  border-radius: 16rpx;
+  opacity: 0.25;
+  z-index: 0;
 }
 
 /* 标题样式 */
 .tutorial-card-title {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--ckt-gray-11);
     line-height: 1.4;
     white-space: wrap;
     padding: 20px;
@@ -96,7 +104,6 @@
 
 /* 按钮样式 */
 .tutorial-card-button {
-    background-color: var(--ckt-theme-6);
     color: white;
     border: none;
     border-radius: 8px;
@@ -108,11 +115,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--ckt-gray-11);
+    color: var(--ckt-gray-0);
     &:not([size=mini]){
         width: 100%;
-    }
-    &[type=primary]{
-        background-color: var(--ckt-theme-6);
     }
 }
 
@@ -122,9 +128,20 @@
     flex-direction: column;
     height: 100%;
     background-color: var(--ckt-gray-0);
+    &::after{
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 80%;
+      bottom: 0;
+      left: 0;
+      background: linear-gradient(to top, #fff 50%,rgba(255,255,255,0));
+      z-index: 1;
+    }
 }
 
 .book-page-left .page-content{
+  position: relative;
   padding: 24rpx;
   border-top-left-radius: 24rpx;
   border-bottom-left-radius: 24rpx;
@@ -134,5 +151,10 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 12px;
     justify-content: space-between;
+    padding: 16px;
+    padding-top: 48px;
+    z-index: 2;
 }

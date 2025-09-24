@@ -6,6 +6,7 @@
     "nav": "/components/common/nav/index",
     "about-wave": "/pages/tutorial/adbout-wave/index",
     "crochet": "/pages/tutorial/crochet/index",
-    "knit": "/pages/tutorial/knit/index"
+    "knit": "/pages/tutorial/knit/index",
+    "dialog": "/components/common/dialog/index"
   }
 }
