@@ -1,4 +1,5 @@
 // pages/tutorial/adbout-wave/crochet-base/index.js
+import { CROCHET_BASE_CHARACTER_DATA } from '../../data';
 Page({
 
   /**
@@ -8,7 +9,6 @@ Page({
     list: [],
     title: "",
     selectedIndex: 0, // 当前选中的导航项索引
-    isLoading: true, // 页面数据加载态
     currentItem: null
   },
 
@@ -20,37 +20,48 @@ Page({
   },
 
   getData(index){
-    this.setData({ isLoading: true });
-      wx.request({
-        url: 'https://suminhan.cn/ckt/api/crochetCourseData.json',
-        success: (res) => {
-          const newIndex = index || 0;
-          this.setData({
-            title: res.data.data[newIndex].cap
-          })
-          const newData = res.data.data[newIndex].contentMenuList.map(item => {
-            return {
-              ...item,
-              imgList: item.imgList.map(detail => {
-                return {
-                  ...detail,
-                  img_src: detail.img_src ? detail.img_src.replace('./', 'https://suminhan.cn/ckt/') : '',
-                  isImgLoaded: false,
-                  hasImgError: false
-                }
-              })
-            }
-          })
-          this.setData({
-            list: newData,
-            currentItem: newData[newIndex]
-          })
-        },
-        fail: () => { },
-        complete: () => {
-          this.setData({ isLoading: false });
-        }
-      })
+    // this.setData({ isLoading: true });
+    // wx.request({
+    //   url: 'https://suminhan.cn/ckt/api/crochetCourseData.json',
+    //   success: (res) => {
+    //     const newIndex = index || 0;
+    //     this.setData({
+    //       title: res.data.data[newIndex].cap
+    //     })
+    //     const newData = res.data.data[newIndex].contentMenuList.map(item => {
+    //       return {
+    //         ...item,
+    //         imgList: item.imgList.map(detail => {
+    //           return {
+    //             ...detail,
+    //             img_src: detail.img_src ? detail.img_src.replace('./', 'https://suminhan.cn/ckt/') : '',
+    //             isImgLoaded: false,
+    //             hasImgError: false
+    //           }
+    //         })
+    //       }
+    //     })
+    //     this.setData({
+    //       list: newData,
+    //       currentItem: newData[newIndex]
+    //     })
+    //   },
+    //   fail: () => { },
+    //   complete: () => {
+    //     this.setData({ isLoading: false });
+    //   }
+    // })
+    switch (index) {
+      case "0":
+        this.setData({
+          list: CROCHET_BASE_CHARACTER_DATA,
+          currentItem: CROCHET_BASE_CHARACTER_DATA[0]
+        })
+        break;
+
+      default:
+        break;
+    }
   },
 
   onImageLoad(e) {

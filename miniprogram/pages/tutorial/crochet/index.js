@@ -37,15 +37,8 @@ Component({
     ],
     testList: [
       {
-        key: "5",
-        title: "起针方法",
-        image: 'https://suminhan.cn/ckt/images/crochet/sshi1.jpg',
-        level: '⭐️⭐️⭐️',
-        link: '/pages/tutorial/crochet/crochet-base/index?index=1'
-      },
-      {
         key: "3",
-        title: "钩针符号表",
+        title: "蝴蝶结挎包",
         image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
         level: '⭐️⭐️⭐️',
         link: '/pages/tutorial/crochet/crochet-base/index?index=2'

@@ -19,7 +19,7 @@
         <view class="mcpage-item-title">{{currentItem.title}}</view>
         <view class="mcpage-item-content">
           <view wx:if="{{currentItem.imgList || currentItem.detailList}}" class="mcpage-details">
-           <view class="mcpage-details-table">
+           <view wx:if="{{currentItem.symbol || currentItem.englishSymbol}}" class="mcpage-details-table">
                 <view class="mcpage-details-table-header">
                     <view class="cell">图解</view>
                     <view class="cell">英文</view>

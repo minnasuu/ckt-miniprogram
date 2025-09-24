@@ -23,7 +23,7 @@ Component({
     {
       key: "2",
       title:"实物图片版",
-      image:'https://suminhan.cn/ckt/images/knit/qzhen1.jpg',
+      image:'https://suminhan.cn/ckt/images/knit/zsdxian.jpg',
       level:'⭐️⭐️⭐️⭐️',
       link: '/pages/tutorial/knit/knit-detail/index?index=1'
     },
@@ -32,7 +32,8 @@ Component({
       title:"视频版",
       image:'https://suminhan.cn/ckt/images/knit/qzhen1.jpg',
       level:'⭐️⭐️⭐️',
-      link: '/pages/tutorial/knit/knit-detail/index?index=1'
+      link: '/pages/tutorial/knit/knit-detail/index?index=2',
+      disabled: true
     }
     ]
   },

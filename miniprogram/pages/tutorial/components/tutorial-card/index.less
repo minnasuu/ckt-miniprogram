@@ -7,6 +7,10 @@
     &.full{
       height: 240px;
     }
+    &.disabled{
+      pointer-events: none;
+      opacity: 0.5;
+    }
 }
 
 /* 书本容器 */
@@ -108,9 +112,9 @@
     border: none;
     border-radius: 8px;
     padding: 0;
-    width: 100%;
     font-size: 14px;
     height: 36px;
+    padding-inline: 16px;
     margin-top: auto;
     display: flex;
     align-items: center;
@@ -118,7 +122,7 @@
     background-color: var(--ckt-gray-11);
     color: var(--ckt-gray-0);
     &:not([size=mini]){
-        width: 100%;
+        width: fit-content;
     }
 }
 

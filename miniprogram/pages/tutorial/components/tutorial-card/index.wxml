@@ -1,5 +1,5 @@
 <!--pages/tutorial/components/tutorial-card/index.wxml-->
-<view class="tutorial-card {{full ? 'full':''}}">
+<view class="tutorial-card {{full ? 'full':''}} {{item.disabled ? 'disabled':''}}">
   <!-- 书本容器 -->
   <view class="book-container">
     <!-- 左书页 -->
@@ -27,7 +27,7 @@
             <text>{{item.content}}</text>
           </view>
           <navigator url="{{item.link}}" class="tutorial-card-button">
-            <text>查看</text>
+            <text>{{item.disabled ? '敬请期待':'查看'}}</text>
           </navigator>
         </view>
       </view>

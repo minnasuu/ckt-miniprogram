@@ -1,7 +1,7 @@
 <!--pages/tutorial/crochet-basic/index.wxml-->
 <view class="tutorial-container">
   <view class="tutorial-part">
-    <view class="title">棒针基础针法
+    <view class="title">基础针法
       <text class="desc">上针、下针</text>
     </view>
     <view class="tutorial-card-list">
