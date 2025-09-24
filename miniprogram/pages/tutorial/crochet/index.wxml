@@ -1,7 +1,15 @@
 <!--pages/tutorial/crochet-basic/index.wxml-->
 <view class="tutorial-container">
   <view class="tutorial-part">
-    <view class="title">钩针基础教程
+    <view class="title">新手跟练
+    <text class="desc">结合案例视频教学快速入门。</text>
+  </view>
+    <view class="tutorial-card-list">
+      <tutorial-card wx:for="{{testList}}" wx:if="{{item.link}}" item="{{item}}"></tutorial-card>
+    </view>
+  </view>
+  <view class="tutorial-part">
+    <view class="title">基础针法
     <text class="desc">短针、锁针、引拔针、辫子针、中长针、长针、长长针、加针、减针、短针减3针、中长针减针、长针减针、内半针、外半针。</text>
   </view>
     <view class="tutorial-card-list">
@@ -9,15 +17,7 @@
     </view>
   </view>
   <view class="tutorial-part">
-    <view class="title">案例实操
-    <text class="desc">。</text>
-  </view>
-    <view class="tutorial-card-list">
-      <tutorial-card wx:for="{{testList}}" wx:if="{{item.link}}" item="{{item}}"></tutorial-card>
-    </view>
-  </view>
-  <view class="tutorial-part">
-    <view class="title">钩针高阶教程
+    <view class="title">高阶针法
       <text class="desc">菱形针、条纹针、萝卜针</text>
     </view>
     <view class="tutorial-card-list">
@@ -25,7 +25,7 @@
     </view>
   </view>
   <view class="tutorial-part">
-    <view class="title">钩针查询手册
+    <view class="title">查询手册
       <text class="desc">图解符号、英文符号</text>
     </view>
     <view class="tutorial-card-list">
