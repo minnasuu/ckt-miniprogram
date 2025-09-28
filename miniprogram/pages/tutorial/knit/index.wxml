@@ -8,4 +8,12 @@
       <tutorial-card wx:for="{{list}}" wx:if="{{item.link}}" item="{{item}}"></tutorial-card>
     </view>
   </view>
+  <view class="tutorial-part">
+    <view class="title">符号表
+      <text class="desc">图解符号、英文符号</text>
+    </view>
+    <view class="tutorial-card-list">
+      <tutorial-card wx:for="{{materialList}}" wx:if="{{item.link}}" item="{{item}}"></tutorial-card>
+    </view>
+  </view>
 </view>

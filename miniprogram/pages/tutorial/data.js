@@ -398,3 +398,232 @@ export const CROCHET_BASE_CHARACTER_DATA = [
         ]
     }
 ]
+
+export const KNIT_BASE_PICTURE_DATA = [
+  {
+      "id": "1",
+      "title": "上针",
+      "decs": "上针在织物纹样中对应月牙形。",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/szhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/szhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/szhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/szhen4.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/szhen5.jpg"
+          }
+      ]
+  },
+  {
+      "id": "2",
+      "title": "下针",
+      "decs": "下针在织物纹样中对应 V 形。",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/xzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/xzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/xzhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/xzhen4.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/xzhen5.jpg"
+          }
+      ]
+  },
+  {
+      "id": "3",
+      "title": "滑针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/hzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/hzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/hzhen3.jpg"
+          }
+      ]
+  },
+  {
+      "id": "4",
+      "title": "空针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/kzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/kzhen2.jpg"
+          },
+      ]
+  },
+  {
+      "id": "5",
+      "title": "左加针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjzhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjzhen4.jpg"
+          }
+      ]
+  },
+  {
+      "id": "6",
+      "title": "右加针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjzhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjzhen4.jpg"
+          }
+      ]
+  },
+  {
+      "id": "7",
+      "title": "左减针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjianzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjianzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjianzhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjianzhen4.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/zjianzhen5.jpg"
+          }
+      ]
+  },
+  {
+      "id": "8",
+      "title": "右减针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjianzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjianzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjianzhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjianzhen4.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/yjianzhen5.jpg"
+          }
+      ]
+  },
+  {
+      "id": "9",
+      "title": "3针并针",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/djianzhen1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/djianzhen2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/djianzhen3.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/djianzhen4.jpg"
+          }
+      ]
+  },
+  {
+      "id": "10",
+      "title": "加线",
+      "imgList": [
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/jxian1.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/jxian2.jpg"
+          },
+          {
+              "img_src": "https://suminhan.cn/ckt/images/knit/jxian3.jpg"
+          }
+      ]
+  }
+]
+
+export const MATERIAL_CROCHET_SYMBOL_DATA = [
+]
+
+export const MATERIAL_CROCHET_TEXT_SYMBOL_DATA = [
+  ["CH", "锁针", "-"],
+  ["CL", "引拔针", "-"],
+  ["X", "短针", "-"],
+  ["T", "中长针", "-"],
+  ["F", "长针", "-"],
+  ["E", "长长针", "-"],
+  ["V", "加针", "-"],
+  ["W", "加 3 针", "-"],
+  ["A", "减针", "-"],
+  ["M", "减 3 针", "-"],
+  ["K", "空针", "-"],
+  ["FLO", "前/外半针", "-"],
+  ["BLO", "后/内半针", "-"],
+  ["(...)", "循环组", "-"],
+  ["[...]", "一个针目里织", "-"],
+]
+
+export const MATERIAL_KNIT_SYMBOL_DATA = [
+  ["st", "sticth", "针数"],
+  ["CO", "cast on", "起针"],
+  ["K", "knit", "起针"],
+  ["P", "purl", "起针"],
+  ["BO", "bind off", "收针"],
+  ["sc", "single crochet", "起针"],
+  ["hdc", "half double crochet", "起针"],
+  ["dc", "double crochet", "起针"],
+  ["tc", "treble crochet", "起针"],
+  ["dec", "decrease", "起针"],
+  ["inc", "increase", "起针"],
+  ["sl", "slip stich", "起针"],
+  ["sk", "skip stich", "起针"],
+  ["ch-sp", "chain space", "起针"],
+  ["sk", "skip stich", "起针"],
+  ["rnd", "round", "起针"],
+  ["beg", "begin", "起针"],
+  ["bl", "back loop", "起针"],
+]
+
+export const MATERIAL_KNIT_TEXT_SYMBOL_DATA = []

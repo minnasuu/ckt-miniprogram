@@ -1,0 +1,70 @@
+/* pages/tutorial/crochet/crochet-symbol-table/index.wxss */
+.mcpage-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.mcpage-content {
+  flex: 1;
+  height: 1%;
+  width: 100%;
+  display: flex;
+  padding: 12px;
+  padding-bottom: env(safe-area-inset-bottom,12px);
+  box-sizing: border-box;
+}
+
+.table-container{
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  max-height: 100%;
+  border: 1px solid var(--ckt-gray-3);
+  border-radius: 12px;
+  overflow: auto;
+}
+
+.table-content{
+  min-width: 100%;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  color: var(--ckt-gray-12);
+}
+
+.table-header{
+  position: sticky;
+  top: 0;
+  width: 100%;
+  display: flex;
+  background-color: var(--ckt-gray-1);
+  text-align: center;
+  font-weight: bold;
+}
+
+.row{
+  display: flex;
+  border-top: 1px solid var(--ckt-gray-3);
+}
+
+.cell{
+  flex: 2;
+  padding: 8px 12px;
+  &:not(:first-child){
+    border-left: 1px solid var(--ckt-gray-3);
+  }
+  &:first-child{
+    flex: 1;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.table-body{
+  display: flex;
+  flex-direction: column;
+}

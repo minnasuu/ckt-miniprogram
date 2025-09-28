@@ -1,3 +1,5 @@
+import { KNIT_BASE_PICTURE_DATA } from "../../data";
+
 // pages/tutorial/knit/knit-detail/index.js
 Page({
 
@@ -8,7 +10,6 @@ Page({
     list: [],
     title: "",
     selectedIndex: 0, // 当前选中的导航项索引
-    isLoading: true, // 页面数据加载态
     currentItem: null
   },
 
@@ -16,41 +17,21 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getData(options.index);
+    this.updateData(options.id);
   },
 
-  getData(index){
-    this.setData({ isLoading: true });
-      wx.request({
-        url: 'https://suminhan.cn/ckt/api/knitCourseData.json',
-        success: (res) => {
-          const newIndex = index || 0;
-          this.setData({
-            title: res.data.data[newIndex].cap
-          })
-          const newData = res.data.data[newIndex].contentMenuList.map(item => {
-            return {
-              ...item,
-              imgList: item.imgList.map(detail => {
-                return {
-                  ...detail,
-                  img_src: detail.img_src ? detail.img_src.replace('./', 'https://suminhan.cn/ckt/') : '',
-                  isImgLoaded: false,
-                  hasImgError: false
-                }
-              })
-            }
-          })
-          this.setData({
-            list: newData,
-            currentItem: newData[newIndex]
-          })
-        },
-        fail: () => { },
-        complete: () => {
-          this.setData({ isLoading: false });
-        }
-      })
+  updateData(id){
+    switch (id) {
+      case 'base_picture':
+        this.setData({
+          title: '棒针基础教程（实图版）',
+          list: KNIT_BASE_PICTURE_DATA
+        })
+        break;
+    
+      default:
+        break;
+    }
   },
 
   onImageLoad(e) {
