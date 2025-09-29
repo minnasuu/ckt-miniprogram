@@ -25,7 +25,7 @@
     </view>
   </view>
   <view class="tutorial-part">
-    <view class="title">符号表
+    <view class="title">查询手册
       <text class="desc">图解符号、英文符号</text>
     </view>
     <view class="tutorial-card-list">

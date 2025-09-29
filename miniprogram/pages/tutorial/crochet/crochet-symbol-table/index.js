@@ -8,8 +8,8 @@ Page({
    */
   data: {
     title:"",
-    titleData:  ['符号','全称','含义'],
-    data: []
+    titleData:  ['英文','符号','全称','含义'],
+    data: [],
   },
 
   /**
@@ -20,31 +20,20 @@ Page({
   },
 
   updateData(id){
+    console.log(id);
     switch (id) {
-      case "crochet_symbol":
+      case "material_symbol":
         this.setData({
           title: "钩针图示符号表",
           data: MATERIAL_CROCHET_SYMBOL_DATA
         })
         break;
-        case "material_text_symbol":
-          this.setData({
-            title: "钩针文字符号表",
-            data: MATERIAL_CROCHET_TEXT_SYMBOL_DATA
-          })
-          break;
         case "knit_symbol":
         this.setData({
           title: "棒针图示符号表",
           data: MATERIAL_KNIT_SYMBOL_DATA
         })
       break;
-      case "knit_text_symbol":
-        this.setData({
-          title: "棒针文字符号表",
-          data: MATERIAL_KNIT_TEXT_SYMBOL_DATA
-        })
-        break;
       default:
         this.setData({
           title: "钩针图示符号表",

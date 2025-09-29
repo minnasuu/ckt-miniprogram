@@ -40,7 +40,7 @@ Component({
     testList: [
       {
         key: "3",
-        title: "蝴蝶结挎包",
+        title: "斜挎手机袋",
         image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
         level: '⭐️⭐️⭐️',
         link: '/pages/tutorial/crochet/crochet-base/index?id=test_1',
@@ -60,17 +60,10 @@ Component({
     materialList: [
       {
         key: "1",
-        title: "图示符号",
-        image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
+        title: "符号表",
+        image: 'https://suminhan.cn/ckt/images/tutorial-crochet-material-symbol-cover.png',
         level: '⭐️⭐️⭐️',
         link: '/pages/tutorial/crochet/crochet-symbol-table/index?id=material_symbol'
-      },
-      {
-        key: "2",
-        title: "文字符号",
-        image: 'https://suminhan.cn/ckt/images/crochet/zmfhao.jpg',
-        level: '⭐️⭐️⭐️',
-        link: '/pages/tutorial/crochet/crochet-symbol-table/index?id=material_text_symbol'
       }
     ]
   },

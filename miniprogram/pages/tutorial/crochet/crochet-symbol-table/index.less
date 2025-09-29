@@ -34,6 +34,7 @@
   display: flex;
   flex-direction: column;
   color: var(--ckt-gray-12);
+  font-size: 14px;
 }
 
 .table-header{
@@ -44,6 +45,7 @@
   background-color: var(--ckt-gray-1);
   text-align: center;
   font-weight: bold;
+  z-index: 1;
 }
 
 .row{
@@ -57,11 +59,24 @@
   &:not(:first-child){
     border-left: 1px solid var(--ckt-gray-3);
   }
-  &:first-child{
-    flex: 1;
+  &:nth-child(1),
+  &:nth-child(2){
+    width: 48px;
+    flex: unset;
     font-weight: bold;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+}
+
+.cell-path{
+  width: 48px;
+  height: 48px;
+  background-color: var(--ckt-gray-12);
+  margin-inline: auto;
+  transform: scale(0.6);
 }
 
 .table-body{

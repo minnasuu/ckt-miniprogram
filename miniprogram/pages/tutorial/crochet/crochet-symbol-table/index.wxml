@@ -9,7 +9,10 @@
       </view>
       <view class="table-body">
         <view wx:for="{{data}}" class="row">
-          <view wx:for="{{item}}" class="cell td">{{item}}</view>
+          <view wx:for="{{item}}" class="cell td">
+          <view wx:if="{{index===1 && item}}" class="cell-path" style="clip-path: path('{{item}}');"></view>
+          <block wx:else>{{item||'-'}}</block>
+          </view>
         </view>
       </view>
       </view>
