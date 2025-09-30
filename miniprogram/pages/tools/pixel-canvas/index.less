@@ -8,7 +8,6 @@
 .content {
   flex: 1;
   height: 1%;
-  padding-top: 24rpx;
   padding-bottom: env(safe-area-inset-bottom,12px);
   padding-inline: 8px;
   display: flex;
@@ -47,7 +46,7 @@
 }
 
 .pixel {
-  border: 1rpx solid #e0e0e0;
+  border: 1px solid #e0e0e0;
   box-sizing: border-box;
   aspect-ratio: 1;
 }
@@ -70,9 +69,13 @@
     border-radius: 16rpx;
     color: var(--ckt-gray-10);
     background-color: var(--ckt-gray-1);
-    &.primary{
+    &[type="primary"]{
       background-color: var(--ckt-theme-6);
       color: var(--ckt-gray-0);
+      &[disabled]{
+        background-color: var(--ckt-theme-4);
+        cursor: not-allowed;
+      }
     }
   }
 }
@@ -162,6 +165,10 @@
     width: 100%;
   }
   button.eraser-button{
+    &[disabled]{
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     &.active{
       background-color: var(--ckt-gray-3);
       color: var(--ckt-gray-0);
@@ -272,7 +279,7 @@
     align-items: center;
     justify-content: center;
     transform: scale(0.8);
-    transition: transform 0.15 linear;
+    transition: transform 0.15 ease-in-out;
     &:active{
       transform: scale(0.9);
     }
@@ -304,5 +311,13 @@ flex: 1;
     width: 100%;
     height: 100%;
     border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .text{
+      font-size: 24rpx;
+      color: var(--ckt-gray-10);
+      mix-blend-mode: difference;
+    }
   }
 }

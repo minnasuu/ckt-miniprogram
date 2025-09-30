@@ -46,7 +46,9 @@ Page({
     // 触摸手势相关
     touchStartTime: 0, // 触摸开始时间
     initialTouchCount: 0, // 初始触摸点数量
-    isMultiTouch: false // 是否为多点触摸
+    isMultiTouch: false, // 是否为多点触摸
+    showClearCanvasDialog: false, // 控制清空画布提示弹窗
+    isCanvasEmpty: true // 画布是否为空（没有绘制任何像素）
   },
   
   onLoad() {
@@ -80,16 +82,15 @@ Page({
 
   // 更新画布区域信息
   updateCanvasRect() {
-    const query = wx.createSelectorQuery();
     const { fullCanvas } = this.data;
-
-    // 根据当前模式选择不同的选择器
     const selector = fullCanvas ? 'movable-view.pixel-canvas' : '.pixel-canvas';
 
+    const query = wx.createSelectorQuery();
     query.select(selector).boundingClientRect((rect) => {
       if (rect) {
         this.setData({
-          canvasRect: rect
+          canvasRect: rect,
+          canvasRectUpdateTime: Date.now()
         });
       }
     }).exec();
@@ -115,6 +116,45 @@ Page({
       showPermissionDialog: false
     });
   },
+
+  // 检测画布是否为空（没有绘制任何像素）
+  checkCanvasEmpty() {
+    const { canvasData, canvasColor } = this.data;
+    
+    // 如果画布数据为空，认为是空的
+    if (!canvasData || canvasData.length === 0) {
+      return true;
+    }
+    
+    // 检查是否有任何像素不是画布背景色
+    for (let y = 0; y < canvasData.length; y++) {
+      for (let x = 0; x < canvasData[y].length; x++) {
+        if (canvasData[y][x] !== canvasColor) {
+          return false; // 找到非背景色的像素，画布不为空
+        }
+      }
+    }
+    
+    return true; // 所有像素都是背景色，画布为空
+  },
+
+  // 更新画布空状态
+  updateCanvasEmptyState() {
+    const isEmpty = this.checkCanvasEmpty();
+    const { isEraser } = this.data;
+    
+    // 如果画布为空且当前是橡皮擦模式，自动取消橡皮擦激活
+    if (isEmpty && isEraser) {
+      this.setData({
+        isCanvasEmpty: isEmpty,
+        isEraser: false
+      });
+    } else {
+      this.setData({
+        isCanvasEmpty: isEmpty
+      });
+    }
+  },
   // 初始化画布数据
   initCanvas() {
     const { canvasWidth,canvasHeight,canvasColor } = this.data;
@@ -130,6 +170,9 @@ Page({
     this.setData({
       canvasData,
       previousCanvasColor: canvasColor // 初始化时设置之前的画布颜色
+    }, () => {
+      // 初始化后更新画布空状态
+      this.updateCanvasEmptyState();
     });
   },
 
@@ -155,6 +198,9 @@ Page({
     this.setData({
       canvasData: newCanvasData,
       previousCanvasColor: canvasColor // 更新背景色后更新之前的画布颜色
+    }, () => {
+      // 更新背景色后更新画布空状态
+      this.updateCanvasEmptyState();
     });
   },
 
@@ -227,6 +273,9 @@ Page({
     this.setData({
       canvasData: newCanvasData,
       previousCanvasColor: canvasColor // 调整尺寸后更新之前的画布颜色
+    }, () => {
+      // 调整尺寸后更新画布空状态
+      this.updateCanvasEmptyState();
     });
   },
   
@@ -248,8 +297,12 @@ Page({
         isDrawing: false,
         lastDrawnPixel: null
       });
-      // 不阻止事件冒泡，让movable-view处理多指手势
       return false;
+    }
+
+    // 确保画布区域信息是最新的
+    if (!this.data.canvasRect) {
+      this.updateCanvasRect();
     }
 
     // 检查触摸点是否在有效的像素区域内
@@ -297,7 +350,6 @@ Page({
           isMultiTouch: true
         });
       }
-      // 让movable-view处理多指手势
       return false;
     }
 
@@ -346,52 +398,55 @@ Page({
       return;
     }
     
+    // 如果上一个像素和当前像素不相邻，填充中间的像素（实现连续绘制）
+    if (lastDrawnPixel) {
+      this.fillPixelsBetween(lastDrawnPixel.x, lastDrawnPixel.y, x, y);
+    }
+    
     this.drawPixelAt(x, y);
     this.setData({
       lastDrawnPixel: { x, y }
     });
   },
 
-  // 根据触摸事件获取像素坐标（优化版本，使用缓存的rect信息）
+  // 填充两个像素之间的所有像素（实现连续绘制）
+  fillPixelsBetween(x1, y1, x2, y2) {
+    const dx = Math.abs(x2 - x1);
+    const dy = Math.abs(y2 - y1);
+    const steps = Math.max(dx, dy);
+    
+    if (steps === 0) return;
+    
+    const xStep = (x2 - x1) / steps;
+    const yStep = (y2 - y1) / steps;
+    
+    for (let i = 1; i < steps; i++) {
+      const x = Math.round(x1 + xStep * i);
+      const y = Math.round(y1 + yStep * i);
+      this.drawPixelAt(x, y);
+    }
+  },
+
+  // 根据触摸事件获取像素坐标（优化版本）
   getPixelFromTouch(e) {
     const touch = e.touches[0];
     if (!touch) return null;
     
-    const { canvasRect, canvasWidth, canvasHeight, fullCanvas, screenWidth, canvasRectUpdateTime } = this.data;
-    const currentTime = Date.now();
+    const { canvasWidth, canvasHeight, canvasRect, fullCanvas, screenWidth } = this.data;
     
-    // 如果没有缓存的rect信息或者在全屏模式下且超过100ms没有更新（因为movable-view可能移动），实时获取
-    if (!canvasRect || (fullCanvas && (!canvasRectUpdateTime || (currentTime - canvasRectUpdateTime > 100)))) {
-      this.updateCanvasRect();
-      this.setData({
-        canvasRectUpdateTime: currentTime
-      });
-
-      // 如果还是没有rect信息，返回null
-      if (!this.data.canvasRect) {
-        return null;
-      }
+    // 使用缓存的rect信息，如果没有则返回null（避免异步操作）
+    if (!canvasRect) {
+      return null;
     }
     
-    // 使用最新的canvasRect
-    const currentRect = this.data.canvasRect;
-    const relativeX = touch.clientX - currentRect.left;
-    const relativeY = touch.clientY - currentRect.top;
+    const relativeX = touch.clientX - canvasRect.left;
+    const relativeY = touch.clientY - canvasRect.top;
     
-    let pixelWidth, pixelHeight;
-    if (fullCanvas) {
-      // 全屏模式下，像素大小为32px，但需要考虑缩放
-      // 通过currentRect的实际尺寸来计算当前的像素大小
-      const actualCanvasWidth = currentRect.width;
-      const actualCanvasHeight = currentRect.height;
-      pixelWidth = actualCanvasWidth / canvasWidth;
-      pixelHeight = actualCanvasHeight / canvasHeight;
-    } else {
-      // 普通模式下，像素大小根据屏幕宽度计算
-      pixelWidth = Math.min(screenWidth / canvasWidth, 24);
-      pixelHeight = pixelWidth;
-    }
+    // 计算像素大小
+    const pixelWidth = canvasRect.width / canvasWidth;
+    const pixelHeight = canvasRect.height / canvasHeight;
     
+    // 计算像素坐标，使用更精确的舍入方法
     const x = Math.floor(relativeX / pixelWidth);
     const y = Math.floor(relativeY / pixelHeight);
     
@@ -403,6 +458,19 @@ Page({
     }
   },
 
+  // 获取画布区域信息（异步方法，返回Promise）
+  getCanvasRect() {
+    return new Promise((resolve) => {
+      const { fullCanvas } = this.data;
+      const selector = fullCanvas ? 'movable-view.pixel-canvas' : '.pixel-canvas';
+      
+      const query = wx.createSelectorQuery();
+      query.select(selector).boundingClientRect((rect) => {
+        resolve(rect);
+      }).exec();
+    });
+  },
+
   // 在指定坐标绘制像素
   drawPixelAt(x, y) {
     const { canvasData, brushColor, canvasColor, isEraser } = this.data;
@@ -411,7 +479,10 @@ Page({
     const newCanvasData = [...canvasData];
     newCanvasData[y][x] = isEraser ? canvasColor : brushColor;
     
-    this.setData({ canvasData: newCanvasData });
+    this.setData({ canvasData: newCanvasData }, () => {
+      // 绘制后更新画布空状态
+      this.updateCanvasEmptyState();
+    });
   },
 
   // 绘制像素（点击事件，保持兼容性）
@@ -422,19 +493,8 @@ Page({
   
   // 清除画布
   clearCanvas() {
-    wx.showModal({
-      title: '确认清除',
-      content: '确定要清除当前画布吗？',
-      confirmColor: '#F35A75',
-      success: (res) => {
-        if (res.confirm) {
-          this.initCanvas();
-          // 清除画布后，更新之前的画布颜色
-          this.setData({
-            previousCanvasColor: this.data.canvasColor
-          });
-        }
-      }
+    this.setData({
+      showClearCanvasDialog: true
     });
   },
   
@@ -577,7 +637,7 @@ Page({
       // 更新画布区域信息
       setTimeout(() => {
         this.updateCanvasRect();
-      }, 100);
+      }, 50);
     });
   },
   onFullCanvas(){
@@ -587,7 +647,7 @@ Page({
       // 切换到全屏模式后更新画布区域信息
       setTimeout(() => {
         this.updateCanvasRect();
-      }, 100);
+      }, 50);
     });
   },
   onZoomOutCanvas(){
@@ -597,7 +657,7 @@ Page({
       // 退出全屏模式后更新画布区域信息
       setTimeout(() => {
         this.updateCanvasRect();
-      }, 100);
+      }, 50);
     });
   },
   // 在canvas上绘制像素数据
@@ -672,26 +732,6 @@ Page({
         });
       });
   },
-  onFullCanvas(){
-    this.setData({
-      fullCanvas: true
-    }, () => {
-      // 切换到全屏模式后更新画布区域信息
-      setTimeout(() => {
-        this.updateCanvasRect();
-      }, 100);
-    });
-  },
-  onZoomOutCanvas(){
-    this.setData({
-      fullCanvas: false
-    }, () => {
-      // 退出全屏模式后更新画布区域信息
-      setTimeout(() => {
-        this.updateCanvasRect();
-      }, 100);
-    });
-  },
   onGridShowChange(e){ 
     const {type} = e.currentTarget.dataset;
     this.setData({
@@ -717,7 +757,7 @@ Page({
       // 更新画布区域信息
       setTimeout(() => {
         this.updateCanvasRect();
-      }, 100);
+      }, 50);
     });
   },
 
@@ -807,5 +847,19 @@ Page({
         lastDrawnPixel: null
       });
     }
+  },
+  onClearCanvas(){
+      this.initCanvas();
+      // 清除画布后，更新之前的画布颜色
+      this.setData({
+        previousCanvasColor: this.data.canvasColor,
+        showClearCanvasDialog: false
+      });
+      // initCanvas 方法内部已经会调用 updateCanvasEmptyState
+  },
+  onClearCanvasClose(){
+    this.setData({
+      showClearCanvasDialog: false
+    });
   }
 });
