@@ -4,7 +4,7 @@
     <!-- 画布区域 -->
     <view class="canvas-container">
       <view class="pixel-canvas" 
-            style="width: 100%;height:{{canvasHeight*Math.min(screenWidth/canvasWidth,24)}}px"
+            style="width: {{canvasWidth*Math.min(screenWidth/(canvasWidth||400),24)}}px;height:{{canvasHeight*Math.min(screenWidth/(canvasWidth||400),24)}}px"
             bindtouchstart="onTouchStart"
             bindtouchmove="onTouchMove"
             bindtouchend="onTouchEnd"

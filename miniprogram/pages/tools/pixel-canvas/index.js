@@ -44,7 +44,7 @@ Page({
   onLoad() {
     const systemInfo = wx.getSystemInfoSync();
     this.setData({
-      screenWidth: systemInfo.screenWidth-48,
+      screenWidth: systemInfo.screenWidth-24,
       screenHeight: systemInfo.windowHeight
     });
     
