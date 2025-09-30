@@ -23,6 +23,14 @@ Page({
     alertMessage: '',
     borderStyle: '3',
     gridStyleList: ['1', '2', '3'],
+    // 画布尺寸预设选项
+    canvasSizeOptions: [
+      { width: 8, height: 8, label: '8*8' },
+      { width: 12, height: 12, label: '12*12' },
+      { width: 16, height: 16, label: '16*16' },
+      { width: 24, height: 24, label: '24*24' },
+      { width: 32, height: 32, label: '32*32' }
+    ],
     // 颜色选择器相关
     showColorPicker: false,
     currentPickerColor: '#202020',
@@ -44,7 +52,7 @@ Page({
   onLoad() {
     const systemInfo = wx.getSystemInfoSync();
     this.setData({
-      screenWidth: systemInfo.screenWidth-24,
+      screenWidth: systemInfo.screenWidth-16,
       screenHeight: systemInfo.windowHeight
     });
     
@@ -554,41 +562,23 @@ Page({
       });
   },
 
-  onCanvasWidthInput(e){
-    const value = e.detail;
-    if(value){
+  // 选择画布尺寸
+  onCanvasSizeSelect(e) {
+    const { width, height } = e.currentTarget.dataset;
+    this.setData({
+      canvasWidth: parseInt(width),
+      canvasHeight: parseInt(height)
+    }, () => {
+      this.updateCanvas();
+      // 调整尺寸后，更新之前的画布颜色
       this.setData({
-        canvasWidth:value
-      }, () => {
-        this.updateCanvas();
-        // 调整尺寸后，更新之前的画布颜色
-        this.setData({
-          previousCanvasColor: this.data.canvasColor
-        });
-        // 更新画布区域信息
-        setTimeout(() => {
-          this.updateCanvasRect();
-        }, 100);
+        previousCanvasColor: this.data.canvasColor
       });
-    }
-  },
-  onCanvasHeightInput(e){
-    const value = e.detail;
-    if(value){
-      this.setData({
-        canvasHeight:value
-      }, () => {
-        this.updateCanvas();
-        // 调整尺寸后，更新之前的画布颜色
-        this.setData({
-          previousCanvasColor: this.data.canvasColor
-        });
-        // 更新画布区域信息
-        setTimeout(() => {
-          this.updateCanvasRect();
-        }, 100);
-      });
-    }
+      // 更新画布区域信息
+      setTimeout(() => {
+        this.updateCanvasRect();
+      }, 100);
+    });
   },
   onFullCanvas(){
     this.setData({

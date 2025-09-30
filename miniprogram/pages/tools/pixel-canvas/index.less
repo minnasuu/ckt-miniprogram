@@ -10,11 +10,10 @@
   height: 1%;
   padding-top: 24rpx;
   padding-bottom: env(safe-area-inset-bottom,12px);
-  padding-inline: 20px;
+  padding-inline: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40rpx;
   box-sizing: border-box;
   overflow: auto;
 }
@@ -23,6 +22,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  aspect-ratio: 0.98;
+  overflow: hidden;
   &::-webkit-scrollbar {
     display: none;
     width: 0;
@@ -84,6 +86,30 @@
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
+.canvas-size-selector{
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  width: 100%;
+}
+
+.size-options{
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  width: 100%;
+  .size-option{
+    padding: 12rpx 16rpx;
+    border-radius: 12rpx;
+    border: 2rpx solid var(--ckt-gray-2);
+    color: var(--ckt-gray-10);
+    font-size: 28rpx;
+    &.active{
+      border-color: var(--ckt-theme-6);
+    }
+  }
+}
+
 .color-palette {
   flex: 1;
   display: grid;
@@ -109,6 +135,15 @@
   transform: scale(1.1);
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 } 
+
+.option-container{
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding-inline: 12px;
+  box-sizing: border-box;
+  width: 100%;
+}
 
 .option-item{
   display: flex;
@@ -162,8 +197,10 @@
   }
 }
 
-.resetSize-button,
+.resetSize-button:not([size="mini"]),
 .fullscreen-button{
+  width: 32px;
+  padding: 0;
   margin: 0;
   padding: 0;
   height: 100%;

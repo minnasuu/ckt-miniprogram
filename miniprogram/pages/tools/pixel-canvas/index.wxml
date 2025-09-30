@@ -4,7 +4,7 @@
     <!-- 画布区域 -->
     <view class="canvas-container">
       <view class="pixel-canvas" 
-            style="width: {{canvasWidth*Math.min(screenWidth/(canvasWidth||400),24)}}px;height:{{canvasHeight*Math.min(screenWidth/(canvasWidth||400),24)}}px"
+            style="width: {{canvasWidth*Math.min(screenWidth/(canvasWidth||12),24)}}px;height:{{canvasHeight*Math.min(screenWidth/(canvasWidth||12),24)}}px"
             bindtouchstart="onTouchStart"
             bindtouchmove="onTouchMove"
             bindtouchend="onTouchEnd"
@@ -20,33 +20,20 @@
       </view>
     </view>
 
-  <view class="option-item">
+  <view class="option-container">
+    <view class="option-item">
       <text class="title">设置画布大小</text>
-      <view style="display:flex;align-items:center;gap:40rpx;font-size:28rpx;color:var(--ckt-gray-8)">
-        <view style="display:flex;align-items:center;">
-        宽：<custom-number-input
-        value="{{canvasWidth}}"
-        min="4"
-        max="36"
-        step="1"
-        disabledInput
-        bind:change="onCanvasWidthInput"
-      ></custom-number-input>
-      </view>
-      <view style="display:flex;align-items:center;">
-        高：<custom-number-input
-        value="{{canvasHeight}}"
-        min="4"
-        max="36"
-        step="1"
-        disabledInput
-        bind:change="onCanvasHeightInput"
-      ></custom-number-input>
-      </view>
-      <view style="display:flex;align-items:center;gap:8px;">
-      <button class="resetSize-button" style="width: 34px" bind:tap="onResetSize"><view class="resetSize-icon"></view></button>
-      <!-- <button class="fullscreen-button" style="width: 34px" bind:tap="onFullCanvas"><view class="fullscreen-icon"></view></button> -->
-      </view>
+      <view class="canvas-size-selector">
+        <view class="size-options">
+          <view wx:for="{{canvasSizeOptions}}" 
+                wx:key="size" 
+                class="size-option {{canvasWidth === item.width && canvasHeight === item.height ? 'active' : ''}}"
+                bindtap="onCanvasSizeSelect"
+                data-width="{{item.width}}"
+                data-height="{{item.height}}">
+            {{item.label}}
+          </view>
+        </view>
       </view>
     </view>
 
@@ -88,6 +75,7 @@
       <button class="tool-button" bindtap="clearCanvas">清除画布</button>
       <button class="tool-button" bindtap="downloadCanvas">下载图片</button>
        <button class="tool-button primary" bindtap="saveCanvas" disabled="{{saveLoading}}">{{saveLoading?'保存中...':'保存图片'}}</button>
+    </view>
     </view>
   </view>
   <movable-area scale-area class="full-pixel-canvas-container {{fullCanvas?'fullCanvas':''}}" style="padding-top: {{statusBarHeight + 44 + 12}}px;width:100vw;height:100vh;">
