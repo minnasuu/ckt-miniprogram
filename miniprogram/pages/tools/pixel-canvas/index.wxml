@@ -26,7 +26,7 @@
       <view class="canvas-size-selector">
         <view class="size-options">
           <view wx:for="{{canvasSizeOptions}}" 
-                wx:key="size" 
+                wx:key="{{item.label}}"
                 class="size-option {{canvasWidth === item.width && canvasHeight === item.height ? 'active' : ''}}"
                 bindtap="onCanvasSizeSelect"
                 data-width="{{item.width}}"
