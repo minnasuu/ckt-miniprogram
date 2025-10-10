@@ -14,7 +14,6 @@
   box-sizing: border-box;
   height: 100%;
   overflow: auto;
-  padding-bottom: env(safe-area-inset-bottom,12px);
 }
 
 .canvas-container{
@@ -120,27 +119,28 @@
     position: relative;
     display: grid;
     grid-template-columns: repeat(2,1fr);
-    width: 100%;
+    width: 100vw;
     height: 100%;
-    gap: 16rpx;
+    gap: 8px;
+    padding-inline: 16px;
     padding-bottom: env(safe-area-inset-bottom,12px);
-    overflow: auto;
-    padding-inline: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
     box-sizing: border-box;
     .style-grid-item{
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 32rpx;
       border-radius: 24rpx;
       aspect-ratio: 1;
       box-sizing: border-box;
       image{
         width: 100%;
         height: 100%;
+        transform: scale(0.8);
       }
       &.active{
-        border:1px solid var(--ckt-theme-6);
+        border: 1px solid var(--ckt-theme-6);
       }
     }
   }
@@ -183,7 +183,7 @@
   .colors-menu-container{
     width: 100%;
     box-sizing: border-box;
-    height: 48px;
+    height: 40px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -210,7 +210,8 @@
     width: 100%;
     height: fit-content;
     max-height: 100%;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding-inline: 24px;
     box-sizing: border-box;
     padding-bottom: env(safe-area-inset-bottom, 12px);

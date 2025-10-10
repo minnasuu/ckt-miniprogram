@@ -35,8 +35,8 @@
     height: 1%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 12px;
+    gap: 18x;
+    padding-block: 12px;
     font-size: 14px;
     color: var(--ckt-gray-11);
     background-color: var(--ckt-gray-1);
@@ -50,6 +50,8 @@
     font-weight: bold;
     color: var(--ckt-gray-11);
     cursor: pointer;
+    padding-inline: 12px;
+    box-sizing: border-box;
     &:hover{
         background-color: var(--ckt-gray-3);
     }
@@ -93,6 +95,9 @@
     gap: 12px;
     width: 100%;
     height: 32px;
+    margin-top: 8px;
+    padding-inline: 12px;
+    box-sizing: border-box;
     .pn-header-title-list{
         flex: 1;
         width: 1%;
@@ -157,28 +162,34 @@
 }
 
 .pn-textarea-container{
+    flex: 1;
     position: relative;
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 1%;
+    padding-inline: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
     .pn-textarea-lines{
         display: flex;
         flex-direction: column;
         padding-block: 8px;
-        width: 20px;
+        width: fit-content;
         height: 100%;
         font-size: 14px;
         line-height: 22px;
         color: var(--ckt-gray-8);
         flex-shrink: 0;
+        box-sizing: border-box;
     }
     textarea.pn-textarea{
         padding: 8px;
         width: calc(100vw - 56px - 32px - 20px - 60px);
-        height: 100%;
         font-size: 14px;
         line-height: 22px;
         color: var(--ckt-gray-11);
+        box-sizing: border-box;
     }
     .pn-textarea-stiches{
         display: flex;
@@ -187,6 +198,7 @@
         height: 100%;
         width: 40px;
         padding-top: 8px;
+        box-sizing: border-box;
         &.hide{
             opacity: 0;
             pointer-events: none;
@@ -218,8 +230,8 @@
         display: flex;
         flex-direction: column;
         pointer-events: none;
-        padding-left: 32px;
-        width:calc(100% - 40px);
+        padding-left: 48px;
+        width:calc(100% - 48px);
         box-sizing: border-box;
         &.hide{
             opacity: 0;

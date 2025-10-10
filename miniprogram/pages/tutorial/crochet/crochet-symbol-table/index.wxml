@@ -1,0 +1,21 @@
+<!--pages/tutorial/crochet/crochet-symbol-table/index.wxml-->
+<view class="mcpage-container">
+  <custom-header title="{{title}}" showBack showBorder></custom-header>
+  <view class="mcpage-content">
+    <view class="table-container">
+     <view class="table-content">
+      <view class="table-header">
+        <view wx:for="{{titleData}}" class="cell th">{{item}}</view>
+      </view>
+      <view class="table-body">
+        <view wx:for="{{data}}" class="row">
+          <view wx:for="{{item}}" class="cell td">
+          <view wx:if="{{index===1 && item}}" class="cell-path" style="clip-path: path('{{item}}');"></view>
+          <block wx:else>{{item||'-'}}</block>
+          </view>
+        </view>
+      </view>
+      </view>
+    </view>
+  </view>
+  </view>

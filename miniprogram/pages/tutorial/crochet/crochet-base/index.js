@@ -16,49 +16,17 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getData(options.index);
+    this.updateData(options.id);
   },
 
-  getData(index){
-    // this.setData({ isLoading: true });
-    // wx.request({
-    //   url: 'https://suminhan.cn/ckt/api/crochetCourseData.json',
-    //   success: (res) => {
-    //     const newIndex = index || 0;
-    //     this.setData({
-    //       title: res.data.data[newIndex].cap
-    //     })
-    //     const newData = res.data.data[newIndex].contentMenuList.map(item => {
-    //       return {
-    //         ...item,
-    //         imgList: item.imgList.map(detail => {
-    //           return {
-    //             ...detail,
-    //             img_src: detail.img_src ? detail.img_src.replace('./', 'https://suminhan.cn/ckt/') : '',
-    //             isImgLoaded: false,
-    //             hasImgError: false
-    //           }
-    //         })
-    //       }
-    //     })
-    //     this.setData({
-    //       list: newData,
-    //       currentItem: newData[newIndex]
-    //     })
-    //   },
-    //   fail: () => { },
-    //   complete: () => {
-    //     this.setData({ isLoading: false });
-    //   }
-    // })
-    switch (index) {
-      case "0":
+  updateData(id){
+    switch (id) {
+      case "base_character":
         this.setData({
           list: CROCHET_BASE_CHARACTER_DATA,
           currentItem: CROCHET_BASE_CHARACTER_DATA[0]
         })
         break;
-
       default:
         break;
     }

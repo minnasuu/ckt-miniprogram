@@ -12,7 +12,7 @@ Page({
             id: 1,
             icon: '📖',
             title: '图解笔记本',
-            description: '记录图解笔记、导出为图片',
+            description: '记录文字图解、导出图片并下载',
             new: true,
             path: '/pages/tools/pattern-note/index'
           },
@@ -26,7 +26,7 @@ Page({
             id: "iamge-1",
             icon: '◾️',
             title: '图片转像素',
-            description: '图片一键转像素图、两种算法',
+            description: '图片一键转像素图、平均和合并两种算法',
             new: true,
             path: '/pages/tools/image-to-pixel/index'
           },
@@ -42,7 +42,7 @@ Page({
             id: "image-5",
             icon: '🏙️',
             title: '图片换色',
-            description: '在线更换图片颜色，一键预览相同款式的其他颜色效果',
+            description: '提取并更换图片颜色，一键预览相同款式的其他颜色效果',
             new: true,
             path: '/pages/tools/color-change/index'
           }

@@ -100,7 +100,7 @@ module.exports.formatHistoryTime = formatHistoryTime;
                     </view>
                      <textarea
                         class="pn-textarea"
-                        height="100%"
+                        auto-height="true"
                         adjust-position="true"
                         placeholder="请输入 {{curItem.title}} 的图解内容"
                         value="{{curItem.values}}"

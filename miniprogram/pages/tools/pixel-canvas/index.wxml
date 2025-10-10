@@ -4,14 +4,14 @@
     <!-- 画布区域 -->
     <view class="canvas-container">
       <view class="pixel-canvas" 
-            style="width: 100%;height:{{canvasHeight*Math.min(screenWidth/canvasWidth,24)}}px"
+            style="width: {{canvasWidth*Math.min(screenWidth/(canvasWidth||12),24)-2}}px;height:{{canvasHeight*Math.min(screenWidth/(canvasWidth||12),24)}}px"
             bindtouchstart="onTouchStart"
             bindtouchmove="onTouchMove"
             bindtouchend="onTouchEnd"
             catchtouchmove="onTouchMove">
         <view class="canvas-row" wx:for="{{canvasData}}" wx:for-item="row" wx:for-index="y" wx:key="y">
           <view class="pixel" wx:for="{{row}}" wx:for-item="pixel" wx:for-index="x" wx:key="x" 
-              style="background-color: {{pixel}}; width: {{screenWidth/canvasWidth}}px; max-width:24px;border-color:{{borderStyle === '1'?'transparent':borderStyle ==='2'?canvasColor:'var(--ckt-gray-4)'}};" 
+              style="background-color: {{pixel}}; width: {{screenWidth/canvasWidth}}px; max-width:24px;border-color:{{borderStyle === '1'?'transparent':borderStyle ==='2'?canvasColor:'#DDDDDD'}};" 
               bindtap="drawPixel" 
               data-x="{{x}}" 
               data-y="{{y}}"
@@ -20,33 +20,20 @@
       </view>
     </view>
 
-  <view class="option-item">
+  <view class="option-container">
+    <view class="option-item">
       <text class="title">设置画布大小</text>
-      <view style="display:flex;align-items:center;gap:40rpx;font-size:28rpx;color:var(--ckt-gray-8)">
-        <view style="display:flex;align-items:center;">
-        宽：<custom-number-input
-        value="{{canvasWidth}}"
-        min="4"
-        max="36"
-        step="1"
-        disabledInput
-        bind:change="onCanvasWidthInput"
-      ></custom-number-input>
-      </view>
-      <view style="display:flex;align-items:center;">
-        高：<custom-number-input
-        value="{{canvasHeight}}"
-        min="4"
-        max="36"
-        step="1"
-        disabledInput
-        bind:change="onCanvasHeightInput"
-      ></custom-number-input>
-      </view>
-      <view style="display:flex;align-items:center;gap:8px;">
-      <button class="resetSize-button" style="width: 34px" bind:tap="onResetSize"><view class="resetSize-icon"></view></button>
-      <!-- <button class="fullscreen-button" style="width: 34px" bind:tap="onFullCanvas"><view class="fullscreen-icon"></view></button> -->
-      </view>
+      <view class="canvas-size-selector">
+        <view class="size-options">
+          <view wx:for="{{canvasSizeOptions}}" 
+                wx:key="index"
+                class="size-option {{canvasWidth === item.width && canvasHeight === item.height ? 'active' : ''}}"
+                bindtap="onCanvasSizeSelect"
+                data-width="{{item.width}}"
+                data-height="{{item.height}}">
+            {{item.label}}
+          </view>
+        </view>
       </view>
     </view>
 
@@ -54,9 +41,9 @@
       <text class="title">画笔颜色</text>
       <view class="option-content">
         <view class="color-block-container" bindtap="showBrushColorPicker">
-          <view class="color-block" style="background-color: {{brushColor}}"></view>
+          <view class="color-block" style="background-color: {{brushColor}}"><view class="text">{{brushColor}}</view></view>
         </view>
-        <button class="eraser-button {{isEraser?'active':''}}" bindtap="eraserChange"><view class="eraser-icon"></view></button>
+        <button disabled="{{isCanvasEmpty}}" class="eraser-button {{isEraser?'active':''}}" bindtap="eraserChange"><view class="eraser-icon"></view></button>
       </view>
     </view>
 
@@ -64,7 +51,7 @@
       <text class="title">画笔图样</text>
         <view class="brush-pattern-list">
           <view class="brush-pattern-item empty"></view>
-          <view wx:for="{{brushPatternData}}" class="brush-pattern-item"></view>
+          <view wx:for="{{brushPatternData}}" wx:key="index" class="brush-pattern-item"></view>
         </view>
     </view>-->
 
@@ -72,22 +59,23 @@
         <view class="option-item" style="flex:1">
           <text class="title">画布颜色</text>
           <view class="color-block-container" bindtap="showCanvasColorPicker">
-            <view class="color-block" style="background-color: {{canvasColor}}"></view>
+            <view class="color-block" style="background-color: {{canvasColor}}"><view class="text">{{canvasColor}}</view></view>
           </view>
         </view>
         <view class="option-item" style="flex:1">
           <text class="title">网格线颜色</text>
           <view class="grid-style-select-list">
-            <view wx:for="{{gridStyleList}}" bind:tap="onGridShowChange" data-type="{{item}}" class="grid-style-select-item {{item === '1'?'transparent':''}} {{borderStyle === item ? 'active':''}}" style="background-color: {{item === '1' ? '' : item === '2' ? canvasColor:'var(--ckt-gray-2)'}}"></view>
+            <view wx:for="{{gridStyleList}}" wx:key="index" bind:tap="onGridShowChange" data-type="{{item}}" class="grid-style-select-item {{item === '1'?'transparent':''}} {{borderStyle === item ? 'active':''}}" style="background-color: {{item === '1' ? '' : item === '2' ? canvasColor:'var(--ckt-gray-2)'}}"></view>
           </view>
         </view>
       </view>
 
     <!-- 工具栏 -->
     <view class="toolbar">
-      <button class="tool-button" bindtap="clearCanvas">清除画布</button>
-      <button class="tool-button" bindtap="downloadCanvas">下载图片</button>
-       <button class="tool-button primary" bindtap="saveCanvas" disabled="{{saveLoading}}">{{saveLoading?'保存中...':'保存图片'}}</button>
+      <button class="tool-button" bindtap="clearCanvas" disabled="{{saveLoading || isCanvasEmpty}}">清空画布</button>
+      <button class="tool-button" bindtap="downloadCanvas" disabled="{{isCanvasEmpty}}">下载图片</button>
+       <button class="tool-button" type="primary" bindtap="saveCanvas" disabled="{{saveLoading || isCanvasEmpty}}">{{saveLoading?'保存中...':'保存图片'}}</button>
+    </view>
     </view>
   </view>
   <movable-area scale-area class="full-pixel-canvas-container {{fullCanvas?'fullCanvas':''}}" style="padding-top: {{statusBarHeight + 44 + 12}}px;width:100vw;height:100vh;">
@@ -139,5 +127,14 @@
     confirmText="我知道了"
     bindconfirm="onPermissionDialogClose"
     bindclose="onPermissionDialogClose"
+  />
+
+  <dialog
+    visible="{{showClearCanvasDialog}}"
+    title="确定清空画布？"
+    content="清空画布后，画布上的所有像素都将被清除。"
+    confirmText="确定"
+    bindconfirm="onClearCanvas"
+    bindclose="onClearCanvasClose"
   />
 </view>

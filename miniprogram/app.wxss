@@ -1,5 +1,6 @@
 /**app.wxss**/
 page{
+  overflow: hidden;
   --ckt-red-1: #FFECE8;
   --ckt-red-2: #FDCDC5;
   --ckt-red-3: #FBACA3;

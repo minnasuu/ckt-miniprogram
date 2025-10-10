@@ -33,7 +33,10 @@ Page({
     feedbackType: 'normal', // normal, good, excellent
     showAlertMessage: false,
     alertMessageTitle: '',
-    alertMessageContent: ''
+    alertMessageContent: '',
+    // 新增：控制图表显示的状态
+    shouldShowChart: false,
+    hasRecentCreation: false
   },
 
   onLoad() {
@@ -485,7 +488,9 @@ Page({
       checkInStreak: 0,
       creationStreak: 0,
       feedbackMessage: '请先登录查看打卡记录',
-      feedbackType: 'normal'
+      feedbackType: 'normal',
+      shouldShowChart: false,
+      hasRecentCreation: false
     });
   },
 
@@ -498,14 +503,16 @@ Page({
 
       if (!userInfo || !userInfo.openId) {
         console.log('用户未登录，显示空数据');
-      // 未登录时显示空数据
+        // 未登录时显示空数据
         this.setData({
           weeklyData: this.generateEmptyWeeklyData(),
           checkInStreak: 0,
           creationStreak: 0,
           totalCreations: 0,
           feedbackMessage: '请先登录查看打卡记录',
-          feedbackType: 'normal'
+          feedbackType: 'normal',
+          shouldShowChart: false,
+          hasRecentCreation: false
         });
         return;
       }
@@ -524,15 +531,21 @@ Page({
       if (result.result && result.result.success) {
         const data = result.result.data;
         console.log('打卡数据:', data);
+        
+        // 检查近7天是否有创作记录
+        const hasRecentCreation = this.checkRecentCreation(data.weeklyData);
+        
         this.setData({
           weeklyData: data.weeklyData,
           checkInStreak: data.checkInStreak,
           creationStreak: data.creationStreak,
           totalCreations: data.weeklyData.reduce((total, day) => total + day.creationCount, 0),
           feedbackMessage: data.feedbackMessage,
-          feedbackType: data.feedbackType
+          feedbackType: data.feedbackType,
+          shouldShowChart: hasRecentCreation,
+          hasRecentCreation: hasRecentCreation
         });
-        console.log('打卡数据更新完成');
+        console.log('打卡数据更新完成，是否有近7天创作:', hasRecentCreation);
       } else {
         console.error('获取打卡数据失败:', result.result ? result.result.message : '未知错误');
         // 显示空数据
@@ -542,7 +555,9 @@ Page({
           creationStreak: 0,
           totalCreations: 0,
           feedbackMessage: '获取打卡数据失败',
-          feedbackType: 'normal'
+          feedbackType: 'normal',
+          shouldShowChart: false,
+          hasRecentCreation: false
         });
       }
     } catch (error) {
@@ -554,7 +569,9 @@ Page({
         creationStreak: 0,
         totalCreations: 0,
         feedbackMessage: '获取打卡数据失败',
-        feedbackType: 'normal'
+        feedbackType: 'normal',
+        shouldShowChart: false,
+        hasRecentCreation: false
       });
     }
   },
@@ -589,6 +606,16 @@ Page({
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  },
+
+  // 检查近7天是否有创作记录
+  checkRecentCreation(weeklyData) {
+    if (!weeklyData || !Array.isArray(weeklyData)) {
+      return false;
+    }
+    
+    // 检查近7天中是否有任何一天的创作数量大于0
+    return weeklyData.some(day => day.creationCount > 0);
   },
 
 
