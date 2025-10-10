@@ -1,5 +1,6 @@
 // 像素画板页面
 const LoginUtils = require('../../../utils/loginUtils');
+const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
 
 Page({
   data: {
@@ -693,7 +694,7 @@ Page({
   downloadCanvas() {
     const { canvasData, canvasWidth, canvasHeight, borderStyle, canvasColor } = this.data;
     const basePixelSize = 32; // 基础像素大小
-    const scaleFactor = 2; // 2倍分辨率
+    const scaleFactor = 3; // 3倍分辨率
     const highResPixelSize = basePixelSize * scaleFactor; // 高分辨率像素大小
 
     // 创建高分辨率画布上下文
@@ -710,6 +711,15 @@ Page({
         // 在高分辨率画布上绘制像素数据
         this.drawCanvasFromPixelData(canvas, canvasData, canvasWidth, canvasHeight, highResPixelSize, borderStyle, canvasColor);
         
+        // 添加水印
+        const ctx = canvas.getContext('2d');
+        addWatermarkToCanvas(canvas, ctx, '织作时光', {
+          fontSize: Math.max(12, highResPixelSize * 0.4),
+          color: 'rgba(0, 0, 0, 0)',
+          position: 'bottom-right',
+          padding: Math.max(8, highResPixelSize * 0.3)
+        });
+
         // 将高分辨率画布转换为临时文件
         wx.canvasToTempFilePath({
           canvasId: 'result-canvas',

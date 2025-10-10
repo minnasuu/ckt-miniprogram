@@ -93,7 +93,7 @@
     <!-- 功能列表 -->
     <view class="function-list"></view>
   </view>
-  <custom-tabbar selected="{{2}}"></custom-tabbar>
+  <custom-tabbar selected="{{1}}"></custom-tabbar>
 
   <!-- 打卡数据面板 -->
   <view class="check-in-panel-mask" wx:if="{{false}}" bindtap="closeCheckInPanel">

@@ -1,5 +1,6 @@
 // pages/tools/color-change/index.js
 const LoginUtils = require('../../../utils/loginUtils');
+const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
 
 Page({
 
@@ -1207,33 +1208,82 @@ Page({
       }
 
       const canvas = res[0].node;
+      const ctx = canvas.getContext('2d');
 
-      try {
-        wx.canvasToTempFilePath({
-          canvas: canvas,
-          fileType: 'png',
-          quality: 1,
-          success: (res) => {
-            console.log('重新生成临时文件路径:', res.tempFilePath);
+      // 生成高分辨率图片
+      this.generateHighResColorChangeImage(canvas, ctx, (highResCanvas) => {
+        if (!highResCanvas) {
+          this.showMessage('生成高分辨率图片失败');
+          return;
+        }
 
-            // 更新临时文件路径
-            this.setData({
-              tempFilePath: res.tempFilePath
-            });
+        try {
+          wx.canvasToTempFilePath({
+            canvas: highResCanvas,
+            fileType: 'png',
+            quality: 1,
+            success: (res) => {
+              console.log('重新生成高分辨率临时文件路径:', res.tempFilePath);
 
-            // 开始下载
-            this.requestPhotoPermissionAndSave(res.tempFilePath);
-          },
-          fail: (error) => {
-            console.error('生成临时文件路径失败:', error);
-            this.showMessage('生成临时文件失败，请重试💔');
-          }
-        });
-      } catch (error) {
-        console.error('生成临时文件路径异常:', error);
-        this.showMessage('生成临时文件失败，请重试💔');
-      }
+              // 更新临时文件路径
+              this.setData({
+                tempFilePath: res.tempFilePath
+              });
+
+              // 开始下载
+              this.requestPhotoPermissionAndSave(res.tempFilePath);
+            },
+            fail: (error) => {
+              console.error('生成临时文件路径失败:', error);
+              this.showMessage('生成临时文件失败，请重试💔');
+            }
+          });
+        } catch (error) {
+          console.error('生成临时文件路径异常:', error);
+          this.showMessage('生成临时文件失败，请重试💔');
+        }
+      });
     });
+  },
+
+  // 生成高分辨率颜色转换图片
+  generateHighResColorChangeImage(originalCanvas, originalCtx, callback) {
+    const scaleFactor = 3; // 3倍放大
+    const { canvasWidth, canvasHeight } = this.data;
+    const highResWidth = canvasWidth * scaleFactor;
+    const highResHeight = canvasHeight * scaleFactor;
+
+    // 创建高分辨率canvas
+    const highResCanvas = originalCanvas.cloneNode();
+    const highResCtx = highResCanvas.getContext('2d');
+
+    // 设置高分辨率canvas尺寸
+    highResCanvas.width = highResWidth;
+    highResCanvas.height = highResHeight;
+
+    // 清空画布
+    highResCtx.clearRect(0, 0, highResWidth, highResHeight);
+
+    // 绘制白色背景
+    highResCtx.fillStyle = '#FFFFFF';
+    highResCtx.fillRect(0, 0, highResWidth, highResHeight);
+
+    // 缩放绘制原始内容
+    highResCtx.scale(scaleFactor, scaleFactor);
+    highResCtx.drawImage(originalCanvas, 0, 0, canvasWidth, canvasHeight);
+
+    // 重置缩放
+    highResCtx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // 添加水印
+    addWatermarkToCanvas(highResCanvas, highResCtx, '织作时光', {
+      fontSize: 12 * scaleFactor,
+      color: 'rgba(0, 0, 0, 0.3)',
+      position: 'bottom-right',
+      padding: 10 * scaleFactor
+    });
+
+    callback(highResCanvas);
   },
 
   // 请求相册权限并保存
@@ -1275,7 +1325,7 @@ Page({
     wx.saveImageToPhotosAlbum({
       filePath: tempFilePath,
       success: () => {
-        this.showMessage('保存成功🎉');
+        this.showMessage('高分辨率图片已保存到相册🎉');
       },
       fail: (err) => {
         console.error('保存图片到相册失败:', err);

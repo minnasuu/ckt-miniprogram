@@ -22,9 +22,9 @@ Page({
     console.log('用户信息:', userInfo);
 
     if (!isLoggedIn) {
-      // 未登录用户，跳转到教程页
-      console.log('未登录用户，跳转到教程页');
-      this.navigateToPage('/pages/tutorial/index');
+      // 未登录用户，跳转到工具页
+      console.log('未登录用户，跳转到工具页');
+      this.navigateToPage('/pages/tools/index');
       return;
     }
 

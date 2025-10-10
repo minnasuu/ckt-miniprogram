@@ -1,5 +1,6 @@
 // 提取图片主色页面
 const LoginUtils = require('../../../utils/loginUtils');
+const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
 
 Page({
   data: {
@@ -250,6 +251,14 @@ Page({
                   ctx.closePath();
                 });
               }
+
+              // 添加水印
+              addWatermarkToCanvas(canvas, ctx, '织作时光', {
+                fontSize: 10,
+                color: 'rgba(0, 0, 0, 0)',
+                position: 'bottom-right',
+                padding: 8
+              });
   
               ctx.draw(false, () => {
                 // canvas 绘制完成后，生成临时文件路径以备保存使用

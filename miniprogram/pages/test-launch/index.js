@@ -22,7 +22,7 @@ Page({
     
     let expectedRoute = '';
     if (!isLoggedIn) {
-      expectedRoute = '教程页';
+      expectedRoute = '工具页';
     } else if (hasRecentCreation) {
       expectedRoute = '个人中心';
     } else {
@@ -120,7 +120,7 @@ Page({
     
     let targetPage = '';
     if (!isLoggedIn) {
-      targetPage = '/pages/tutorial/index';
+      targetPage = '/pages/tools/index';
     } else if (hasRecentCreation) {
       targetPage = '/pages/user-center/index';
     } else {

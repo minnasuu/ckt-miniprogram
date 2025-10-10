@@ -1,5 +1,6 @@
 // 图片转像素页面
 const LoginUtils = require('../../../utils/loginUtils');
+const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
 
 Page({
   data: {
@@ -213,6 +214,96 @@ Page({
 
     return mostFrequentColor;
   },
+
+  // 生成高分辨率像素化图片
+  generateHighResPixelatedImage(callback) {
+    const imgSize = this.data.imgSize;
+    const pixelSize = this.data.pixelSize;
+    const imgData = this.data.imgData;
+    const scaleFactor = 3; // 3倍放大
+
+    // 创建高分辨率canvas
+    const query = wx.createSelectorQuery();
+    query.select('#pixelatedCanvasRef')
+      .fields({ node: true, size: true })
+      .exec((pixelRes) => {
+        const pixelatedCanvas = pixelRes[0].node;
+        const pixelatedCtx = pixelatedCanvas.getContext('2d');
+
+        if (!pixelatedCtx) {
+          callback(null);
+          return;
+        }
+
+        // 设置高分辨率canvas尺寸
+        const highResWidth = imgSize.w * scaleFactor;
+        const highResHeight = imgSize.h * scaleFactor;
+        pixelatedCanvas.width = highResWidth;
+        pixelatedCanvas.height = highResHeight;
+
+        // 设置canvas的显示尺寸（CSS像素）
+        const dpr = wx.getSystemInfoSync().pixelRatio || 1;
+        pixelatedCanvas.style = pixelatedCanvas.style || {};
+        pixelatedCanvas.style.width = highResWidth / dpr + 'px';
+        pixelatedCanvas.style.height = highResHeight / dpr + 'px';
+
+        pixelatedCtx.clearRect(0, 0, highResWidth, highResHeight);
+
+        // 计算实际的像素块数量（保持原始像素块数量）
+        const numCols = Math.ceil(imgSize.w / pixelSize);
+        const numRows = Math.ceil(imgSize.h / pixelSize);
+
+        // 高分辨率像素化处理
+        for (let row = 0; row < numRows; row++) {
+          for (let col = 0; col < numCols; col++) {
+            const x = col * pixelSize;
+            const y = row * pixelSize;
+            const colors = [];
+
+            // 计算当前块的实际大小（处理边界情况）
+            const blockWidth = Math.min(pixelSize, imgSize.w - x);
+            const blockHeight = Math.min(pixelSize, imgSize.h - y);
+
+            // 遍历当前小块的像素
+            for (let dy = 0; dy < blockHeight; dy++) {
+              for (let dx = 0; dx < blockWidth; dx++) {
+                const px = ((y + dy) * imgSize.w + (x + dx)) * 4;
+                const r = imgData[px];
+                const g = imgData[px + 1];
+                const b = imgData[px + 2];
+                const a = imgData[px + 3];
+                colors.push(`rgba(${r}, ${g}, ${b}, ${a / 255})`);
+              }
+            }
+
+            // 获取出现次数最多的颜色
+            const mostFrequentColor = this.getMostFrequentColor(colors);
+
+            // 将出现次数最多的颜色填充到高分辨率当前小块
+            pixelatedCtx.fillStyle = mostFrequentColor;
+            pixelatedCtx.fillRect(
+              x * scaleFactor,
+              y * scaleFactor,
+              blockWidth * scaleFactor,
+              blockHeight * scaleFactor
+            );
+          }
+        }
+
+        // 添加水印
+        addWatermarkToCanvas(pixelatedCanvas, pixelatedCtx, '织作时光', {
+          fontSize: 12 * scaleFactor,
+          color: 'rgba(0, 0, 0, 0)',
+          position: 'bottom-right',
+          padding: 10 * scaleFactor
+        });
+
+        // 将高分辨率像素化后的图片转换为 URL
+        const highResImageSrc = pixelatedCanvas.toDataURL();
+        callback(highResImageSrc);
+      });
+  },
+
   // 处理下载事件
   onDownload(e) {
     // 获取点击的按钮类型（merge 或 average）
@@ -228,51 +319,60 @@ Page({
     
     // 显示加载提示
     wx.showLoading({
-      title: '保存中...'
+      title: '生成高分辨率图片中...'
     });
     
-    // 将 base64 图片转换为临时文件
-    const fsm = wx.getFileSystemManager();
-    const fileName = wx.env.USER_DATA_PATH + '/pixelated_image_' + Date.now() + '.png';
-    
-    // 去掉 base64 的前缀（data:image/png;base64,）
-    const base64Data = imageSrc.replace(/^data:image\/\w+;base64,/, '');
-    
-    fsm.writeFile({
-      filePath: fileName,
-      data: base64Data,
-      encoding: 'base64',
-      success: () => {
-        // 保存图片到相册
-        wx.saveImageToPhotosAlbum({
-          filePath: fileName,
-          success: () => {
-            wx.hideLoading();
-            this.showMessage('图片已保存到相册🎉');
-          },
-          fail: (err) => {
-            console.error('保存图片失败', err);
-            wx.hideLoading();
-            
-            if (err.errMsg.indexOf('auth deny') >= 0) {
-              this.showMessage('请授权保存图片到相册');
-              // 引导用户授权
-              wx.openSetting({
-                success: (res) => {
-                  console.log('设置结果', res);
-                }
-              });
-            } else {
-              this.showMessage('保存失败，请重试💔');
-            }
-          }
-        });
-      },
-      fail: (err) => {
-        console.error('写入文件失败', err);
+    // 生成高分辨率像素化图片
+    this.generateHighResPixelatedImage((highResImageSrc) => {
+      if (!highResImageSrc) {
         wx.hideLoading();
-        this.showMessage('保存失败，请重试💔');
+        this.showMessage('生成高分辨率图片失败');
+        return;
       }
+
+      // 将 base64 图片转换为临时文件
+      const fsm = wx.getFileSystemManager();
+      const fileName = wx.env.USER_DATA_PATH + '/pixelated_image_hd_' + Date.now() + '.png';
+
+      // 去掉 base64 的前缀（data:image/png;base64,）
+      const base64Data = highResImageSrc.replace(/^data:image\/\w+;base64,/, '');
+
+      fsm.writeFile({
+        filePath: fileName,
+        data: base64Data,
+        encoding: 'base64',
+        success: () => {
+          // 保存图片到相册
+          wx.saveImageToPhotosAlbum({
+            filePath: fileName,
+            success: () => {
+              wx.hideLoading();
+              this.showMessage('高分辨率图片已保存到相册🎉');
+            },
+            fail: (err) => {
+              console.error('保存图片失败', err);
+              wx.hideLoading();
+
+              if (err.errMsg.indexOf('auth deny') >= 0) {
+                this.showMessage('请授权保存图片到相册');
+                // 引导用户授权
+                wx.openSetting({
+                  success: (res) => {
+                    console.log('设置结果', res);
+                  }
+                });
+              } else {
+                this.showMessage('保存失败，请重试💔');
+              }
+            }
+          });
+        },
+        fail: (err) => {
+          console.error('写入文件失败', err);
+          wx.hideLoading();
+          this.showMessage('保存失败，请重试💔');
+        }
+      });
     });
   },
   // 保存图片到云数据库
@@ -341,6 +441,16 @@ Page({
     const tag = type === 'merge' ? '像素化(合并算法)' : '像素化(平均算法)';
     wx.createSelectorQuery().select(`#${canvasId}`).fields({ node: true }).exec(res => {
       const canvas = res[0].node;
+      const ctx = canvas.getContext('2d');
+
+      // 添加水印
+      addWatermarkToCanvas(canvas, ctx, '织作时光', {
+        fontSize: 12,
+        color: 'rgba(0, 0, 0, 0.3)',
+        position: 'bottom-right',
+        padding: 10
+      });
+
       wx.canvasToTempFilePath({
         canvasId: canvasId,
         canvas: canvas,

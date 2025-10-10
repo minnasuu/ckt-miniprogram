@@ -5,16 +5,24 @@ Page({
     showAiTools: false, // 控制AI工具显示/隐藏的开关
     tools: [
       {
-        id: 'note',
-        type: '图解工具',
+        id: 'pattern',
+        type: "图案工具",
         data: [
           {
-            id: 1,
-            icon: '📖',
-            title: '图解笔记本',
-            description: '记录文字图解、导出图片并下载',
-            new: true,
-            path: '/pages/tools/pattern-note/index'
+            id: "pattern-1",
+            icon: '✏️',
+            title: '像素画板',
+            description: '在线绘制像素图、内置线材色卡',
+            new: false,
+            path: '/pages/tools/pixel-canvas/index'
+          },
+          {
+            id: "pattern-2",
+            icon: '🧩',
+            title: '图案配色',
+            description: '内置常用图样、线材色卡',
+            new: false,
+            path: '/pages/tools/color-palette/index'
           },
         ]
       },
@@ -49,27 +57,19 @@ Page({
         ]
       },
       {
-        id: 'pattern',
-        type: "图案工具",
+        id: 'note',
+        type: '图解工具',
         data: [
           {
-            id: "pattern-1",
-            icon: '✏️',
-            title: '像素画板',
-            description: '在线绘制像素图、内置线材色卡',
-            new: false,
-            path: '/pages/tools/pixel-canvas/index'
-          },
-          {
-            id: "pattern-2",
-            icon: '🧩',
-            title: '图案配色',
-            description: '内置常用图样、线材色卡',
-            new: false,
-            path: '/pages/tools/color-palette/index'
+            id: 1,
+            icon: '📖',
+            title: '图解笔记本',
+            description: '记录文字图解、导出图片并下载',
+            new: true,
+            path: '/pages/tools/pattern-note/index'
           },
         ]
-      }
+      },
     ],
     aiTools:[
         {

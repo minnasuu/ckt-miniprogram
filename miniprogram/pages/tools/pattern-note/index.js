@@ -1,4 +1,5 @@
 const LoginUtils = require('../../../utils/loginUtils');
+const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
 
 Page({
   data: {
@@ -787,11 +788,9 @@ Page({
     });
     
     const that = this;
-    // 获取 canvas 的临时文件路径
-    wx.canvasToTempFilePath({
-      canvasId: this.data.canvasId,
-      success: (res) => {
-        const tempFilePath = res.tempFilePath;
+    // 使用高分辨率绘制方法
+    this.drawHighResPatternCanvas((tempFilePath) => {
+      if (tempFilePath) {
         // 请求用户授权保存图片到相册的权限
         wx.getSetting({
           success: (settingRes) => {
@@ -823,12 +822,135 @@ Page({
             }
           }
         });
-      },
-      fail: (err) => {
-        console.error('获取 canvas 临时文件路径失败:', err);
+      } else {
         this.setData({ downloadLoading: false });
-        this.showAlert('下载失败，请重试', 'error');
+        this.showAlert('生成高分辨率图片失败，请重试', 'error');
       }
+    });
+  },
+
+  // 高分辨率绘制方法
+  drawHighResPatternCanvas(callback) {
+    const { previewData, patternTitle, showStich } = this.data;
+    const scaleFactor = 3; // 3倍放大
+
+    // 延迟执行以确保Canvas元素已渲染
+    setTimeout(() => {
+      // 获取设备像素比
+      const systemInfo = wx.getSystemInfoSync();
+      const pixelRatio = systemInfo.pixelRatio || 2;
+
+      // 获取Canvas宽度
+      const query = wx.createSelectorQuery().in(this);
+      query.select('.pattern-preview-canvas').boundingClientRect((rect) => {
+        const canvasWidth = rect ? rect.width : 335; // 默认宽度
+        const highResCanvasWidth = canvasWidth * scaleFactor;
+
+        // 创建高分辨率canvas上下文
+        const ctx = wx.createCanvasContext(this.data.canvasId, this);
+
+        // Canvas样式配置
+        const padding = 12 * scaleFactor;
+        const lineHeight = 24 * scaleFactor;
+        const sectionGap = 20 * scaleFactor;
+        const titleHeight = 30 * scaleFactor;
+        const fontSize = 14 * scaleFactor;
+        const smallFontSize = 12 * scaleFactor;
+
+        // 计算Canvas高度
+        let totalHeight = padding + titleHeight + 20 + 12; // 标题高度 + 间距 + 分割线后间距
+        totalHeight *= scaleFactor;
+
+        previewData.forEach(section => {
+          totalHeight += (20 + 8) * scaleFactor; // 部分标题高度
+          if (section.lines && section.lines.length > 0) {
+            totalHeight += section.lines.length * lineHeight + 8 * scaleFactor;
+          } else {
+            totalHeight += lineHeight + 8 * scaleFactor; // 空内容高度
+          }
+          totalHeight += sectionGap;
+        });
+
+        // 添加底部padding确保内容不被截断
+        totalHeight += padding;
+
+        // 开始绘制
+        this.performHighResCanvasDraw(ctx, previewData, patternTitle, showStich, padding, lineHeight, sectionGap, titleHeight, fontSize, smallFontSize, totalHeight, highResCanvasWidth, scaleFactor, callback);
+      }).exec();
+    }, 100);
+  },
+
+  // 高分辨率Canvas绘制实现
+  performHighResCanvasDraw(ctx, previewData, patternTitle, showStich, padding, lineHeight, sectionGap, titleHeight, fontSize, smallFontSize, totalHeight, canvasWidth, scaleFactor, callback) {
+    let currentY = padding;
+    ctx.clearRect(0, 0, canvasWidth, totalHeight);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasWidth, totalHeight);
+
+    // 绘制标题
+    ctx.setFillStyle('#333333');
+    ctx.setFontSize(16 * scaleFactor);
+    ctx.setTextAlign('left');
+    ctx.fillText(patternTitle, padding, currentY + titleHeight);
+
+    // 绘制分割线
+    currentY += titleHeight + 20 * scaleFactor;
+    ctx.setStrokeStyle('#e5e5e5');
+    ctx.setLineWidth(1 * scaleFactor);
+    ctx.beginPath();
+    ctx.moveTo(padding, currentY);
+    ctx.lineTo(canvasWidth - padding, currentY);
+    ctx.stroke();
+    currentY += 12 * scaleFactor;
+
+    // 绘制各个部分
+    previewData.forEach(section => {
+      // 绘制部分标题
+      ctx.setFillStyle('#666666');
+      ctx.setFontSize(fontSize);
+      ctx.fillText(section.title, padding, currentY + lineHeight);
+      currentY += lineHeight + 8 * scaleFactor;
+
+      // 绘制部分内容
+      if (section.lines && section.lines.length > 0) {
+        section.lines.forEach(line => {
+          ctx.setFillStyle('#333333');
+          ctx.setFontSize(smallFontSize);
+          ctx.fillText(line, padding, currentY + lineHeight);
+          currentY += lineHeight;
+        });
+      } else {
+        ctx.setFillStyle('#999999');
+        ctx.setFontSize(smallFontSize);
+        ctx.fillText('暂无内容', padding, currentY + lineHeight);
+        currentY += lineHeight;
+      }
+
+      currentY += sectionGap;
+    });
+
+    // 添加水印
+    addWatermarkToCanvas(null, ctx, '织作时光', {
+      fontSize: 12 * scaleFactor,
+      color: 'rgba(0, 0, 0, 0)',
+      position: 'bottom-right',
+      padding: 10 * scaleFactor,
+      canvasWidth: canvasWidth,
+      canvasHeight: totalHeight
+    });
+
+    // 绘制完成后导出为图片
+    ctx.draw(false, () => {
+      wx.canvasToTempFilePath({
+        canvasId: this.data.canvasId,
+        success: (res) => {
+          callback(res.tempFilePath);
+        },
+        fail: (err) => {
+          console.error('导出高分辨率图片失败:', err);
+          callback(null);
+        }
+      });
     });
   },
 
@@ -838,7 +960,7 @@ Page({
       filePath: tempFilePath,
       success: () => {
         this.setData({ downloadLoading: false });
-        this.showAlert('图片已保存到相册🎉', 'success');
+        this.showAlert('高分辨率图片已保存到相册🎉', 'success');
       },
       fail: (err) => {
         console.error('保存图片到相册失败:', err);
@@ -1528,6 +1650,12 @@ Page({
       currentY += sectionGap;
     });
     
+    // 添加水印
+    ctx.setFillStyle('rgba(0, 0, 0, 0)');
+    ctx.setFontSize(10);
+    ctx.setTextAlign('right');
+    ctx.fillText('织作时光', canvasWidth - 8, totalHeight - 8);
+
     // 绘制到Canvas
     ctx.draw();
   },

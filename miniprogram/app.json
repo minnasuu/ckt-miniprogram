@@ -38,10 +38,6 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/tutorial/index",
-        "text": "教程"
-      },
-      {
         "pagePath": "pages/tools/index",
         "text": "工具"
       },

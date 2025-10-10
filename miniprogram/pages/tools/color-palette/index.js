@@ -1,5 +1,6 @@
 // 配色页面
 const LoginUtils = require('../../../utils/loginUtils');
+const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
 
 const ColorFill_Path_List_Data = [
   {
@@ -1842,9 +1843,9 @@ Page({
   },
 
   // 绘制canvas的公共方法
-  drawCanvas(callback) {
+    drawCanvas(callback, isHighRes = false) {
     // 检查数据是否变化，如果没有变化且有缓存，直接使用缓存
-    if (!this.isDataChanged() && this.data.canvasCache.tempFilePath) {
+        if (!isHighRes && !this.isDataChanged() && this.data.canvasCache.tempFilePath) {
       console.log('使用缓存的canvas图像');
       if (callback && typeof callback === 'function') {
         callback(null, this.data.canvasCache.tempFilePath);
@@ -1866,16 +1867,25 @@ Page({
         const canvas = res[0].node;
         const ctx = canvas.getContext('2d');
         
-        // 设置canvas尺寸为220*220
-        canvas.width = 220;
-        canvas.height = 220;
+          // 根据是否需要高分辨率设置canvas尺寸
+          const baseSize = 220;
+          const scaleFactor = isHighRes ? 3 : 1; // 3倍放大
+          const canvasSize = baseSize * scaleFactor;
+
+          canvas.width = canvasSize;
+          canvas.height = canvasSize;
         
         // 清空画布
-        ctx.clearRect(0, 0, 220, 220);
+          ctx.clearRect(0, 0, canvasSize, canvasSize);
         
         // 先绘制一个白色背景
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, 220, 220);
+          ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+          // 如果高分辨率，需要缩放绘制
+          if (isHighRes) {
+              ctx.scale(scaleFactor, scaleFactor);
+          }
         
         try {
           // 遍历路径数据并绘制
@@ -1938,6 +1948,25 @@ Page({
             }
           });
           
+            // 添加水印
+            if (isHighRes) {
+                // 高分辨率时需要重置缩放并调整水印大小
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                addWatermarkToCanvas(canvas, ctx, '织作时光', {
+                    fontSize: 10 * scaleFactor,
+                    color: 'rgba(0, 0, 0, 0)',
+                    position: 'bottom-right',
+                    padding: 8 * scaleFactor
+                });
+            } else {
+                addWatermarkToCanvas(canvas, ctx, '织作时光', {
+                    fontSize: 10,
+                    color: 'rgba(0, 0, 0, 0)',
+                    position: 'bottom-right',
+                    padding: 8
+                });
+            }
+
           // 将canvas导出为图片
           wx.canvasToTempFilePath({
             canvas: canvas,
@@ -1968,14 +1997,14 @@ Page({
       wx.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: () => {
-          this.showMessage('图片已保存到相册🎉');
+            this.showMessage('高分辨率图片已保存到相册🎉');
         },
         fail: (err) => {
           console.error('保存失败', err);
           this.showMessage('保存失败，请检查相册权限💔');
         }
       });
-    });
+    }, true); // 使用高分辨率绘制
   },
   
   // 优化后的保存事件
