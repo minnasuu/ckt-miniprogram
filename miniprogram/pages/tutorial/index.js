@@ -26,5 +26,13 @@ Page({
     this.setData({
       currentSwiperIndex: index
     });
+  },
+
+  // swiper滑动事件处理函数
+  onSwiperChange(e) {
+    const { current } = e.detail;
+    this.setData({
+      currentSwiperIndex: current
+    });
   }
 });
