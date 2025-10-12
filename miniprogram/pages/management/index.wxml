@@ -2,13 +2,144 @@
 <view class="management-view">
     <custom-header showBack title="CKT 管理台"></custom-header>
 
-    <view wx:for="{{data}}" class="content" style="padding-top:{{statusBarHeight}}px" bind:tap="onCardTap" data-type="{{item.id}}">
-        <view class="item">
-            <view class="title">{{item.title}}</view>
-            <text class="desc">{{item.desc}}</text>
+    <!-- 主界面 -->
+    <view wx:if="{{currentView === 'main'}}" class="content">
+        <view wx:for="{{managementFunctions}}" class="management-card" bind:tap="onCardTap" data-type="{{item.id}}">
+            <view class="card-icon">{{item.icon}}</view>
+            <view class="card-title">{{item.title}}</view>
+            <view class="card-desc">{{item.desc}}</view>
         </view>
     </view>
 
+    <!-- 用户列表界面 -->
+    <view wx:if="{{currentView === 'userList'}}" class="user-list-view">
+        <view class="list-header">
+            <view class="header-title">用户管理</view>
+            <view class="back-btn" bind:tap="goBackToMain">← 返回</view>
+        </view>
+        
+        <view class="search-bar">
+            <input 
+                class="search-input" 
+                placeholder="搜索用户名或OpenID" 
+                value="{{searchKeyword}}"
+                bind:input="onSearchInput"
+            />
+        </view>
+
+        <view class="user-list" wx:if="{{!loading}}">
+            <view wx:if="{{filteredUserList.length > 0}}">
+                <view 
+                    wx:for="{{filteredUserList}}" 
+                    wx:key="openId" 
+                    class="user-item"
+                    bind:tap="viewUserDetail"
+                    data-user="{{item}}"
+                >
+                    <view class="user-avatar">
+                        <image src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+                    </view>
+                    <view class="user-info">
+                        <view class="user-name">{{item.username || '未设置'}}</view>
+                        <view class="user-id">OpenID: {{item.openId}}</view>
+                        <view class="user-role">
+                            <text class="role-label">权限:</text>
+                            <text class="role-name">{{item.roleName || rolePermissions[item.role || 'normal'].name}}</text>
+                        </view>
+                        <view class="user-permissions" wx:if="{{item.permissions && item.permissions.length > 0}}">
+                            <text wx:for="{{item.permissions}}" wx:key="*this" class="permission-tag">{{item}}</text>
+                        </view>
+                        <view class="user-permissions" wx:elif="{{item.role}}">
+                            <text wx:for="{{rolePermissions[item.role || 'normal'].permissions}}" wx:key="*this" class="permission-tag">{{item}}</text>
+                        </view>
+                    </view>
+                    <view class="user-actions">
+                        <view class="action-btn">查看详情</view>
+                    </view>
+                </view>
+            </view>
+            <view wx:else class="empty-state">
+                <view class="empty-icon">👥</view>
+                <view class="empty-text">
+                    <text wx:if="{{searchKeyword}}">未找到匹配的用户</text>
+                    <text wx:else>暂无用户数据</text>
+                </view>
+            </view>
+        </view>
+
+        <view class="loading-view" wx:if="{{loading}}">
+            <view class="loading-text">加载中...</view>
+        </view>
+    </view>
+
+    <!-- 用户详情界面 -->
+    <view wx:if="{{currentView === 'userDetail'}}" class="user-detail-view">
+        <view class="detail-header">
+            <view class="header-title">用户详情</view>
+            <view class="back-btn" bind:tap="goBackToMain">← 返回</view>
+        </view>
+
+        <view class="user-detail-content" wx:if="{{currentUser}}">
+            <view class="user-profile">
+                <view class="profile-avatar">
+                    <image src="{{currentUser.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+                </view>
+                <view class="profile-info">
+                    <view class="profile-name">{{currentUser.username || '未设置'}}</view>
+                    <view class="profile-id">{{currentUser.openId}}</view>
+                </view>
+            </view>
+
+            <view class="role-section">
+                <view class="section-title">用户角色</view>
+                <view class="current-role">
+                    <view class="role-badge {{currentUser.role || 'normal'}}">
+                        {{rolePermissions[currentUser.role || 'normal'].name}}
+                    </view>
+                </view>
+                
+                <view class="role-options">
+                    <view class="role-option" wx:for="{{rolePermissions}}" wx:key="*this" wx:for-item="roleInfo" wx:for-index="roleKey">
+                        <view 
+                            class="role-option-item {{(currentUser.role || 'normal') === roleKey ? 'active' : ''}}"
+                            bind:tap="changeUserRole"
+                            data-user="{{currentUser}}"
+                            data-role="{{roleKey}}"
+                        >
+                            <view class="role-name">{{roleInfo.name}}</view>
+                            <view class="role-permissions">
+                                <text wx:for="{{roleInfo.permissions}}" wx:key="*this" class="permission-tag">{{item}}</text>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 权限配置界面 -->
+            <view wx:if="{{currentView === 'permissionConfig'}}" class="permission-config-view">
+        <view class="config-header">
+            <view class="header-title">权限配置</view>
+            <view class="back-btn" bind:tap="goBackToMain">← 返回</view>
+        </view>
+
+        <view class="permission-content">
+            <view class="role-section" wx:for="{{rolePermissions}}" wx:key="*this" wx:for-item="roleInfo" wx:for-index="roleKey">
+                <view class="role-header">
+                    <view class="role-name">{{roleInfo.name}}</view>
+                    <view class="role-key">{{roleKey}}</view>
+                </view>
+                <view class="permissions-list">
+                    <view wx:for="{{roleInfo.permissions}}" wx:key="*this" class="permission-item">
+                        <text class="permission-name">{{item}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 灵感日推抽屉 -->
     <drawer-layout
         wx:if="{{showIdeaUpdateDrawer}}"
         bind:cancel="onIdeaUpdateCancel"

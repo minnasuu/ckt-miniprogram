@@ -3,7 +3,8 @@ Page({
   data: {
     isLoggedIn: false,
     hasRecentCreation: false,
-    expectedRoute: ''
+    expectedRoute: '',
+    testResult: ''
   },
 
   onLoad() {
@@ -150,6 +151,62 @@ Page({
     });
   },
 
+  // 测试新登录功能（获取真实头像昵称）
+  async testNewLogin() {
+    try {
+      wx.showLoading({
+        title: '测试登录中...'
+      });
+
+      const LoginUtils = require('../../utils/loginUtils');
+      const result = await LoginUtils.performLogin({
+        onLoginStart: () => {
+          console.log('开始登录测试...');
+        },
+        onLoginSuccess: (userInfo) => {
+          console.log('登录成功，用户信息:', userInfo);
+          wx.hideLoading();
+          wx.showModal({
+            title: '登录测试成功',
+            content: `用户名: ${userInfo.username}\n头像: ${userInfo.avatar ? '已获取' : '未获取'}`,
+            showCancel: false,
+            confirmText: '确定'
+          });
+          this.updateStatus();
+        },
+        onLoginFail: (error) => {
+          console.error('登录测试失败:', error);
+          wx.hideLoading();
+          wx.showModal({
+            title: '登录测试失败',
+            content: error.message || '未知错误',
+            showCancel: false,
+            confirmText: '确定'
+          });
+        }
+      });
+
+      if (!result.success) {
+        wx.hideLoading();
+        wx.showModal({
+          title: '登录测试失败',
+          content: result.error?.message || '未知错误',
+          showCancel: false,
+          confirmText: '确定'
+        });
+      }
+    } catch (error) {
+      console.error('测试登录异常:', error);
+      wx.hideLoading();
+      wx.showModal({
+        title: '测试异常',
+        content: error.message || '未知错误',
+        showCancel: false,
+        confirmText: '确定'
+      });
+    }
+  },
+
   // 清空所有数据
   clearAllData() {
     wx.showModal({
@@ -168,5 +225,158 @@ Page({
         }
       }
     });
+  },
+
+  // 测试用户管理云函数
+  async testUserManagement() {
+    try {
+      wx.showLoading({ title: '测试用户管理云函数...' });
+
+      const result = await wx.cloud.callFunction({
+        name: 'userManagement',
+        data: {
+          action: 'getUserList'
+        }
+      });
+
+      wx.hideLoading();
+
+      console.log('用户管理云函数测试结果:', result);
+
+      let content = '';
+      if (result.result && result.result.success) {
+        const userCount = result.result.data ? result.result.data.length : 0;
+        content = `用户管理云函数调用成功！\n找到 ${userCount} 个用户`;
+        this.setData({
+          testResult: `成功：找到 ${userCount} 个用户`
+        });
+      } else {
+        content = `用户管理云函数调用失败：\n${result.result?.message || '未知错误'}`;
+        this.setData({
+          testResult: `失败：${result.result?.message || '未知错误'}`
+        });
+      }
+
+      wx.showModal({
+        title: '用户管理云函数测试',
+        content: content,
+        showCancel: false
+      });
+    } catch (error) {
+      wx.hideLoading();
+      console.error('用户管理云函数测试失败:', error);
+
+      this.setData({
+        testResult: `错误：${error.message}`
+      });
+
+      wx.showModal({
+        title: '用户管理云函数测试失败',
+        content: error.message || '网络错误',
+        showCancel: false
+      });
+    }
+  },
+
+  // 创建测试用户
+  async createTestUsers() {
+    try {
+      wx.showLoading({ title: '创建测试用户...' });
+
+      const result = await wx.cloud.callFunction({
+        name: 'userManagement',
+        data: {
+          action: 'createTestUser'
+        }
+      });
+
+      wx.hideLoading();
+
+      console.log('创建测试用户结果:', result);
+
+      let content = '';
+      if (result.result && result.result.success) {
+        const results = result.result.data || [];
+        const successCount = results.filter(r => r.success).length;
+        content = `测试用户创建完成！\n成功创建 ${successCount} 个用户`;
+        this.setData({
+          testResult: `成功：创建了 ${successCount} 个测试用户`
+        });
+      } else {
+        content = `创建测试用户失败：\n${result.result?.message || '未知错误'}`;
+        this.setData({
+          testResult: `失败：${result.result?.message || '未知错误'}`
+        });
+      }
+
+      wx.showModal({
+        title: '创建测试用户',
+        content: content,
+        showCancel: false
+      });
+    } catch (error) {
+      wx.hideLoading();
+      console.error('创建测试用户失败:', error);
+
+      this.setData({
+        testResult: `错误：${error.message}`
+      });
+
+      wx.showModal({
+        title: '创建测试用户失败',
+        content: error.message || '网络错误',
+        showCancel: false
+      });
+    }
+  },
+
+  // 测试云函数连接
+  async testConnection() {
+    try {
+      wx.showLoading({ title: '测试连接...' });
+
+      const result = await wx.cloud.callFunction({
+        name: 'userManagement',
+        data: {
+          action: 'testConnection'
+        }
+      });
+
+      wx.hideLoading();
+
+      console.log('连接测试结果:', result);
+
+      let content = '';
+      if (result.result && result.result.success) {
+        content = `云函数连接正常！\n时间：${result.result.data.timestamp}`;
+        this.setData({
+          testResult: `成功：云函数连接正常`
+        });
+      } else {
+        content = `连接测试失败：\n${result.result?.message || '未知错误'}`;
+        this.setData({
+          testResult: `失败：${result.result?.message || '未知错误'}`
+        });
+      }
+
+      wx.showModal({
+        title: '连接测试',
+        content: content,
+        showCancel: false
+      });
+    } catch (error) {
+      wx.hideLoading();
+      console.error('连接测试失败:', error);
+
+      this.setData({
+        testResult: `错误：${error.message}`
+      });
+
+      wx.showModal({
+        title: '连接测试失败',
+        content: error.message || '网络错误',
+        showCancel: false
+      });
+    }
   }
 });

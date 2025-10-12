@@ -253,8 +253,44 @@ Page({
     }
 
     try {
-      // 直接执行登录，使用新的头像昵称填写能力
-      await this.performLogin();
+      // 使用LoginUtils执行登录，自动获取微信头像和昵称
+      const LoginUtils = require('../../utils/loginUtils');
+      const result = await LoginUtils.performLogin({
+        onLoginStart: () => {
+          this.setData({ isLoggingIn: true });
+        },
+        onLoginSuccess: (userInfo) => {
+          this.setData({
+            userInfo: userInfo,
+            isLoggingIn: false
+          });
+
+          // 记录登录打卡
+          setTimeout(async () => {
+            try {
+              const { recordLoginCheckIn } = require('../../utils/checkInUtils');
+              await recordLoginCheckIn();
+              this.initCheckInData();
+            } catch (checkInError) {
+              console.error('登录打卡失败:', checkInError);
+            }
+          }, 100);
+
+          // 更新用户资产数据
+          this.initUserAssetsData();
+          this.showMessage('登录成功🎉', 'success');
+        },
+        onLoginFail: (error) => {
+          this.setData({ isLoggingIn: false });
+          this.showMessage('登录失败💔', 'error');
+        },
+        currentPage: this,
+        showWelcome: true
+      });
+
+      if (!result.success) {
+        throw new Error(result.error || '登录失败');
+      }
     } catch (error) {
       console.error('登录失败：', error);
       this.setData({ isLoggingIn: false });
@@ -262,77 +298,6 @@ Page({
     }
   },
 
-  // 执行登录逻辑
-  async performLogin() {
-    try {
-      console.log('开始执行登录流程...');
-      this.setData({ isLoggingIn: true });
-
-      // 获取登录凭证
-      console.log('获取登录凭证...');
-      const { code } = await wx.login();
-      console.log('登录凭证获取成功:', code);
-
-      // 使用默认用户信息（新版本不再需要用户授权获取头像昵称）
-      const defaultUserInfo = {
-        openId: 'temp_' + Date.now(), // 临时openId，用于测试
-        username: '用户' + Math.random().toString(36).substr(2, 6),
-        avatar: '/images/default-avatar.png',
-        createdAt: new Date().toISOString()
-      };
-      console.log('使用默认用户信息:', defaultUserInfo);
-
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // 暂时跳过云函数调用，直接使用本地数据测试登录
-      console.log('跳过云函数调用，使用本地数据测试...');
-
-      // 模拟登录成功
-      const mockResult = {
-        success: true,
-        userInfo: defaultUserInfo
-      };
-      console.log('模拟登录结果:', mockResult);
-
-      if (mockResult.success) {
-        console.log('登录成功，保存用户信息...');
-        // 清除旧的缓存
-        wx.removeStorageSync('userInfo');
-        // 保存最新的用户信息到缓存
-        wx.setStorageSync('userInfo', mockResult.userInfo);
-        this.setData({
-          userInfo: mockResult.userInfo,
-          isLoggingIn: false
-        });
-
-        // 确保用户信息保存完成后再记录登录打卡
-        setTimeout(async () => {
-          console.log('开始记录登录打卡...');
-          try {
-            const success = await recordLoginCheckIn();
-            console.log('登录打卡结果:', success);
-          } catch (checkInError) {
-            console.error('登录打卡失败:', checkInError);
-          }
-
-          // 登录打卡完成后刷新打卡数据
-          this.initCheckInData();
-        }, 100);
-
-        // 更新用户资产数据
-        this.initUserAssetsData();
-
-        this.showMessage('登录成功🎉', 'success');
-      } else {
-        console.error('模拟登录失败:', mockResult);
-        throw new Error(mockResult.message || '登录失败');
-      }
-    } catch (error) {
-      console.error('执行登录失败：', error);
-      this.setData({ isLoggingIn: false });
-      this.showMessage('登录失败💔', 'error');
-    }
-  },
 
   // 选择头像
   chooseAvatar() {

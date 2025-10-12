@@ -11,9 +11,9 @@
         <view class="user-detail">
           <view class="username-skeleton skeleton-animation" wx:if="{{isLoggingIn}}"></view>
           <view class="username" wx:else>{{userInfo.username || '点击登录'}}</view>
+          <view wx:if="{{userInfo}}" class="logout-button" catchtap="showLogoutConfirm"><view class="logout-icon"></view></view>
         </view>
       </view>
-      <view wx:if="{{userInfo}}" class="logout-button" bindtap="showLogoutConfirm"><view class="logout-icon"></view></view>
     </view>
     <!-- 功能按钮区域 -->
     <view class="function-buttons">

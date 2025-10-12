@@ -64,3 +64,17 @@
 .test-btn:active {
   opacity: 0.8;
 }
+
+.test-result {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  border-left: 4px solid #4ECDC4;
+}
+
+.test-result text {
+  font-size: 14px;
+  color: #333;
+  font-family: monospace;
+}

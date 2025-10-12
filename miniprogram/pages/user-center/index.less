@@ -15,7 +15,7 @@ page{
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 40rpx;
+  gap: 20px;
 }
 
 /* 用户信息区域 */
@@ -28,13 +28,13 @@ page{
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: 20rpx;
-  padding-block: 4rpx;
-  padding-left: 4rpx;
+  margin-left: 10px;
+  padding-block: 2px;
+  padding-left: 2px;
   padding-right: 8px;
   height: 32px;
   width: fit-content;
-  border-radius: 40rpx;
+  border-radius: 20px;
   background-color: var(--ckt-gray-1);
 }
 
@@ -53,6 +53,9 @@ page{
 
 .user-detail {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .username {
@@ -131,10 +134,10 @@ page{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx;
+  padding: 15px;
   font-size: 14px;
   color: var(--ckt-gray-12);
-  border-bottom: 1rpx solid var(--ckt-gray-1);
+  border-bottom: 1px solid var(--ckt-gray-1);
 }
 
 .function-item:last-child {
@@ -170,8 +173,8 @@ page{
 
 .username-skeleton {
   width: 16px;
-  height: 40rpx;
-  border-radius: 4rpx;
+  height: 20px;
+  border-radius: 2px;
 }
 
 .dialog-mask {
@@ -192,7 +195,7 @@ page{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40rpx;
+  gap: 20px;
   padding: 24px 16px 16px;
   border-radius: 12px;
   width: 80%;
@@ -231,7 +234,7 @@ background-color: var(--ckt-gray-1);
 }
 
 .edit-item text {
-  width: 120rpx;
+  width: 60px;
   white-space: nowrap;
   color: var(--ckt-gray-6);
 }
@@ -246,8 +249,8 @@ background-color: var(--ckt-gray-1);
 }
 
 .edit-avatar {
-  width: 160rpx;
-  height: 160rpx;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
 }
 
@@ -318,11 +321,11 @@ background-color: var(--ckt-gray-1);
     .view-detail {
       display: flex;
       align-items: center;
-      gap: 8rpx;
+      gap: 4px;
       font-size: 12px;
       color: var(--ckt-gray-8);
       font-weight: normal;
-      transform: translateY(-4rpx);
+      transform: translateY(-2px);
     }
   }
   
@@ -330,13 +333,13 @@ background-color: var(--ckt-gray-1);
     display: flex;
     justify-content: space-between;
     gap: 6px;
-    margin-bottom: 20rpx;
+    margin-bottom: 10px;
     
     .check-in-record-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8rpx;
+      gap: 4px;
       .check-in-record-item-nums{
         width: 40px;
         height: 40px;
@@ -421,14 +424,14 @@ background-color: var(--ckt-gray-1);
     display: flex;
     justify-content: center;
     gap: 24px;
-    padding-top: 20rpx;
+    padding-top: 10px;
     border-top: 1px solid var(--ckt-gray-2);
     
     .stat-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8rpx;
+      gap: 4px;
       
       .stat-num {
         font-size: 16px;
@@ -437,7 +440,7 @@ background-color: var(--ckt-gray-1);
       }
       
       .stat-label {
-        font-size: 20rpx;
+        font-size: 10px;
         color: var(--ckt-gray-6);
       }
     }
@@ -491,7 +494,7 @@ background-color: var(--ckt-gray-1);
   background-color: white;
   border-radius: 12px;
   width: 90%;
-  max-width: 600rpx;
+  max-width: 300px;
   padding: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   animation: slideUp 0.3s ease-out;
@@ -528,7 +531,7 @@ background-color: var(--ckt-gray-1);
     .feedback-message {
       padding: 12px;
       border-radius: 8px;
-      font-size: 26rpx;
+      font-size: 13px;
       text-align: center;
       font-weight: 500;
       
@@ -564,21 +567,21 @@ background-color: var(--ckt-gray-1);
       gap: 6px;
       
       .chart-day {
-        font-size: 20rpx;
+        font-size: 10px;
         color: var(--ckt-gray-6);
       }
       
       .chart-bars {
         display: flex;
         flex-direction: column;
-        gap: 4rpx;
+        gap: 2px;
         height: 40px;
         justify-content: flex-end;
         
         .bar {
-          width: 20rpx;
-          height: 16px;
-          border-radius: 4rpx;
+          width: 10px;
+          height: 8px;
+          border-radius: 2px;
           background-color: var(--ckt-gray-2);
           transition: all 0.3s ease;
           
@@ -631,7 +634,7 @@ background-color: var(--ckt-gray-1);
       }
       
       text {
-        font-size: 22rpx;
+        font-size: 11px;
         color: var(--ckt-gray-8);
       }
     }
@@ -647,16 +650,16 @@ background-color: var(--ckt-gray-1);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8rpx;
+      gap: 4px;
       
       .panel-stat-num {
-        font-size: 40rpx;
+        font-size: 20px;
         font-weight: bold;
         color: var(--ckt-primary);
       }
       
       .panel-stat-label {
-        font-size: 22rpx;
+        font-size: 11px;
         color: var(--ckt-gray-6);
       }
     }
@@ -687,9 +690,9 @@ background-color: var(--ckt-gray-1);
 /* 重新登录按钮样式 */
 .re-login-section {
   width: 100%;
-  margin-top: 40rpx;
-  padding-top: 40rpx;
-  border-top: 2rpx solid #f0f0f0;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
   text-align: center;
 }
 
@@ -697,13 +700,48 @@ background-color: var(--ckt-gray-1);
   width: 100%;
   background: transparent;
   color: #999;
-  border: 2rpx solid #ddd;
+  border: 1px solid #ddd;
   font-size: 14px;
   padding: 8px 16px;
-  border-radius: 8rpx;
+  border-radius: 4px;
 }
 
 .button.re-login:active {
   background: #f5f5f5;
   color: #666;
+}
+
+@media screen and (min-width: 768px) {
+  .user-container{
+    height: 120px;
+    justify-content: center;
+    padding-top: 44px;
+    .user-info{
+      margin-left: 0;
+      padding: 0;
+      background-color: transparent;
+      flex-direction: column;
+      height: fit-content;
+      gap: 12px;
+      .avatar-container{
+        width: 64px;
+        height: 64px;
+      }
+      .user-detail{
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--ckt-gray-11);
+        .username{
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  .create-entry{
+    width: 400px;
+    margin-inline: auto;
+  }
+  .function-button{
+    padding: 32px 24px;
+  }
 }

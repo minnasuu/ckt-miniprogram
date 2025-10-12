@@ -16,8 +16,8 @@ exports.main = async (event, context) => {
       // 用户不存在，创建新用户
       const newUser = {
         openId: openId,
-        username: event.userInfo.nickName,
-        avatar: event.userInfo.avatarUrl,
+        username: event.userInfo.nickName || '用户' + Math.random().toString(36).substr(2, 6),
+        avatar: event.userInfo.avatarUrl || '/images/default-avatar.png',
         createdAt: db.serverDate()
       };
 
@@ -31,11 +31,39 @@ exports.main = async (event, context) => {
         userInfo: newUser
       };
     } else {
-      // 用户存在，返回最新用户信息
-      const latestUser = userRes.data[0];
+      // 用户存在，检查是否需要更新头像和昵称
+      const existingUser = userRes.data[0];
+      const shouldUpdate = event.userInfo.nickName && event.userInfo.avatarUrl;
+
+      if (shouldUpdate) {
+        // 更新用户头像和昵称
+        const updateRes = await db.collection('users').where({
+          openId: openId
+        }).update({
+          data: {
+            username: event.userInfo.nickName,
+            avatar: event.userInfo.avatarUrl
+          }
+        });
+
+        if (updateRes.stats.updated > 0) {
+          // 更新成功，返回更新后的用户信息
+          const updatedUser = {
+            ...existingUser,
+            username: event.userInfo.nickName,
+            avatar: event.userInfo.avatarUrl
+          };
+          return {
+            success: true,
+            userInfo: updatedUser
+          };
+        }
+      }
+
+      // 返回现有用户信息
       return {
         success: true,
-        userInfo: latestUser
+        userInfo: existingUser
       };
     }
   } catch (error) {

@@ -68,18 +68,32 @@ class LoginUtils {
       // 获取登录凭证
       const { code } = await wx.login();
 
-      // 使用默认用户信息（新版本不再需要用户授权获取头像昵称）
-      const defaultUserInfo = {
-        nickName: '用户' + Math.random().toString(36).substr(2, 6),
-        avatarUrl: '/images/default-avatar.png'
-      };
+      // 尝试获取用户真实头像和昵称
+      let userInfo = null;
+      try {
+        const userProfileRes = await wx.getUserProfile({
+          desc: '用于完善用户资料'
+        });
+        userInfo = {
+          nickName: userProfileRes.userInfo.nickName,
+          avatarUrl: userProfileRes.userInfo.avatarUrl
+        };
+        console.log('成功获取用户真实信息:', userInfo);
+      } catch (profileError) {
+        console.log('用户拒绝授权或获取失败，使用默认信息:', profileError);
+        // 如果用户拒绝授权，使用默认用户信息
+        userInfo = {
+          nickName: '用户' + Math.random().toString(36).substr(2, 6),
+          avatarUrl: '/images/default-avatar.png'
+        };
+      }
 
       // 调用云函数进行登录
       const { result } = await wx.cloud.callFunction({
         name: 'login',
         data: {
           code,
-          userInfo: defaultUserInfo
+          userInfo: userInfo
         }
       });
 

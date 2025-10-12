@@ -22,9 +22,22 @@
   <view class="test-section">
     <view class="section-title">测试操作</view>
     <view class="button-group">
-      <button class="test-btn primary" bindtap="testLaunchLogic">测试路由逻辑</button>
+      <button class="test-btn primary" bindtap="testNewLogin">测试新登录功能</button>
+      <button class="test-btn" bindtap="testLaunchLogic">测试路由逻辑</button>
       <button class="test-btn" bindtap="goToLaunchPage">前往启动页</button>
       <button class="test-btn" bindtap="clearAllData">清空所有数据</button>
+    </view>
+  </view>
+
+  <view class="test-section">
+    <view class="section-title">云函数测试</view>
+    <view class="button-group">
+      <button class="test-btn" bindtap="testConnection">测试云函数连接</button>
+      <button class="test-btn" bindtap="testUserManagement">测试用户管理云函数</button>
+      <button class="test-btn primary" bindtap="createTestUsers">创建测试用户</button>
+    </view>
+    <view class="test-result" wx:if="{{testResult}}">
+      <text>测试结果: {{testResult}}</text>
     </view>
   </view>
 </view>
