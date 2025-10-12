@@ -68,6 +68,14 @@ Page({
             new: true,
             path: '/pages/tools/pattern-note/index'
           },
+          {
+            id: 2,
+            icon: '🔢',
+            title: '计数器',
+            description: '从0开始计数，支持加1、减1、清零等功能',
+            new: true,
+            path: '/pages/tools/counter/index'
+          },
         ]
       },
     ],

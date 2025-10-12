@@ -1,0 +1,75 @@
+<!-- pages/tools/counter/index.wxml -->
+<view class="counter-container">
+  <custom-header title="计数器" showBack="{{true}}"></custom-header>
+  
+  <view class="counter-content">
+    <!-- 主计数器显示区域 -->
+     <view class="counter-display-container">
+     <view class="counter-btn decrement-btn {{count == 0 ? 'disabled' : ''}}" bindtap="decrement">
+          <text class="btn-icon">−</text>
+        </view>
+    <view class="counter-display">
+      <view class="counter-number">{{count}}</view>
+      <view class="counter-label">当前计数</view>
+    </view>
+     <view class="counter-btn increment-btn" bindtap="increment">
+          <text class="btn-icon">+</text>
+        </view>
+        </view>
+
+
+    <!-- 操作按钮区域 -->
+    <view class="counter-buttons">
+      
+      <view class="button-row">
+        <view class="counter-btn reset-btn" bindtap="reset" bindlongpress="onLongPressReset">
+          <text class="btn-text">重置</text>
+        </view>
+        <view class="counter-btn custom-btn" bindtap="setCustomValue">
+          <text class="btn-text">自定义</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数据分析区域 -->
+    <view class="statistics-section" wx:if="{{statistics.totalOperations > 0}}">
+      <view class="statistics-header">
+        <text class="statistics-title">数据分析</text>
+      </view>
+      
+      <view class="statistics-grid">
+        <view class="stat-item">
+          <view class="stat-value">{{statistics.totalOperations}}</view>
+          <view class="stat-label">总操作次数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{totalTimeDisplay}}</view>
+          <view class="stat-label">总耗时</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{averageIntervalDisplay}}</view>
+          <view class="stat-label">平均间隔</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作历史区域 -->
+    <view class="history-section" wx:if="{{history.length > 0}}">
+      <view class="history-header">
+        <text class="history-title">操作历史</text>
+        <view class="clear-history-btn" bindtap="clearHistory">
+          <text class="clear-text">清空</text>
+        </view>
+      </view>
+      
+      <view class="history-list">
+        <view class="history-item" wx:for="{{history}}" wx:key="index">
+          <view class="history-operation">{{item.operation}}</view>
+          <view class="history-change">{{item.from}} → {{item.to}}</view>
+          <view class="history-time">{{item.time}}</view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>

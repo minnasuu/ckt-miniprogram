@@ -1,0 +1,262 @@
+/* pages/tools/counter/index.wxss */
+.counter-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.counter-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom, 12px);
+}
+
+/* 计数器显示区域 */
+.counter-display-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.counter-display {
+  width: 100%;
+  background: var(--ckt-gray-1);
+  border-radius: 20px;
+  padding: 40px 20px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.counter-number {
+  font-size: 72px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.counter-label {
+  font-size: 14px;
+  color: var(--ckt-gray-8);
+  font-weight: 500;
+}
+
+/* 按钮区域 */
+.counter-buttons {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.button-row {
+  display: flex;
+  gap: 15px;
+}
+
+.counter-btn {
+  flex: 1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.counter-btn:active {
+  transform: scale(0.95);
+}
+
+.decrement-btn, 
+  .increment-btn{
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  color: var(--ckt-gray-11);
+  border: 1px solid var(--ckt-gray-3);
+  border-radius: 100%;
+  aspect-ratio: 1;
+}
+.decrement-btn.disabled {
+  color: var(--ckt-gray-6);
+  border-color: var(--ckt-gray-2);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.reset-btn {
+  height: 36px;
+  border: 1px solid var(--ckt-gray-3);
+  color: var(--ckt-gray-11);
+}
+
+.custom-btn {
+  border: 1px solid var(--ckt-gray-3);
+  color: var(--ckt-gray-11);
+}
+
+.btn-icon {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.btn-text {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 数据分析区域 */
+.statistics-section {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--ckt-gray-3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  background: var(--ckt-gray-1);
+}
+
+.statistics-header {
+  margin-bottom: 15px;
+}
+
+.statistics-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 12px 8px;
+  background: var(--ckt-gray-2);
+  border-radius: 8px;
+  border: 1px solid var(--ckt-gray-3);
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--ckt-gray-8);
+  line-height: 1.2;
+}
+
+
+/* 历史记录区域 */
+.history-section {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--ckt-gray-3);
+  border-radius: 15px;
+  padding: 20px;
+  box-sizing: border-box;
+  background: var(--ckt-gray-1);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.history-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ckt-gray-11);
+}
+
+.clear-history-btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--ckt-gray-3);  
+}
+
+.clear-text {
+  font-size: 12px;
+  color: var(--ckt-gray-11);
+  font-weight: 500;
+}
+
+.history-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ckt-gray-2);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-operation {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ckt-theme-4);
+  min-width: 40px;
+}
+
+.history-change {
+  font-size: 13px;
+  color: var(--ckt-gray-8);
+  flex: 1;
+  text-align: center;
+}
+
+.history-time {
+  font-size: 11px;
+  color: var(--ckt-gray-6);
+  min-width: 60px;
+  text-align: right;
+}
+
+
+.empty-text {
+  font-size: 14px;
+  color: var(--ckt-gray-6);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .counter-number {
+    font-size: 60px;
+  }
+  
+  .counter-btn {
+    height: 55px;
+  }
+  
+  .btn-icon {
+    font-size: 20px;
+  }
+}

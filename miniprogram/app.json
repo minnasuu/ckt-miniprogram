@@ -21,7 +21,8 @@
     "pages/tutorial/crochet/crochet-base/index",
     "pages/tutorial/knit/knit-detail/index",
     "pages/test-launch/index",
-    "pages/tutorial/crochet/crochet-symbol-table/index"
+    "pages/tutorial/crochet/crochet-symbol-table/index",
+    "pages/tools/counter/index"
   ],
   "window": {
     "backgroundColor": "#FFF",
