@@ -57,6 +57,25 @@ page {
   font-weight: bold;
   color: var(--ckt-gray-11);
 }
+.role-name {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ckt-blue-6);
+  margin-top: 2px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background-color: var(--ckt-blue-1);
+  display: inline-block;
+}
+.role-name.admin {
+  background-color: var(--ckt-green-1);
+  color: var(--ckt-green-6);
+}
+.role-name.premium {
+  background-color: var(--ckt-orange-1);
+  color: var(--ckt-orange-6);
+}
 .login-btn {
   font-size: 14px;
   color: var(--ckt-primary);

@@ -1,4 +1,20 @@
 <!-- pages/me/index.wxml -->
+<wxs module="roleUtils">
+  function getRoleName(role) {
+    if (role === 'admin') {
+      return '管理员';
+    } else if (role === 'premium') {
+      return '高级用户';
+    } else {
+      return '普通用户';
+    }
+  }
+  
+  module.exports = {
+    getRoleName: getRoleName
+  };
+</wxs>
+
 <view class="user-center-container" style="padding-top: {{statusBarHeight}}px">
   <view class="content-container">
     <!-- 用户信息区域 -->
@@ -11,6 +27,7 @@
         <view class="user-detail">
           <view class="username-skeleton skeleton-animation" wx:if="{{isLoggingIn}}"></view>
           <view class="username" wx:else>{{userInfo.username || '点击登录'}}</view>
+          <view wx:if="{{userInfo}}" class="role-name {{userInfo.role}}">{{roleUtils.getRoleName(userInfo.role)}}</view>
           <view wx:if="{{userInfo}}" class="logout-button" catchtap="showLogoutConfirm"><view class="logout-icon"></view></view>
         </view>
       </view>

@@ -54,6 +54,9 @@ Page({
     // 初始化打卡数据
     this.initCheckInData();
     this.initUserAssetsData();
+
+    // 调试微信头像信息
+    this.debugWechatAvatar();
   },
 
   onShow() {
@@ -791,5 +794,86 @@ Page({
       alertMessageTitle: title,
       alertMessageType: type
     });
+  },
+
+  // 调试微信头像信息
+  debugWechatAvatar() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo && userInfo.avatar) {
+      console.log('=== 微信头像调试信息 ===');
+      console.log('用户头像URL:', userInfo.avatar);
+      console.log('头像URL类型:', typeof userInfo.avatar);
+      console.log('是否为微信头像:', userInfo.avatar.includes('wx.qlogo.cn') || userInfo.avatar.includes('thirdwx.qlogo.cn'));
+      console.log('是否为HTTPS:', userInfo.avatar.startsWith('https://'));
+      console.log('URL长度:', userInfo.avatar.length);
+
+      // 检查头像URL是否有效
+      if (userInfo.avatar.startsWith('http')) {
+        wx.getImageInfo({
+          src: userInfo.avatar,
+          success: (res) => {
+            console.log('✅ 微信头像可访问，尺寸:', res.width, 'x', res.height);
+          },
+          fail: (err) => {
+            console.error('❌ 微信头像不可访问:', err.errMsg);
+            console.log('可能原因：1. 头像URL已过期 2. 网络问题 3. 权限问题');
+          }
+        });
+      }
+    } else {
+      console.log('用户未登录或没有头像信息');
+    }
+  },
+
+  // 头像加载成功
+  onAvatarLoad(e) {
+    console.log('微信头像加载成功');
+  },
+
+  // 头像加载失败
+  onAvatarError(e) {
+    console.error('微信头像加载失败:', e.detail);
+
+    const currentAvatar = this.data.userInfo?.avatar;
+    console.log('失败的头像URL:', currentAvatar);
+
+    // 如果是微信头像URL，提示用户重新登录获取最新头像
+    if (currentAvatar && (currentAvatar.includes('wx.qlogo.cn') || currentAvatar.includes('thirdwx.qlogo.cn'))) {
+      console.log('检测到微信头像URL过期，建议重新登录');
+
+      // 显示提示，让用户选择是否重新登录
+      wx.showModal({
+        title: '头像加载失败',
+        content: '微信头像链接可能已过期，是否重新登录获取最新头像？',
+        confirmText: '重新登录',
+        cancelText: '使用默认头像',
+        success: (res) => {
+          if (res.confirm) {
+            // 清除用户信息，强制重新登录
+            wx.removeStorageSync('userInfo');
+            this.setData({ userInfo: null });
+            this.showMessage('请重新登录获取最新微信头像', 'warn');
+          } else {
+            // 使用默认头像
+            this.setData({
+              'userInfo.avatar': '/images/default-avatar.png'
+            });
+            const userInfo = wx.getStorageSync('userInfo') || {};
+            userInfo.avatar = '/images/default-avatar.png';
+            wx.setStorageSync('userInfo', userInfo);
+            console.log('已切换到默认头像');
+          }
+        }
+      });
+    } else {
+      // 如果不是微信头像，直接使用默认头像
+      this.setData({
+        'userInfo.avatar': '/images/default-avatar.png'
+      });
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      userInfo.avatar = '/images/default-avatar.png';
+      wx.setStorageSync('userInfo', userInfo);
+      console.log('已切换到默认头像');
+    }
   },
 });

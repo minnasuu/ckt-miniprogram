@@ -12,16 +12,16 @@ page{
   --ckt-red-9: #770813;
   --ckt-red-10: #4D000A;
 
-  --ckt-orangered-1: #FFF3E8;
-  --ckt-orangered-2: #FDDDC3;
-  --ckt-orangered-3: #FCC59F;
-  --ckt-orangered-4: #FAAC7B;
-  --ckt-orangered-5: #F99057;
-  --ckt-orangered-6: #F77234;
-  --ckt-orangered-7: #CC5120;
-  --ckt-orangered-8: #A23511;
-  --ckt-orangered-9: #771F06;
-  --ckt-orangered-10: #4D0E00;
+  --ckt-orange-1: #FFF3E8;
+  --ckt-orange-2: #FDDDC3;
+  --ckt-orange-3: #FCC59F;
+  --ckt-orange-4: #FAAC7B;
+  --ckt-orange-5: #F99057;
+  --ckt-orange-6: #F77234;
+  --ckt-orange-7: #CC5120;
+  --ckt-orange-8: #A23511;
+  --ckt-orange-9: #771F06;
+  --ckt-orange-10: #4D0E00;
 
   --ckt-green-1: #F5FFE8;
   --ckt-green-2: #D6EEB9;
