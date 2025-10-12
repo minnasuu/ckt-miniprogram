@@ -313,7 +313,10 @@ Page({
     const imageSrc = type === 'merge' ? this.data.pixelatedImageSrc : this.data.pixelatedImageSrc2;
     
     if (!imageSrc) {
-      this.showMessage('没有可下载的图片');
+      wx.showToast({
+        title: '没有可下载的图片',
+        icon: 'none'
+      });
       return;
     }
     
@@ -326,7 +329,10 @@ Page({
     this.generateHighResPixelatedImage((highResImageSrc) => {
       if (!highResImageSrc) {
         wx.hideLoading();
-        this.showMessage('生成高分辨率图片失败');
+        wx.showToast({
+          title: '生成高分辨率图片失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -347,14 +353,20 @@ Page({
             filePath: fileName,
             success: () => {
               wx.hideLoading();
-              this.showMessage('高分辨率图片已保存到相册🎉');
+              wx.showToast({
+                title: '已保存图片到相册🎉',
+                icon: 'none'
+              });
             },
             fail: (err) => {
               console.error('保存图片失败', err);
               wx.hideLoading();
 
               if (err.errMsg.indexOf('auth deny') >= 0) {
-                this.showMessage('请授权保存图片到相册');
+                wx.showToast({
+                  title: '请授权保存图片到相册',
+                  icon: 'none'
+                });
                 // 引导用户授权
                 wx.openSetting({
                   success: (res) => {
@@ -362,7 +374,10 @@ Page({
                   }
                 });
               } else {
-                this.showMessage('保存失败，请重试💔');
+                wx.showToast({
+                  title: '保存失败，请重试💔',
+                  icon: 'none'
+                });
               }
             }
           });
@@ -370,7 +385,10 @@ Page({
         fail: (err) => {
           console.error('写入文件失败', err);
           wx.hideLoading();
-          this.showMessage('保存失败，请重试💔');
+          wx.showToast({
+            title: '保存失败，请重试💔',
+            icon: 'none'
+          });
         }
       });
     });
@@ -480,14 +498,20 @@ Page({
                   const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
                   recordCreationCheckIn(1);
 
-                  that.showMessage(`保存成功🎉\n前往个人中心-我的创作查看`);
+                  wx.showToast({
+                    title: `保存成功🎉\n前往个人中心-我的创作查看`,
+                    icon: 'none'
+                  });
                   that.setData({
                     saveLoading: false
                   });
                 },
                 fail: function(err) {
                   console.error('保存到云数据库失败', err);
-                  that.showMessage('保存失败💔');
+                  wx.showToast({
+                    title: '保存失败💔',
+                    icon: 'none'
+                  });
                   that.setData({
                     saveLoading: false
                   });
@@ -496,7 +520,10 @@ Page({
             },
             fail: function(err) {
               console.error('上传图片失败', err);
-              that.showMessage('上传图片失败💔');
+              wx.showToast({
+                title: '上传图片失败💔',
+                icon: 'none'
+              });
               that.setData({
                 saveLoading: false
               });
@@ -505,7 +532,10 @@ Page({
         },
         fail: function(err) {
           console.error('canvas 转临时文件失败', err);
-          that.showMessage('转换失败💔');
+          wx.showToast({
+            title: '转换失败💔',
+            icon: 'none'
+          });
           that.setData({
             saveLoading: false
           });

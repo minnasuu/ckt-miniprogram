@@ -110,7 +110,10 @@ Page({
   },
   pickMainColorH(){
     if (!this.data.imageUrl) {
-      this.showMessage('请先上传图片');
+      wx.showToast({
+        title: '请先上传图片',
+        icon: 'none'
+      });
       return;
     }
     const { imgWidth, imgHeight } = this.data;
@@ -212,17 +215,26 @@ Page({
             newColorArr: [...resultArr], // 使用展开运算符创建新数组
           });
           
-          this.showMessage('已提取主要色相');
+          wx.showToast({
+            title: '已提取主要色相',
+            icon: 'none'
+          });
         };
         
         img.onerror = () => {
           console.error('图片加载失败');
-          this.showMessage('图片加载失败');
+          wx.showToast({
+            title: '图片加载失败',
+            icon: 'none'
+          });
         };
       },
       fail: (error) => {
         console.error('获取图片信息失败:', error);
-        this.showMessage('获取图片信息失败');
+        wx.showToast({
+          title: '获取图片信息失败',
+          icon: 'none'
+        });
       }
     });
   },
@@ -236,7 +248,10 @@ Page({
 
       if (!res[0] || !res[0].node) {
         console.error('Canvas节点获取失败');
-        this.showMessage('Canvas获取失败');
+        wx.showToast({
+          title: 'Canvas获取失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -244,7 +259,10 @@ Page({
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         console.error('Canvas上下文获取失败');
-        this.showMessage('Canvas上下文获取失败');
+        wx.showToast({
+          title: 'Canvas上下文获取失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -270,7 +288,10 @@ Page({
     const selectedColors = this.createColorMapping();
 
     if (selectedColors.length === 0) {
-      this.showMessage('没有颜色需要替换');
+      wx.showToast({
+        title: '没有颜色需要替换',
+        icon: 'none'
+      });
       return;
     }
 
@@ -320,7 +341,10 @@ Page({
 
     const modeText = this.data.hueMode ? '色相模式' : 'RGB模式';
     console.log(`预览(${modeText})：预计将替换约 ${estimatedTotal} 个像素 (${percentage}%)`);
-    this.showMessage(`预览(${modeText})：将替换约${percentage}%的像素`);
+    wx.showToast({
+      title: `预览(${modeText})：将替换约${percentage}%的像素`,
+      icon: 'none'
+    });
   },
 
   // 重置canvas到原始状态
@@ -345,7 +369,10 @@ Page({
   // 清除canvas效果，恢复到原始状态
   clearCanvas() {
     if (!this.data.imageUrl) {
-      this.showMessage('没有图片可以清除');
+      wx.showToast({
+        title: '没有图片可以清除',
+        icon: 'none'
+      });
       return;
     }
 
@@ -353,7 +380,10 @@ Page({
     query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
       if (!res[0] || !res[0].node) {
         console.error('Canvas节点获取失败');
-        this.showMessage('Canvas获取失败');
+        wx.showToast({
+          title: 'Canvas获取失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -361,7 +391,10 @@ Page({
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         console.error('Canvas上下文获取失败');
-        this.showMessage('Canvas上下文获取失败');
+        wx.showToast({
+          title: 'Canvas上下文获取失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -409,7 +442,10 @@ Page({
         generateLoading: false
       });
 
-      this.showMessage('已清除效果');
+      wx.showToast({
+        title: '已清除效果',
+        icon: 'none'
+      });
     });
   },
 
@@ -446,7 +482,10 @@ Page({
 
     img.onerror = (error) => {
       console.error('原图重新绘制失败:', error);
-      this.showMessage('原图重新绘制失败');
+      wx.showToast({
+        title: '原图重新绘制失败',
+        icon: 'none'
+      });
     };
 
     img.src = this.data.imageUrl;
@@ -482,7 +521,10 @@ Page({
         generateLoading: false,
         hasModified: false,
       });
-      this.showMessage('没有颜色需要替换');
+      wx.showToast({
+        title: '没有颜色需要替换',
+        icon: 'none'
+      });
       return;
     }
 
@@ -604,7 +646,10 @@ Page({
           });
         }
 
-        this.showMessage(`颜色转换完成，替换了${replacedCount}个像素`);
+        wx.showToast({
+          title: `颜色转换完成，替换了${replacedCount}个像素`,
+          icon: 'none'
+        });
       }
     };
 
@@ -843,7 +888,10 @@ Page({
     });
 
     // 显示成功提示
-    this.showMessage('颜色已更新');
+    wx.showToast({
+      title: '颜色已更新',
+      icon: 'none'
+    });
   },
 
   // 颜色选择取消
@@ -958,7 +1006,10 @@ Page({
         };
 
         img.onerror = (error) => {
-          this.showMessage('图片加载失败');
+          wx.showToast({
+            title: '图片加载失败',
+            icon: 'none'
+          });
         };
 
         // 设置图片源
@@ -993,7 +1044,10 @@ Page({
       hueMode: true
     });
     console.log('切换到色相模式');
-    this.showMessage('已切换到色相模式');
+    wx.showToast({
+      title: '已切换到色相模式',
+      icon: 'none'
+    });
   },
 
   // 切换到RGB模式
@@ -1002,7 +1056,10 @@ Page({
       hueMode: false
     });
     console.log('切换到RGB模式');
-    this.showMessage('已切换到RGB模式');
+    wx.showToast({
+      title: '已切换到RGB模式',
+      icon: 'none'
+    });
   },
 
 
@@ -1014,7 +1071,10 @@ Page({
       content: '保存作品需要先登录账号，是否立即登录？',
       confirmText: '立即登录',
       onLoginConfirm: () => {
-        this.showMessage('登录中...');
+        wx.showToast({
+          title: '登录中...',
+          icon: 'none'
+        });
       },
       onLoginSuccess: (userInfo) => {
         // 登录成功后更新用户信息
@@ -1023,7 +1083,10 @@ Page({
         });
 
         // 显示成功提示并自动重新尝试保存
-        this.showMessage('登录成功！开始保存');
+        wx.showToast({
+          title: '登录成功！开始保存',
+          icon: 'none'
+        });
 
         // 延迟一下再执行保存，让用户看到登录成功的提示
         setTimeout(() => {
@@ -1060,7 +1123,10 @@ Page({
       return;
     }
     if (!this.data.hasModified) {
-      this.showMessage('请先进行颜色转换☺️');
+      wx.showToast({
+        title: '请先进行颜色转换☺️',
+        icon: 'none'
+      });
       return;
     }
     this.setData({
@@ -1085,7 +1151,10 @@ Page({
     query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
       if (!res[0] || !res[0].node) {
         console.error('Canvas节点获取失败');
-        this.showMessage('Canvas获取失败');
+        wx.showToast({
+          title: 'Canvas获取失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -1109,7 +1178,10 @@ Page({
           },
           fail: (error) => {
             console.error('生成临时文件路径失败:', error);
-            this.showMessage('生成临时文件失败，请重试💔');
+            wx.showToast({
+              title: '生成临时文件失败，请重试💔',
+              icon: 'none'
+            });
             this.setData({
               saveLoading: false
             });
@@ -1117,7 +1189,10 @@ Page({
         });
       } catch (error) {
         console.error('生成临时文件路径异常:', error);
-        this.showMessage('生成临时文件失败，请重试💔');
+        wx.showToast({
+          title: '生成临时文件失败，请重试💔',
+          icon: 'none'
+        });
         this.setData({
           saveLoading: false
         });
@@ -1155,14 +1230,20 @@ Page({
             const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
             recordCreationCheckIn(1);
 
-            this.showMessage(`保存成功🎉\n前往个人中心-我的创作查查看`);
+            wx.showToast({
+              title: `保存成功🎉\n前往个人中心-我的创作查查看`,
+              icon: 'none'
+            });
             this.setData({
               saveLoading: false
             });
           },
           fail: (err) => {
             console.error('保存到云数据库失败', err);
-            this.showMessage('保存失败💔');
+            wx.showToast({
+              title: '保存失败💔',
+              icon: 'none'
+            });
             this.setData({
               saveLoading: false
             });
@@ -1171,7 +1252,10 @@ Page({
       },
       fail: (err) => {
         console.error('文件上传失败', err);
-        this.showMessage('上传失败💔');
+        wx.showToast({
+          title: '上传失败💔',
+          icon: 'none'
+        });
         this.setData({
           saveLoading: false
         });
@@ -1181,7 +1265,10 @@ Page({
 
   downloadColorCard() {
     if (!this.data.hasModified) {
-      this.showMessage('请先进行颜色转换☺️');
+      wx.showToast({
+        title: '请先进行颜色转换☺️',
+        icon: 'none'
+      });
       return;
     }
 
@@ -1203,7 +1290,10 @@ Page({
     query.select('#result-canvas').fields({ node: true, size: true }).exec((res) => {
       if (!res[0] || !res[0].node) {
         console.error('Canvas节点获取失败');
-        this.showMessage('Canvas获取失败');
+        wx.showToast({
+          title: 'Canvas获取失败',
+          icon: 'none'
+        });
         return;
       }
 
@@ -1213,7 +1303,10 @@ Page({
       // 生成高分辨率图片
       this.generateHighResColorChangeImage(canvas, ctx, (highResCanvas) => {
         if (!highResCanvas) {
-          this.showMessage('生成高分辨率图片失败');
+          wx.showToast({
+            title: '生成高分辨率图片失败',
+            icon: 'none'
+          });
           return;
         }
 
@@ -1235,12 +1328,18 @@ Page({
             },
             fail: (error) => {
               console.error('生成临时文件路径失败:', error);
-              this.showMessage('生成临时文件失败，请重试💔');
+              wx.showToast({
+                title: '生成临时文件失败，请重试💔',
+                icon: 'none'
+              });
             }
           });
         } catch (error) {
           console.error('生成临时文件路径异常:', error);
-          this.showMessage('生成临时文件失败，请重试💔');
+          wx.showToast({
+            title: '生成临时文件失败，请重试💔',
+            icon: 'none'
+          });
         }
       });
     });
@@ -1325,11 +1424,17 @@ Page({
     wx.saveImageToPhotosAlbum({
       filePath: tempFilePath,
       success: () => {
-        this.showMessage('高分辨率图片已保存到相册🎉');
+        wx.showToast({
+          title: '已保存图片到相册🎉',
+          icon: 'none'
+        });
       },
       fail: (err) => {
         console.error('保存图片到相册失败:', err);
-        this.showMessage('保存失败，请重试💔');
+        wx.showToast({
+          title: '保存失败，请重试💔',
+          icon: 'none'
+        });
       }
     });
   }

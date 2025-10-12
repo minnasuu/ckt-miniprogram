@@ -22,8 +22,8 @@
       <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
     </view>
     <view wx:if="{{imageUrl}}" class="buttons-container">
-      <button class="download-button" disabled="{{!hasModified||!finished}}" bind:tap="downloadColorCard">下载</button>
-      <button class="save-button" type="primary" disabled="{{!hasModified||!finished || saveLoading}}" bind:tap="saveColorCard">{{saveLoading?'保存中...':'保存'}}</button>
+      <button class="download-button" type="primary" disabled="{{!hasModified||!finished}}" bind:tap="downloadColorCard">下载图片</button>
+      <!-- <button class="save-button" type="primary" disabled="{{!hasModified||!finished || saveLoading}}" bind:tap="saveColorCard">{{saveLoading?'保存中...':'保存'}}</button> -->
       </view>
   </view>
   <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />

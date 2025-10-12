@@ -73,8 +73,8 @@
     <!-- 工具栏 -->
     <view class="toolbar">
       <button class="tool-button" bindtap="clearCanvas" disabled="{{saveLoading || isCanvasEmpty}}">清空画布</button>
-      <button class="tool-button" bindtap="downloadCanvas" disabled="{{isCanvasEmpty}}">下载图片</button>
-       <button class="tool-button" type="primary" bindtap="saveCanvas" disabled="{{saveLoading || isCanvasEmpty}}">{{saveLoading?'保存中...':'保存图片'}}</button>
+      <button class="tool-button" type="primary" bindtap="downloadCanvas" disabled="{{isCanvasEmpty}}">下载图片</button>
+       <!-- <button class="tool-button" type="primary" bindtap="saveCanvas" disabled="{{saveLoading || isCanvasEmpty}}">{{saveLoading?'保存中...':'保存图片'}}</button> -->
     </view>
     </view>
   </view>

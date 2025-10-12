@@ -16,7 +16,7 @@
       />
     </view>
 
- <view class="color-grid-container">
+ <!-- <view class="color-grid-container">
       <view class="loading-container"><loading></loading></view>
       <view class="custom-color-button">
       </view>
@@ -41,7 +41,7 @@
             </view>
         </view>
       </view>
-    </view>
+    </view> -->
                 
     <!-- 操作按钮 -->
     <view class="drawer-actions">

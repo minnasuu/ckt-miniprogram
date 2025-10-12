@@ -42,6 +42,10 @@
   flex: 1;
   width: 1%;
 }
+.filter-panel .filter-left .range-slider[disabled] {
+  opacity: 0.6;
+  pointer-events: none;
+}
 .filter-panel .filter-right {
   display: flex;
   align-items: center;
@@ -58,13 +62,13 @@
   padding: 0;
   margin: 0;
   font-size: 14px;
-  background-color: var(--ckt-theme-6);
+  background-color: var(--ckt-gray-11);
   color: var(--ckt-gray-0);
   border-radius: 8px;
 }
 .filter-panel .filter-right button.start-button[disabled] {
-  background-color: var(--ckt-gray-2);
-  color: var(--ckt-gray-5);
+  background-color: var(--ckt-gray-10);
+  color: var(--ckt-gray-0);
 }
 .img-to-pixel-result-puzzle {
   display: flex;
@@ -115,19 +119,19 @@
   width: 100%;
 }
 .img-to-pixel-result-card .bottom-buttons button {
+  flex: 1;
   border-radius: 8px;
   height: 72rpx;
   padding-inline: 24px;
   font-size: 14px;
 }
-.img-to-pixel-result-card .bottom-buttons button.download {
-  flex: 1;
-  background-color: var(--ckt-gray-1);
-  color: var(--ckt-gray-10);
+.img-to-pixel-result-card .bottom-buttons button[type="primary"] {
+  background-color: var(--ckt-gray-11);
+  color: var(--ckt-gray-0);
 }
-.img-to-pixel-result-card .bottom-buttons button.download[disabled] {
-  background-color: var(--ckt-gray-2);
-  color: var(--ckt-gray-5);
+.img-to-pixel-result-card .bottom-buttons button[type="primary"][disabled] {
+  background-color: var(--ckt-gray-10);
+  color: var(--ckt-gray-0);
 }
 .img-to-pixel-result-card .bottom-buttons button.save {
   flex: 1;

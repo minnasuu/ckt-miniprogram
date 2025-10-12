@@ -193,7 +193,7 @@
 .clear-history-btn {
   padding: 6px 16px;
   border-radius: 8px;
-  border: 1px solid var(--ckt-gray-3);  
+  background-color: var(--ckt-gray-3);
 }
 
 .clear-text {

@@ -373,8 +373,13 @@
   border-radius: 8px;
   background-color: var(--ckt-gray-2);
 }
-.color-result-button-container .color-card-btn.download {
-  color: var(--ckt-gray-11);
+.color-result-button-container .color-card-btn[type="primary"] {
+  background-color: var(--ckt-gray-11);
+  color: var(--ckt-gray-0);
+}
+.color-result-button-container .color-card-btn[type="primary"][disabled] {
+  background-color: var(--ckt-gray-10);
+  color: var(--ckt-gray-0);
 }
 .color-result-button-container .color-card-btn.save {
   background-color: var(--ckt-theme-6);

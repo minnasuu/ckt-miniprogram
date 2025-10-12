@@ -1860,7 +1860,10 @@ Page({
       .exec((res) => {
         if (!res[0] || !res[0].node) {
           console.error('未找到canvas节点');
-          this.showMessage('操作失败，未找到canvas节点💔');
+            wx.showToast({
+                title: '操作失败，未找到canvas节点💔',
+                icon: 'none'
+            });
           return;
         }
         
@@ -1980,12 +1983,18 @@ Page({
             },
             fail: (err) => {
               console.error('导出图片失败', err);
-              this.showMessage('导出图片失败💔');
+                wx.showToast({
+                    title: '导出图片失败💔',
+                    icon: 'none'
+                });
             }
           });
         } catch (err) {
           console.error('绘制过程错误:', err);
-          this.showMessage('绘制失败，请稍后再试💔');
+            wx.showToast({
+                title: '绘制失败，请稍后再试💔',
+                icon: 'none'
+            });
         }
       });
   },
@@ -1997,11 +2006,17 @@ Page({
       wx.saveImageToPhotosAlbum({
         filePath: tempFilePath,
         success: () => {
-            this.showMessage('高分辨率图片已保存到相册🎉');
+            wx.showToast({
+                title: '已保存图片到相册🎉',
+                icon: 'none'
+            });
         },
         fail: (err) => {
           console.error('保存失败', err);
-          this.showMessage('保存失败，请检查相册权限💔');
+            wx.showToast({
+                title: '保存失败，请检查相册权限💔',
+                icon: 'none'
+            });
         }
       });
     }, true); // 使用高分辨率绘制
@@ -2052,11 +2067,17 @@ Page({
                 that.onSave();
             },
             onLoginFail: (error) => {
-                that.showMessage('登录失败，请重试');
+                wx.showToast({
+                    title: '登录失败，请重试',
+                    icon: 'none'
+                });
                 console.error('登录失败：', error);
             },
             onCancel: () => {
-                that.showMessage('已取消登录');
+                wx.showToast({
+                    title: '已取消登录',
+                    icon: 'none'
+                });
             }
         });
         },
@@ -2106,7 +2127,10 @@ Page({
                 recordCreationCheckIn(1);
 
               wx.hideLoading();
-                that.showMessage('保存成功🎉\n前往个人中心-图片查看');
+                wx.showToast({
+                    title: '保存成功🎉\n前往个人中心-图片查看',
+                    icon: 'none'
+                });
               that.setData({
                 saveLoading: false
               });
@@ -2114,7 +2138,10 @@ Page({
             fail: function(err) {
               console.error('保存到数据库失败', err);
               wx.hideLoading();
-              that.showMessage('保存失败，请稍后再试💔');
+                wx.showToast({
+                    title: '保存失败，请稍后再试💔',
+                    icon: 'none'
+                });
               that.setData({
                 saveLoading: false
               });
@@ -2124,7 +2151,10 @@ Page({
         fail: function(err) {
           console.error('上传失败', err);
           wx.hideLoading();
-          that.showMessage('上传失败，请检查网络连接💔');
+            wx.showToast({
+                title: '上传失败，请检查网络连接💔',
+                icon: 'none'
+            });
           that.setData({
             saveLoading: false
           });

@@ -87,8 +87,8 @@
       background-color: var(--ckt-gray-1);
       color: var(--ckt-gray-11);
     }
-    &.primary{
-      background-color: var(--ckt-theme-6);
+    &[type="primary"]{
+      background-color: var(--ckt-gray-11);
       color: var(--ckt-gray-0);
     }
     &[disabled]{
@@ -115,18 +115,22 @@
     align-items: center;
     justify-content: center;
   }
-  .style-grid-container{
+
+  .style-grid-container-wrapper{
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
     width: 100vw;
     height: 100%;
-    gap: 8px;
     padding-inline: 16px;
-    padding-bottom: env(safe-area-inset-bottom,12px);
+    padding-bottom: 24px;
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
+  }
+  .style-grid-container{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 8px;
     .style-grid-item{
       display: flex;
       align-items: center;
@@ -219,7 +223,7 @@
       width: 32px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 8rpx;
       align-items: center;
       font-size: 10px;
       color: var(--ckt-gray-8);

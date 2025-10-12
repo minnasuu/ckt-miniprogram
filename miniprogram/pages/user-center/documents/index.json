@@ -1,9 +1,0 @@
-{
-  "usingComponents": {
-    "custom-header": "/components/custom-header/index",
-    "content-grid": "/components/common/content-grid/index",
-    "loading": "/components/common/loading/index"
-  },
-  "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark"
-}

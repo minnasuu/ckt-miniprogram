@@ -372,8 +372,13 @@
   font-weight: 400;
   border-radius: 8px;
   background-color: var(--ckt-gray-2);
-  &.download{
-    color: var(--ckt-gray-11);
+  &[type="primary"]{
+    background-color: var(--ckt-gray-11);
+    color: var(--ckt-gray-0);
+    &[disabled]{
+      background-color: var(--ckt-gray-10);
+      color: var(--ckt-gray-0);
+    }
   }
   &.save{
     background-color: var(--ckt-theme-6);

@@ -1,4 +1,0 @@
-<!--pages/tutorial/adbout-wave/index.wxml-->
-<view class="tutorial-container">
-  <tutorial-card wx:for="{{list}}" item="{{item}}" full></tutorial-card>
-</view>

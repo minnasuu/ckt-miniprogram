@@ -60,14 +60,14 @@ Page({
         id: 'note',
         type: '图解工具',
         data: [
-          {
-            id: 1,
-            icon: '📖',
-            title: '图解笔记本',
-            description: '记录文字图解、导出图片并下载',
-            new: true,
-            path: '/pages/tools/pattern-note/index'
-          },
+          // {
+          //   id: 1,
+          //   icon: '📖',
+          //   title: '图解笔记本',
+          //   description: '记录文字图解、导出图片并下载',
+          //   new: true,
+          //   path: '/pages/tools/pattern-note/index'
+          // },
           {
             id: 2,
             icon: '🔢',

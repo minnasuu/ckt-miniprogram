@@ -1,9 +1,7 @@
 // 提取图片主色页面
-const LoginUtils = require('../../../utils/loginUtils');
-const { addWatermarkToCanvas } = require('../../../utils/watermarkUtils');
-
 Page({
   data: {
+    statusBarHeight: 0,
     unitImageUrl: "https://croknittime.com/images/colorcard_default.jpeg",
     unitColorArr: [ { id: "1", value: "#b9a78f" },
       { id: "2", value: "#7e6d5b" },
@@ -34,11 +32,14 @@ Page({
     author:null,
     saving: false, // 保存中状态
     tempFilePath: '', // 临时文件路径
-    showPermissionDialog: false // 控制权限提示弹窗
   },
   
   onLoad() {
     this.WxmlToCanvas = this.selectComponent('#wxml-to-canvas');
+    const systemInfo = wx.getSystemInfoSync();
+    this.setData({
+      statusBarHeight: systemInfo.statusBarHeight
+    });
     // 获取当前登录用户信息
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
@@ -62,13 +63,6 @@ Page({
       });
     }, 1000);
   },
-
-  // 关闭权限提示弹窗
-  onPermissionDialogClose() {
-    this.setData({
-      showPermissionDialog: false
-    });
-  },
   // 处理图片上传事件
   onImageSelected(e) {
     const { imageUrl,width,height } = e.detail;
@@ -80,9 +74,6 @@ Page({
       imgRatio:width/height,
       tempFilePath: '' // 上传新图片时清除临时文件路径
     });
-
-    // 清空canvas
-    this.clearCanvas();
   },
   //提取图片主色入口函数
   getImgColor(){
@@ -252,14 +243,6 @@ Page({
                 });
               }
 
-              // 添加水印
-              addWatermarkToCanvas(canvas, ctx, '织作时光', {
-                fontSize: 10,
-                color: 'rgba(0, 0, 0, 0)',
-                position: 'bottom-right',
-                padding: 8
-              });
-  
               ctx.draw(false, () => {
                 // canvas 绘制完成后，生成临时文件路径以备保存使用
                 setTimeout(() => {
@@ -402,9 +385,9 @@ Page({
     });
   },
   // 中性色开关
-  onCheckboxChange() {
+  onCheckboxChange(e) {
     this.setData({
-      filterChecked: !this.data.filterChecked,
+      filterChecked: e.detail,
       filter:10
     })
     this.getImgColor();
@@ -430,36 +413,21 @@ Page({
   },
   // 保存颜色卡至仓库
   async saveColorCard() {
-    const that = this;
-
-    // 使用统一的权限检查
-    const hasPermission = LoginUtils.checkSavePermission({
-      onLoginRequired: () => {
-        wx.showModal({
-          title: '需要登录',
-          content: '请先登录后再保存作品到仓库',
-          confirmText: '马上登录',
-          cancelText: '取消',
-          confirmColor: '#F35A75',
-          success: (res) => {
-            if (res.confirm) {
-              // 跳转到登录页面或触发登录流程
-              wx.navigateTo({
-                url: '/pages/user-center/index'
-              });
-            }
+    if (!this.data.author) {
+      wx.showModal({
+        title: '需要登录',
+        content: '请先登录后再保存作品到仓库',
+        confirmText: '马上登录',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            // 跳转到登录页面或触发登录流程
+            wx.navigateTo({
+              url: '/pages/user-center/index'
+            });
           }
-        });
-      },
-      onPermissionDenied: (userLevel) => {
-        // 权限不足时显示提示弹窗
-        that.setData({
-          showPermissionDialog: true
-        });
-      }
-    });
-
-    if (!hasPermission) {
+        }
+      });
       return;
     }
 
@@ -584,7 +552,6 @@ Page({
                   wx.showModal({
                     title: '提示',
                     content: '需要您授权保存图片到相册，请前往设置开启权限',
-                    confirmColor: '#F35A75',
                     success: (modalRes) => {
                       if (modalRes.confirm) {
                         wx.openSetting();
@@ -677,23 +644,6 @@ Page({
   hideCanvasModal() {
     this.setData({
       showCanvasModal: false
-    });
-  },
-
-  // 清空canvas
-  clearCanvas() {
-    // 获取canvas上下文
-    const ctx = wx.createCanvasContext('colorCardCanvas');
-
-    // 清空canvas内容
-    ctx.clearRect(0, 0, this.data.canvasWidth || 1000, this.data.totalCanvasHeight || 1000);
-    ctx.draw();
-
-    // 重置canvas相关数据
-    this.setData({
-      canvasWidth: 0,
-      canvasHeight: 0,
-      totalCanvasHeight: 0
     });
   },
 });

@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "tutorial-card": "/pages/tutorial/components/tutorial-card/index"
-  }
-}

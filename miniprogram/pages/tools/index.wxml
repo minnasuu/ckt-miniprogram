@@ -45,5 +45,4 @@
     </view>
   </view>
   <view class="mask"></view>
-  <custom-tabbar selected="{{0}}"></custom-tabbar>
 </view>

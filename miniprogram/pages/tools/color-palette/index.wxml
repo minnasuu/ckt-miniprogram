@@ -22,14 +22,14 @@
              <nav navList="{{menuData}}" currentNav="{{activeTab}}" bind:navChange="onTabChange"></nav>
             <view style="display: flex;align-items: center;gap: 8px;">
               <button bindtap="onClearColors" class="options-button default">清空</button>
-              <button class="options-button default" bindtap="onDownload">下载</button>
-              <button class="options-button primary" bindtap="onSave" disabled="{{saveLoading}}">{{saveLoading?'保存中':'保存图片'}}</button>
+              <button class="options-button" type="primary" bindtap="onDownload">下载</button>
+              <!-- <button class="options-button primary" bindtap="onSave" disabled="{{saveLoading}}">{{saveLoading?'保存中':'保存图片'}}</button> -->
             </view>
            </view>
            <view class="options-content-container">
                 <!-- 图样 -->
+                 <view wx:if="{{activeTab === 'style'}}" class="style-grid-container-wrapper">
                  <view
-                    wx:if="{{activeTab === 'style'}}"
                      class="style-grid-container"
                  >
                   <view
@@ -43,6 +43,7 @@
                   >
                     <image src="{{item3.img}}" mode="aspectFit"/>
                   </view >
+                 </view>
                  </view>
 
                 <!-- 颜色 -->

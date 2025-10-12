@@ -92,13 +92,13 @@
 }
 
 .confirm-btn {
-  background-color: var(--ckt-theme-6);
+  background-color: var(--ckt-gray-11);
   color: var(--ckt-gray-0);
-  border: 1rpx solid var(--ckt-theme-6);
+  border: 1rpx solid var(--ckt-gray-0);
 }
 
 .confirm-btn:active {
-  background-color: var(--ckt-theme-7);
+  background-color: var(--ckt-gray-10);
 }
 
 /* 响应式设计 */

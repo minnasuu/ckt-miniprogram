@@ -1,4 +1,0 @@
-<view class="management-container">
- <custom-header title="管理" showBack></custom-header>
- <view class="management-content"></view>
-</view>

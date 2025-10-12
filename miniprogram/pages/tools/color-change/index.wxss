@@ -89,24 +89,33 @@
 }
 button {
   flex: 1;
-  height: 72rpx;
+  height: 36px;
   border-radius: 8px;
+}
+button[type="primary"] {
+  background-color: var(--ckt-gray-11);
+  color: var(--ckt-gray-0);
+}
+button[type="primary"][disabled] {
+  background-color: var(--ckt-gray-10);
+  color: var(--ckt-gray-0);
 }
 /* 下载和保存按钮样式 */
 .download-button {
-  background-color: var(--ckt-gray-2);
-  color: var(--ckt-gray-11);
+  background-color: var(--ckt-gray-11);
+  color: var(--ckt-gray-0);
 }
 .download-button[disabled] {
-  color: var(--ckt-gray-6);
+  background-color: var(--ckt-gray-10);
+  color: var(--ckt-gray-0);
 }
 .generate-button[type="primary"],
 .save-button[type="primary"] {
-  background-color: var(--ckt-theme-6);
+  background-color: var(--ckt-gray-11);
   color: var(--ckt-gray-0);
 }
 .generate-button[type="primary"][disabled],
 .save-button[type="primary"][disabled] {
-  background-color: var(--ckt-theme-4);
+  background-color: var(--ckt-gray-10);
   color: var(--ckt-gray-0);
 }
