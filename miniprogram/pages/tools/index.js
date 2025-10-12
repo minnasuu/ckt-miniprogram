@@ -72,7 +72,7 @@ Page({
             id: 2,
             icon: '🔢',
             title: '计数器',
-            description: '从0开始计数，支持加1、减1、清零等功能',
+            description: '计数、统计、记录操作历史',
             new: true,
             path: '/pages/tools/counter/index'
           },
