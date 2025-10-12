@@ -7,6 +7,9 @@ exports.main = async (event, context) => {
   const openId = wxContext.OPENID;
 
   try {
+    console.log('收到登录请求，code:', event.code);
+    console.log('获取到 OpenID:', openId);
+
     // 检查用户是否存在于数据库
     const userRes = await db.collection('users').where({
       openId: openId

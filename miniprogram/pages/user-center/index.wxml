@@ -42,10 +42,10 @@
           <text class="button-text">图解</text>
           <view class="button-num {{documentNum > 0 ? '' : 'empty'}}"><span>{{documentNum > 0 ? documentNum : '-'}}</span></view>
       </view>
-      <view class="function-button" bindtap="onFunctionTap" data-type="assets">
+      <!-- <view class="function-button" bindtap="onFunctionTap" data-type="assets">
           <text class="button-text">资产</text>
           <view class="button-num {{assetNum > 0 ? '' : 'empty'}}"><span>{{assetNum > 0 ? assetNum : '-'}}</span></view>
-      </view>
+      </view> -->
       <!--<view class="function-button" bindtap="onFunctionTap" data-type="favorite">
           <text class="button-text">收藏</text>
           <view class="button-num {{favoriteNum > 0 ? '' : 'empty'}}"><span>{{favoriteNum > 0 ? favoriteNum : '-'}}</span></view>
@@ -55,13 +55,13 @@
     <navigator wx:if="{{userInfo.openId === 'od7SO5Pt8HG7dDS5A_1Uuv7ky_Mg'}}" url="/pages/management/index" class="management-entry">后台入口（仅minna可见）<arrow color="var(--ckt-gray-5)"></arrow></navigator>
 
     <!-- 创作记录 -->
-    <view class="check-in-record" bindtap="showCheckInPanel">
+    <!-- <view class="check-in-record" bindtap="showCheckInPanel">
       <view class="check-in-record-title">
         <text>近 7 天创作记录</text>
-        <!--<view class="view-detail"><arrow color="var(--ckt-gray-5)"></arrow></view>--> 
+        <view class="view-detail"><arrow color="var(--ckt-gray-5)"></arrow></view> 
       </view>
       
-      <!-- 当未登录或近7天未创作时显示空内容提示 -->
+      当未登录或近7天未创作时显示空内容提示
       <view wx:if="{{!shouldShowChart}}" class="empty-state">
         <view class="empty-icon">💡</view>
         <view class="empty-text">
@@ -70,7 +70,7 @@
         </view>
       </view>
       
-      <!-- 当有创作记录时显示图表 -->
+      当有创作记录时显示图表
       <view wx:else>
         <view class="check-in-record-list">
           <view class="check-in-record-item" wx:for="{{weeklyData}}" wx:key="date">
@@ -100,7 +100,7 @@
           </view>
         </view>
       </view>
-    </view>
+    </view> -->
 
     <!-- 创作入口按钮 -->
     <view class="create-entry" bindtap="onCreateTap">
@@ -113,7 +113,7 @@
   <custom-tabbar selected="{{1}}"></custom-tabbar>
 
   <!-- 打卡数据面板 -->
-  <view class="check-in-panel-mask" wx:if="{{false}}" bindtap="closeCheckInPanel">
+  <!-- <view class="check-in-panel-mask" wx:if="{{false}}" bindtap="closeCheckInPanel">
     <view class="check-in-panel" catchtap="">
       <view class="panel-header">
         <view class="panel-title">近 7 天创作情况</view>
@@ -161,22 +161,22 @@
         </view>
       </view>
     </view>
-  </view>
+  </view> -->
 
   <!-- 编辑弹窗 -->
-  <view class="dialog-mask" wx:if="{{showDialog}}">
+  <!-- <view class="dialog-mask" wx:if="{{showDialog}}">
     <view class="dialog">
       <view class="dialog-title">编辑用户信息</view>
-      <!-- 编辑头像 -->
+      编辑头像
       <view class="edit-avatar {{isConfirming ? 'disabled':''}}">
         <image src="{{tempAvatar || userInfo.avatar || '/images/default-avatar.png'}}" mode="aspectFill" class="edit-avatar" bindtap="chooseAvatar"></image>
       </view>
-      <!-- 编辑用户名 -->
+      编辑用户名
       <view class="edit-item {{isConfirming ? 'disabled':''}}">
         <text>用户名：</text>
         <input placeholderText="{{userInfo.username}}" value="{{tempUsername}}" bindinput="onUsernameInput" />
       </view>
-      <!-- 操作按钮 -->
+      操作按钮
       <view class="dialog-buttons">
         <button bindtap="cancelEdit" class="button cancel">取消</button>
         <button 
@@ -187,12 +187,12 @@
           {{isConfirming ? '更新中...' : '确定'}}
         </button>
       </view>
-      <!-- 重新登录按钮 -->
+      重新登录按钮
       <view class="re-login-section">
         <button bindtap="forceReLogin" class="button re-login">重新登录</button>
       </view>
       <close-icon bind:close="cancelEdit" top="{{12}}" right="{{4}}"></close-icon>
     </view>
-  </view>
+  </view> -->
   <alert-message show="{{showAlertMessage}}" title="{{alertMessageTitle}}" type="{{alertMessageType}}"></alert-message>
 </view>

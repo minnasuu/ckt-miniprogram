@@ -247,18 +247,18 @@ Page({
   async handleLogin() {
     if (this.data.userInfo) {
       // 如果用户已登录，显示编辑对话框
-      this.setData({
-        showDialog: true,
-        tempAvatar: this.data.userInfo.avatar,
-        tempUsername: this.data.userInfo.username
-      });
+      // this.setData({
+      //   showDialog: true,
+      //   tempAvatar: this.data.userInfo.avatar,
+      //   tempUsername: this.data.userInfo.username
+      // });
       return;
     }
 
     try {
-      // 使用LoginUtils执行登录，自动获取微信头像和昵称
+      // 使用LoginUtils执行登录，使用新的头像昵称填写能力
       const LoginUtils = require('../../utils/loginUtils');
-      const result = await LoginUtils.performLogin({
+      const result = await LoginUtils.performUserTriggeredLogin({
         onLoginStart: () => {
           this.setData({ isLoggingIn: true });
         },
@@ -269,15 +269,15 @@ Page({
           });
 
           // 记录登录打卡
-          setTimeout(async () => {
-            try {
-              const { recordLoginCheckIn } = require('../../utils/checkInUtils');
-              await recordLoginCheckIn();
-              this.initCheckInData();
-            } catch (checkInError) {
-              console.error('登录打卡失败:', checkInError);
-            }
-          }, 100);
+          // setTimeout(async () => {
+          //   try {
+          //     const { recordLoginCheckIn } = require('../../utils/checkInUtils');
+          //     await recordLoginCheckIn();
+          //     this.initCheckInData();
+          //   } catch (checkInError) {
+          //     console.error('登录打卡失败:', checkInError);
+          //   }
+          // }, 100);
 
           // 更新用户资产数据
           this.initUserAssetsData();
