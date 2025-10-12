@@ -1,2 +1,4 @@
-<!--pages/management/index.wxml-->
-<text>pages/management/index.wxml</text>
+<view class="management-container">
+ <custom-header title="管理" showBack></custom-header>
+ <view class="management-content"></view>
+</view>
