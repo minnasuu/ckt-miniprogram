@@ -5,7 +5,8 @@
     "alert-message": "/components/common/alert-message/index",
     "custom-switch": "/components/common/switch/index",
     "color-picker-drawer": "/components/common/color-picker-drawer/index",
-    "dialog": "/components/common/dialog/index"
+    "dialog": "/components/common/dialog/index",
+    "ckt-button": "/components/common/ckt-button/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "像素画板",

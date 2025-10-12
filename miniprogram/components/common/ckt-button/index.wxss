@@ -1,0 +1,100 @@
+/* CKTButton 组件样式 */
+.ckt-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px !important;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.15s linear;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* 按钮尺寸 */
+.ckt-button.small {
+  width: fit-content;
+  padding: 8px 16px;
+  font-size: 12px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.ckt-button.medium {
+  padding: 8px 16px;
+  font-size: 14px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.ckt-button.large {
+  padding: 12px 24px;
+  font-size: 16px;
+  height: 48px;
+  border-radius: 8px;
+}
+
+/* 按钮类型 */
+.ckt-button.default {
+  background-color: var(--ckt-gray-2);
+  color: var(--ckt-gray-12);
+}
+
+.ckt-button.primary {
+  background-color: var(--ckt-gray-12);
+  color: var(--ckt-gray-0);
+}
+
+/* 禁用状态 */
+.ckt-button.primary[disabled] {
+  background-color: var(--ckt-gray-10);
+  color: var(--ckt-gray-0);
+  cursor: not-allowed;
+}
+
+.ckt-button.default[disabled] {
+  background-color: var(--ckt-gray-2);
+  color: var(--ckt-gray-9);
+}
+
+/* 宽度设置 */
+.ckt-button.full-width {
+  width: 100%;
+}
+
+/* 按钮内容 */
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* 加载图标 */
+.loading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 按钮文本 */
+.button-text {
+  line-height: 1;
+}

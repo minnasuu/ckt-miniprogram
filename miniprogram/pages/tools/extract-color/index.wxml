@@ -57,9 +57,12 @@
       <!-- 添加 canvas-id 属性并设置样式 -->
       <canvas canvas-id="colorCardCanvas" style="width: {{canvasWidth}}px; height: {{totalCanvasHeight}}px;"></canvas>
       <view wx:if="{{colorArr.length>0}}" class="color-result-button-container">
-        <button class="color-card-btn download" type="primary" data-index="{{index}}" disabled="{{!imageUrl}}" bind:tap="downloadColorCard">
-          下载图片
-        </button>
+        <ckt-button 
+          text="下载图片" 
+          type="primary" 
+          disabled="{{!imageUrl}}"
+          bind:tap="downloadColorCard" 
+        />
         <!-- <button class="color-card-btn save" disabled="{{saving || !colorArr.length}}" bind:tap="saveColorCard">
           <Icon name="download" />
           {{saving ? '保存中...' : '保存'}}

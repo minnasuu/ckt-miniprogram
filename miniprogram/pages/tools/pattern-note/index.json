@@ -5,7 +5,8 @@
     "alert-message": "/components/common/alert-message/index",
     "close-icon": "/components/icon/close-icon/index",
     "drawer-layout": "/components/common/drawer-layout/index",
-    "dialog": "/components/common/dialog/index"
+    "dialog": "/components/common/dialog/index",
+    "ckt-button": "/components/common/ckt-button/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "图解笔记本"

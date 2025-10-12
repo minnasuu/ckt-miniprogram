@@ -1,0 +1,12 @@
+<button 
+  class="ckt-button {{type}} {{size}} {{customClass}} {{width === 'full' ? 'full-width' : ''}}"
+  disabled="{{disabled || loading}}"
+  bindtap="onTap"
+>
+  <view class="button-content">
+    <view wx:if="{{loading}}" class="loading-icon">
+      <view class="loading-spinner"></view>
+    </view>
+    <text class="button-text">{{loading ? loadingText : text}}</text>
+  </view>
+</button>

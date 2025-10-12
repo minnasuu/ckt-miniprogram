@@ -4,7 +4,8 @@
     "image-uploader":"/components/common/image-uploader/index",
     "alert-message":"/components/common/alert-message/index",
     "color-picker-drawer": "/components/common/color-picker-drawer/index",
-    "dialog": "/components/common/dialog/index"
+    "dialog": "/components/common/dialog/index",
+    "ckt-button": "/components/common/ckt-button/index"
   },
   "enablePullDownRefresh": false
 }

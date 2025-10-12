@@ -22,7 +22,12 @@
              <nav navList="{{menuData}}" currentNav="{{activeTab}}" bind:navChange="onTabChange"></nav>
             <view style="display: flex;align-items: center;gap: 8px;">
               <button bindtap="onClearColors" class="options-button default">清空</button>
-              <button class="options-button" type="primary" bindtap="onDownload">下载</button>
+              <ckt-button 
+                text="下载" 
+                type="primary" 
+                bind:tap="onDownload" 
+                size="small"
+              />
               <!-- <button class="options-button primary" bindtap="onSave" disabled="{{saveLoading}}">{{saveLoading?'保存中':'保存图片'}}</button> -->
             </view>
            </view>

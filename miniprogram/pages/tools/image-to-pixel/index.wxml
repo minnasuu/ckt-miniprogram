@@ -55,7 +55,13 @@
           </view>
           <!-- <text>合并算法</text> -->
           <view class="bottom-buttons">
-            <button disabled="{{!pixelatedImageSrc}}" type="primary" bind:tap="onDownload" data-type="merge" class="download">下载图片</button>
+            <ckt-button 
+              text="下载图片" 
+              type="primary" 
+              disabled="{{!pixelatedImageSrc}}" 
+              bind:tap="onDownload" 
+              data-type="merge"
+            />
             <!-- <button bind:tap="onSave" data-type="merge" class="save" disabled="{{saveLoading || loginLoading || !pixelatedImageSrc}}">
               {{loginLoading ? '登录中...' : (saveLoading ? '保存中...' : '保存')}}
             </button> -->

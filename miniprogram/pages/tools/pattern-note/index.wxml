@@ -151,7 +151,11 @@ module.exports.formatHistoryTime = formatHistoryTime;
                 </view>
                 <button disabled="{{saveQuota.level === 'guest'}}" bindtap="handleHistoryBtnTap" class="history-btn default">查看历史</button>
               </view>
-              <button bindtap="handlePreviewBtnTap" class="default">预览 下载</button>
+              <ckt-button 
+                text="预览 下载" 
+                type="default"
+                bind:tap="handlePreviewBtnTap" 
+              />
             </view>
         </view>
     </view>
@@ -275,7 +279,13 @@ module.exports.formatHistoryTime = formatHistoryTime;
             </canvas>
         </view>
         <view class="dialog-btns">
-            <button bindtap="handleDownloadPattern">{{downloadLoading ? '下载中...':'下载图解'}}</button>
+            <ckt-button 
+              text="{{downloadLoading ? '下载中...':'下载图解'}}" 
+              type="primary"
+              loading="{{downloadLoading}}"
+              loadingText="下载中..."
+              bind:tap="handleDownloadPattern" 
+            />
         </view>
     </view>
 </view>
