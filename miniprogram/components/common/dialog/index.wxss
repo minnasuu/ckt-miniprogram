@@ -18,7 +18,7 @@
   width: 600rpx;
   max-width: 90vw;
   background-color: #fff;
-  border-radius: 16rpx;
+  border-radius: 8px;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
@@ -28,8 +28,8 @@
   position: absolute;
   top: 20rpx;
   right: 20rpx;
-  width: 48rpx;
-  height: 48rpx;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,7 +39,7 @@
 }
 
 .dialog-close-icon {
-  font-size: 28rpx;
+  font-size: 14px;
   color: #666;
   line-height: 1;
 }
@@ -51,7 +51,7 @@
 }
 
 .dialog-title {
-  font-size: 36rpx;
+  font-size: 18px;
   font-weight: 600;
   color: #333;
   line-height: 1.4;
@@ -64,7 +64,7 @@
 }
 
 .dialog-content {
-  font-size: 28rpx;
+  font-size: 14px;
   color: #666;
   line-height: 1.6;
   word-wrap: break-word;
@@ -80,7 +80,7 @@
   flex: 1;
   height: 100rpx;
   line-height: 100rpx;
-  font-size: 32rpx;
+  font-size: 16px;
   border: none;
   border-radius: 0;
   background-color: transparent;

@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 48rpx;
+  gap: 24px;
   box-sizing: border-box;
   height: 100%;
   overflow: auto;
@@ -36,8 +36,8 @@
 }
 .toolbar {
   display: flex;
-  gap: 16rpx;
-  margin-top: 48rpx;
+  gap: 8px;
+  margin-top: 24px;
   width: 100%;
 }
 .toolbar button {
@@ -48,9 +48,9 @@
   align-items: center;
   justify-content: center;
   height: 36px;
-  font-size: 28rpx;
+  font-size: 14px;
   font-weight: 600;
-  border-radius: 16rpx;
+  border-radius: 8px;
   color: var(--ckt-gray-10);
   background-color: var(--ckt-gray-1);
 }
@@ -59,51 +59,51 @@
   color: var(--ckt-gray-0);
 }
 .tool-button {
-  padding: 16rpx 32rpx;
+  padding: 8px 16px;
   background-color: white;
-  border-radius: 8rpx;
-  font-size: 28rpx;
+  border-radius: 4px;
+  font-size: 14px;
   color: var(--ckt-gray-12);
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 .color-palette {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 16rpx;
+  gap: 8px;
   width: 100%;
   background-color: white;
-  border-radius: 16rpx;
-  padding: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
 .color-item {
-  width: 40rpx;
-  height: 40rpx;
-  border-radius: 8rpx;
-  border: 2rpx solid transparent;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid transparent;
   box-sizing: border-box;
 }
 .color-item.selected {
   border-color: var(--ckt-primary);
   transform: scale(1.1);
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 .option-item {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 8px;
   width: 100%;
 }
 .option-item .title {
-  font-size: 24rpx;
+  font-size: 12px;
   font-weight: bold;
   color: var(--ckt-gray-12);
 }
 .option-item .option-content {
   display: flex;
   align-items: center;
-  gap: 16rpx;
+  gap: 8px;
   width: 100%;
 }
 .option-item button.eraser-button {
@@ -112,9 +112,9 @@
   justify-content: center;
   padding: 0;
   margin: 0;
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 16rpx;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   background-color: var(--ckt-gray-1);
   color: var(--ckt-gray-10);
 }
@@ -126,7 +126,7 @@
 }
 .brush-pattern-list {
   display: flex;
-  gap: 16rpx;
+  gap: 8px;
 }
 .brush-pattern-list .brush-pattern-item {
   width: 32px;
@@ -190,10 +190,10 @@
 }
 .grid-style-select-list .grid-style-select-item {
   position: relative;
-  width: 80rpx;
-  height: 80rpx;
+  width: 40px;
+  height: 40px;
   border: 2rpx solid var(--ckt-gray-4);
-  border-radius: 16rpx;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;

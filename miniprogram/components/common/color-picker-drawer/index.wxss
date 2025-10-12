@@ -29,7 +29,7 @@
   transition: transform 0.3s ease-in-out;
   max-height: 90vh;
   overflow: hidden;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom,12px);
 }
 
 .color-picker-drawer.show .drawer-content {
@@ -48,7 +48,7 @@
 }
 
 .drawer-title {
-  font-size: 32rpx;
+  font-size: 16px;
   font-weight: 600;
   color: #333333;
 }
@@ -71,12 +71,12 @@
 
 .action-btn {
   flex: 1;
-  height: 80rpx;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16rpx;
-  font-size: 28rpx;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;

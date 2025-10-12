@@ -1,18 +1,18 @@
 .upload-box {
   background-color: var(--ckt-gray-1);
-  border-radius: 16rpx;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 16rpx;
+  padding: 8px;
   overflow: hidden;
   box-sizing: border-box;
   position: relative;
 }
 
 .upload-text {
-  font-size: 28rpx;
+  font-size: 14px;
   color: var(--ckt-gray-7);
 }
 
@@ -33,7 +33,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 16rpx;
+  border-radius: 8px;
   z-index: 10;
 }
 
@@ -41,10 +41,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
+  gap: 8px;
 }
 
 .loading-text {
-  font-size: 24rpx;
+  font-size: 12px;
   color: var(--ckt-gray-6);
 }

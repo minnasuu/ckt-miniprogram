@@ -2,11 +2,11 @@
   width: 100%;
   height: 100%;
   display: flex;
-  gap: 32rpx;
+  gap: 16px;
 }
 
 .nav-item {
-  font-size: 28rpx;
+  font-size: 14px;
   color: var(--ckt-gray-7);
   padding: 8rpx 0;
   position: relative;

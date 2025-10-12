@@ -122,7 +122,7 @@
   <dialog
     visible="{{showPermissionDialog}}"
     title="权限不足"
-    content="保存功能仅限高级用户和管理员使用，基础用户暂不支持此功能。"
+    content="保存功能仅限高级用户使用，基础用户暂不支持此功能。"
     showCancel="{{false}}"
     confirmText="我知道了"
     bindconfirm="onPermissionDialogClose"

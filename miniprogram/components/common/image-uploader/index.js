@@ -10,7 +10,7 @@ Component({
     },
     height: {
       type: String,
-      value: '320rpx'
+      value: '160px'
     },
     placeholderText: {
       type: String,

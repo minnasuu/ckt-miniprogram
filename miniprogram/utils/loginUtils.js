@@ -29,23 +29,57 @@ class LoginUtils {
       // 开始登录
       onLoginStart();
 
-      // 获取用户授权信息
-      const { userInfo } = await wx.getUserProfile({
-        desc: desc
+      // 直接执行登录，使用新的头像昵称填写能力
+      return await this.performLogin({
+        onLoginStart,
+        onLoginSuccess,
+        onLoginFail,
+        currentPage,
+        showWelcome
       });
+    } catch (error) {
+      console.error('登录失败：', error);
 
+      // 登录失败回调
+      onLoginFail(error);
+
+      return {
+        success: false,
+        error: error
+      };
+    }
+  }
+
+  /**
+   * 执行登录逻辑
+   * @param {Object} options 配置选项
+   * @returns {Promise<Object>} 登录结果
+   */
+  static async performLogin(options = {}) {
+    const {
+      onLoginStart = () => { },
+      onLoginSuccess = () => { },
+      onLoginFail = () => { },
+      currentPage = null,
+      showWelcome = true
+    } = options;
+
+    try {
       // 获取登录凭证
       const { code } = await wx.login();
+
+      // 使用默认用户信息（新版本不再需要用户授权获取头像昵称）
+      const defaultUserInfo = {
+        nickName: '用户' + Math.random().toString(36).substr(2, 6),
+        avatarUrl: '/images/default-avatar.png'
+      };
 
       // 调用云函数进行登录
       const { result } = await wx.cloud.callFunction({
         name: 'login',
         data: {
           code,
-          userInfo: {
-            nickName: userInfo.nickName,
-            avatarUrl: userInfo.avatarUrl
-          }
+          userInfo: defaultUserInfo
         }
       });
 
@@ -75,11 +109,10 @@ class LoginUtils {
         throw new Error(result.message || '登录失败');
       }
     } catch (error) {
-      console.error('登录失败：', error);
+      console.error('执行登录失败：', error);
       
       // 登录失败回调
       onLoginFail(error);
-
 
       return {
         success: false,
@@ -93,13 +126,33 @@ class LoginUtils {
    * @returns {Object} 登录状态信息
    */
   static checkLoginStatus() {
-    const userInfo = wx.getStorageSync('userInfo');
-    const isLoggedIn = !!(userInfo && userInfo.openId);
-    
-    return {
-      isLoggedIn,
-      userInfo: isLoggedIn ? userInfo : null
-    };
+    try {
+      const userInfo = wx.getStorageSync('userInfo');
+      const isLoggedIn = !!(userInfo && userInfo.openId);
+
+      // 如果用户信息存在但缺少openId，清除旧数据
+      if (userInfo && !userInfo.openId) {
+        console.log('检测到旧版本用户数据，清除缓存');
+        wx.removeStorageSync('userInfo');
+        return {
+          isLoggedIn: false,
+          userInfo: null
+        };
+      }
+
+      return {
+        isLoggedIn,
+        userInfo: isLoggedIn ? userInfo : null
+      };
+    } catch (error) {
+      console.error('检查登录状态失败：', error);
+      // 发生错误时清除可能损坏的数据
+      wx.removeStorageSync('userInfo');
+      return {
+        isLoggedIn: false,
+        userInfo: null
+      };
+    }
   }
 
   /**
@@ -117,6 +170,52 @@ class LoginUtils {
       return { success: true };
     } catch (error) {
       console.error('退出登录失败：', error);
+      return { success: false, error };
+    }
+  }
+
+  /**
+   * 清除所有旧版本登录数据（强制所有用户重新登录）
+   * @param {string} version 当前版本号，用于控制清除操作只执行一次
+   * @returns {Object} 清除结果
+   */
+  static clearAllOldLoginData(version = '2.0.0') {
+    try {
+      // 检查是否已经为当前版本清除过数据
+      const clearedVersion = wx.getStorageSync('dataClearedVersion');
+      if (clearedVersion === version) {
+        console.log('数据已为当前版本清除过，跳过清除操作');
+        return { success: true, skipped: true };
+      }
+
+      // 清除所有可能的用户相关数据
+      const keysToRemove = [
+        'userInfo',
+        'userProfile',
+        'loginInfo',
+        'authInfo',
+        'checkInData',
+        'lastCheckInDate',
+        'userSettings',
+        'userPreferences'
+      ];
+
+      keysToRemove.forEach(key => {
+        try {
+          wx.removeStorageSync(key);
+        } catch (e) {
+          // 忽略不存在的key
+        }
+      });
+
+      // 记录已清除的版本号
+      wx.setStorageSync('dataClearedVersion', version);
+
+      console.log(`已清除所有旧版本登录数据（版本 ${version}），所有用户将作为新用户重新登录`);
+
+      return { success: true, cleared: true };
+    } catch (error) {
+      console.error('清除旧登录数据失败：', error);
       return { success: false, error };
     }
   }

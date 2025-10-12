@@ -1,4 +1,6 @@
 // app.js
+const LoginUtils = require('./utils/loginUtils');
+
 App({
   onLaunch: function () {
     if (!wx.cloud) {
@@ -13,6 +15,9 @@ App({
         traceUser: true,
       });
     }
+
+    // 清除所有旧版本登录数据，强制所有用户重新登录
+    LoginUtils.clearAllOldLoginData();
 
     this.globalData = {
       userInfo: null

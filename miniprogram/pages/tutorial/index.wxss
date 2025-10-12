@@ -10,7 +10,7 @@
 
 .mask{
   position: absolute;
-  bottom: calc(env(safe-area-inset-bottom) + 47px);
+  bottom: calc(env(safe-area-inset-bottom,12px) + 47px);
   width: 100vw;
   height: 48px;
   background: linear-gradient(to top, #fff,rgba(255,255,255,0));

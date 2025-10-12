@@ -5,7 +5,7 @@
   <view class="extract-color-step-container">
     <part-title title="Step 01：上传图片" subTitle="点击来上传图片，以像素为单位对颜色计数"></part-title>
     <view class="upload-section">
-      <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片（500KB以内）" bind:imageSelected="onImageSelected" size="{{200*1024}}"></image-uploader>
+      <image-uploader imageUrl="{{imageUrl}}" height="120px" placeholderText="点击上传图片（500KB以内）" bind:imageSelected="onImageSelected" size="{{200*1024}}"></image-uploader>
     </view>
   </view>
   <!-- 颜色 -->
@@ -41,7 +41,7 @@
       <block wx:if="{{colorArr.length > 0}}">
         <view wx:for="{{colorArr}}" wx:key="id" bind:tap="handleDeleteColor" bind:longpress="handleCopyColor" data-color="{{item.value}}" class="color-card-with-icon">
           <view class="color-item">
-            <view class="color {{item.lightColor ? 'light-color' : ''}}" style="width: 64rpx;height: 64rpx;background-color: {{item.value}}"></view>
+            <view class="color {{item.lightColor ? 'light-color' : ''}}" style="width: 32px;height: 32px;background-color: {{item.value}}"></view>
             <view class="color-card-value">{{item.value}}</view>
           </view>
         </view>
@@ -74,7 +74,7 @@
   <dialog
     visible="{{showPermissionDialog}}"
     title="权限不足"
-    content="保存功能仅限高级用户和管理员使用，基础用户暂不支持此功能。"
+    content="保存功能仅限高级用户使用，基础用户暂不支持此功能。"
     showCancel="{{false}}"
     confirmText="我知道了"
     bindconfirm="onPermissionDialogClose"

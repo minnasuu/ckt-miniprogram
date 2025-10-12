@@ -55,7 +55,7 @@ page {
   color: var(--ckt-gray-11);
 }
 .login-btn {
-  font-size: 28rpx;
+  font-size: 14px;
   color: var(--ckt-primary);
 }
 .logout-button {
@@ -84,12 +84,12 @@ page {
   flex-direction: column;
   gap: 8px;
   flex: 1;
-  padding: 32rpx;
+  padding: 16px;
   background-color: var(--ckt-gray-1);
-  border-radius: 24rpx;
+  border-radius: 12px;
 }
 .function-button .button-num {
-  font-size: 24rpx;
+  font-size: 12px;
   color: var(--ckt-gray-6);
 }
 .function-button .button-num span {
@@ -115,13 +115,13 @@ page {
   clip-path: path('M9.9972 2.65752e-06C10.377 -0.000871304 10.725 0.213877 10.8947 0.553714L13.4464 5.667L19.1437 6.49317C19.5205 6.54782 19.8337 6.81172 19.9513 7.17383C20.0689 7.53602 19.9702 7.93357 19.6974 8.19922L15.5568 12.2295L16.5402 17.8272C16.6062 18.2033 16.4525 18.584 16.1437 18.8086C15.8348 19.0332 15.4245 19.0626 15.087 18.8838L9.99916 16.1875L4.91322 18.8838C4.57553 19.0628 4.16458 19.0335 3.8556 18.8086C3.54687 18.5837 3.39368 18.2023 3.46009 17.8262L4.44935 12.2305L0.302866 8.2002C0.0296003 7.93458 -0.0687444 7.53629 0.0489595 7.17383C0.166703 6.81143 0.480392 6.54754 0.857553 6.49317L6.58412 5.667L9.10267 0.55762L9.17396 0.436526C9.35799 0.166799 9.66475 0.000859778 9.9972 2.65752e-06ZM8.14564 7.02442C7.9999 7.31996 7.71787 7.52514 7.39173 7.57227L3.15443 8.18262L6.22376 11.165L6.30677 11.2568C6.46002 11.448 6.53811 11.6889 6.52552 11.9336L6.51087 12.0566L5.78529 16.1572L9.53138 14.1729L9.64369 14.1211C9.91095 14.0193 10.2117 14.0361 10.4679 14.1719L14.216 16.1582L13.4962 12.0557C13.439 11.7299 13.5473 11.3967 13.7843 11.166L16.8488 8.18067L12.6427 7.57129C12.3185 7.52426 12.0381 7.32143 11.8917 7.02832L10.005 3.25L8.14564 7.02442Z');
 }
 .button-text {
-  font-size: 24rpx;
+  font-size: 12px;
   color: var(--ckt-gray-12);
 }
 /* 功能列表 */
 .function-list {
   background: #fff;
-  border-radius: 12rpx;
+  border-radius: 6px;
   overflow: hidden;
 }
 .function-item {
@@ -129,7 +129,7 @@ page {
   justify-content: space-between;
   align-items: center;
   padding: 30rpx;
-  font-size: 28rpx;
+  font-size: 14px;
   color: var(--ckt-gray-12);
   border-bottom: 1rpx solid var(--ckt-gray-1);
 }
@@ -138,7 +138,7 @@ page {
 }
 .arrow {
   color: var(--ckt-gray-4);
-  font-size: 24rpx;
+  font-size: 12px;
 }
 /* 骨架屏样式 */
 .skeleton-animation {
@@ -256,11 +256,11 @@ page {
   align-items: center;
   justify-content: space-between;
   width: calc(100% - 48px);
-  padding: 16rpx 24rpx;
+  padding: 8px 12px;
   margin-inline: auto;
   background-color: var(--ckt-gray-1);
-  border-radius: 24rpx;
+  border-radius: 12px;
   color: var(--ckt-gray-8);
   font-weight: bold;
-  font-size: 32rpx;
+  font-size: 16px;
 }

@@ -11,12 +11,12 @@
   z-index: 101;
 }
 .drawer-layout .drawer-content {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom, 12px);
   width: 100%;
   background-color: var(--ckt-gray-0);
   box-shadow: 0px 10px 36px 0px rgba(0, 0, 0, 0.16), 0px 6px 15px 0px rgba(0, 0, 0, 0.07);
-  border-top-left-radius: 24rpx;
-  border-top-right-radius: 24rpx;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   animation: slideIn 0.2s ease-in-out forwards;
 }
 @keyframes slideIn {
@@ -31,10 +31,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding-left: 24rpx;
+  padding-left: 12px;
   width: 100%;
-  height: 96rpx;
-  font-size: 32rpx;
+  height: 48px;
+  font-size: 16px;
   font-weight: bold;
   color: var(--ckt-gray-11);
 }
@@ -43,18 +43,18 @@
 }
 .drawer-layout .drawer-footer {
   width: 100%;
-  padding: 16rpx 24rpx;
+  padding: 8px 12px;
   display: flex;
   justify-content: flex-end;
-  gap: 16rpx;
+  gap: 8px;
   box-sizing: border-box;
 }
 .drawer-layout .drawer-footer button {
   width: fit-content;
   margin: 0;
-  padding-inline: 32rpx;
-  font-size: 28rpx;
-  border-radius: 16rpx;
+  padding-inline: 16px;
+  font-size: 14px;
+  border-radius: 8px;
 }
 .drawer-layout .drawer-footer button.default {
   background-color: var(--ckt-gray-1);

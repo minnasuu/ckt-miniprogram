@@ -10,7 +10,7 @@
   flex-direction: column;
   align-items: center;
   gap: 40rpx;
-  padding: 0 48rpx 48rpx;
+  padding-inline: 24px;
   box-sizing: border-box;
   overflow: hidden;
   padding-bottom: env(safe-area-inset-bottom, 12px);
@@ -18,7 +18,7 @@
 .tools-step-container {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 12px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -34,7 +34,7 @@
   display: flex;
   gap: 8rpx;
   align-items: center;
-  font-size: 24rpx;
+  font-size: 12px;
   color: var(--ckt-geay-12);
   white-space: nowrap;
 }
@@ -45,8 +45,8 @@
 .filter-panel .filter-right {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  font-size: 24rpx;
+  gap: 8px;
+  font-size: 12px;
   color: var(--ckt-geay-12);
 }
 .filter-panel .filter-right button.start-button {
@@ -57,10 +57,10 @@
   height: 36px;
   padding: 0;
   margin: 0;
-  font-size: 28rpx;
+  font-size: 14px;
   background-color: var(--ckt-theme-6);
   color: var(--ckt-gray-0);
-  border-radius: 16rpx;
+  border-radius: 8px;
 }
 .filter-panel .filter-right button.start-button[disabled] {
   background-color: var(--ckt-gray-2);
@@ -77,7 +77,7 @@
   flex-direction: column;
   gap: 40rpx;
   align-items: center;
-  font-size: 24rpx;
+  font-size: 12px;
   color: var(--ckt-gray-10);
 }
 .img-to-pixel-result-card .pixel-card {
@@ -85,7 +85,7 @@
   width: 100%;
   aspect-ratio: 1;
   background-color: var(--ckt-gray-1);
-  border-radius: 24rpx;
+  border-radius: 12px;
 }
 .img-to-pixel-result-card .pixel-card image {
   width: 100%;
@@ -111,14 +111,14 @@
 .img-to-pixel-result-card .bottom-buttons {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 12px;
   width: 100%;
 }
 .img-to-pixel-result-card .bottom-buttons button {
-  border-radius: 16rpx;
+  border-radius: 8px;
   height: 72rpx;
-  padding-inline: 48rpx;
-  font-size: 28rpx;
+  padding-inline: 24px;
+  font-size: 14px;
 }
 .img-to-pixel-result-card .bottom-buttons button.download {
   flex: 1;
@@ -138,7 +138,7 @@
   background-color: var(--ckt-theme-3);
 }
 .alert-text {
-  font-size: 24rpx;
+  font-size: 12px;
   color: var(--ckt-gray-6);
   text-align: center;
   margin-top: auto;

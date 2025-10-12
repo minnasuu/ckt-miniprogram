@@ -5,7 +5,7 @@
     <view class="step-container">
         <part-title title="Step 01：上传图片"></part-title>
         <view class="upload-section">
-            <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片（500KB以内）" bind:imageSelected="onImageSelected" size="{{500*1024}}"></image-uploader>
+            <image-uploader imageUrl="{{imageUrl}}" height="120px" placeholderText="点击上传图片（500KB以内）" bind:imageSelected="onImageSelected" size="{{500*1024}}"></image-uploader>
         </view>
         <view class="color-list" wx:if="{{colorArr.length>0}}">
            <span>原色: </span><view wx:for="{{colorArr}}" class="color-item" style="background-color:{{item}};width:20px;height:20px"></view>
@@ -32,7 +32,7 @@
   <dialog
     visible="{{showPermissionDialog}}"
     title="权限不足"
-    content="保存功能仅限高级用户和管理员使用，基础用户暂不支持此功能。"
+    content="保存功能仅限高级用户使用，基础用户暂不支持此功能。"
     showCancel="{{false}}"
     confirmText="我知道了"
     bindconfirm="onPermissionDialogClose"

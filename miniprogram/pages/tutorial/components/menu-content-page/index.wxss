@@ -55,8 +55,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-.mcpage-details-table .mcpage-details-table-header view,
-.mcpage-details-table .mcpage-details-table-body view {
+.mcpage-details-table .mcpage-details-table-header .cell,
+.mcpage-details-table .mcpage-details-table-body .cell {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,18 +65,18 @@
   font-size: 12px;
   color: var(--ckt-gray-11);
 }
-.mcpage-details-table .mcpage-details-table-header view:not(:last-child),
-.mcpage-details-table .mcpage-details-table-body view:not(:last-child) {
+.mcpage-details-table .mcpage-details-table-header .cell:not(:last-child),
+.mcpage-details-table .mcpage-details-table-body .cell:not(:last-child) {
   border-right: 1px solid var(--ckt-gray-3);
 }
 .mcpage-details-table .mcpage-details-table-header {
   background-color: var(--ckt-gray-11);
 }
-.mcpage-details-table .mcpage-details-table-header view {
+.mcpage-details-table .mcpage-details-table-header .cell {
   color: var(--ckt-gray-1);
   font-weight: bold;
 }
-.mcpage-details-table .mcpage-details-table-header view:not(:last-child) {
+.mcpage-details-table .mcpage-details-table-header .cell:not(:last-child) {
   border-color: var(--ckt-gray-10);
 }
 .mcpage-details-table .mcpage-details-table-body {
@@ -130,24 +130,12 @@
 .mcpage-details-item {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-}
-.mcpage-details-table {
-  display: flex;
-  flex-direction: column;
-}
-.mcpage-details-table thead,
-.mcpage-details-table tbody {
-  display: flex;
-}
-.mcpage-details-table thead td,
-.mcpage-details-table tbody td {
-  flex: 1;
+  gap: 8px;
 }
 .mcpage-details-item-img {
   width: 100%;
   max-width: 400px;
-  border-radius: 16rpx;
+  border-radius: 8px;
 }
 .mcpage-details-item-desc {
   font-size: 14px;
@@ -156,7 +144,7 @@
 }
 .mcpage-img-wrapper {
   position: relative;
-  min-height: 96rpx;
+  min-height: 48px;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -166,16 +154,16 @@
 .mcpage-img-placeholder {
   width: calc(100vw - 140px);
   height: 100%;
-  min-height: 96rpx;
+  min-height: 48px;
   margin-block: auto;
   background: linear-gradient(to right, var(--ckt-gray-1), var(--ckt-gray-2), var(--ckt-gray-1));
   animation: mcShimmer 2.5s infinite;
   background-size: 200% 100%;
-  border-radius: 16rpx;
+  border-radius: 8px;
 }
 .mcpage-details-item-img.hide {
   display: none;
-  height: 96rpx;
+  height: 48px;
 }
 .mcpage-details-item-img.show {
   display: block;

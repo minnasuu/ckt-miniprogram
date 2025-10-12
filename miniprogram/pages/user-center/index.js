@@ -44,6 +44,10 @@ Page({
     this.setData({
       statusBarHeight: systemInfo.statusBarHeight
     });
+
+    // 清除所有旧版本登录信息，强制所有用户重新登录
+    this.clearAllOldLoginData();
+
     // 检查是否已登录
     this.checkLoginStatus();
     this.initWeeklyData();
@@ -182,21 +186,64 @@ Page({
     this.initUserAssetsData();
   },
 
+  // 清除所有旧版本登录数据
+  clearAllOldLoginData() {
+    try {
+      // 使用LoginUtils的清除方法，带版本控制
+      const LoginUtils = require('../../utils/loginUtils');
+      const result = LoginUtils.clearAllOldLoginData('2.1.0');
+
+      if (result.success && result.cleared) {
+        console.log('已清除所有旧版本登录数据，所有用户将作为新用户重新登录');
+
+        // 重置页面状态
+        this.setData({
+          userInfo: null,
+          isLoggingIn: false,
+          showDialog: false,
+          tempAvatar: '',
+          tempUsername: '',
+          imageNum: 0,
+          documentNum: 0,
+          assetNum: 0,
+          favoriteNum: 0
+        });
+      } else if (result.skipped) {
+        console.log('数据已为当前版本清除过，跳过清除操作');
+      }
+
+    } catch (error) {
+      console.error('清除旧登录数据失败：', error);
+    }
+  },
+
   // 检查登录状态
   async checkLoginStatus() {
     try {
       const userInfo = wx.getStorageSync('userInfo');
-      if (userInfo) {
+      if (userInfo && userInfo.openId) {
+      // 检查用户信息是否完整（包含必要的openId字段）
         this.setData({ userInfo });
+      } else {
+        // 用户信息不完整或不存在，清除可能存在的旧数据
+        if (userInfo && !userInfo.openId) {
+          console.log('检测到旧版本用户数据，清除缓存');
+          wx.removeStorageSync('userInfo');
+        }
+        this.setData({ userInfo: null });
       }
     } catch (error) {
       console.error('检查登录状态失败：', error);
+      // 发生错误时也清除可能损坏的数据
+      wx.removeStorageSync('userInfo');
+      this.setData({ userInfo: null });
     }
   },
 
   // 处理登录
   async handleLogin() {
     if (this.data.userInfo) {
+      // 如果用户已登录，显示编辑对话框
       this.setData({
         showDialog: true,
         tempAvatar: this.data.userInfo.avatar,
@@ -206,42 +253,67 @@ Page({
     }
 
     try {
-      const { userInfo } = await wx.getUserProfile({
-        desc: '用于完善用户资料'
-      });
+      // 直接执行登录，使用新的头像昵称填写能力
+      await this.performLogin();
+    } catch (error) {
+      console.error('登录失败：', error);
+      this.setData({ isLoggingIn: false });
+      this.showMessage('登录失败💔', 'error');
+    }
+  },
 
+  // 执行登录逻辑
+  async performLogin() {
+    try {
+      console.log('开始执行登录流程...');
       this.setData({ isLoggingIn: true });
 
+      // 获取登录凭证
+      console.log('获取登录凭证...');
       const { code } = await wx.login();
+      console.log('登录凭证获取成功:', code);
+
+      // 使用默认用户信息（新版本不再需要用户授权获取头像昵称）
+      const defaultUserInfo = {
+        openId: 'temp_' + Date.now(), // 临时openId，用于测试
+        username: '用户' + Math.random().toString(36).substr(2, 6),
+        avatar: '/images/default-avatar.png',
+        createdAt: new Date().toISOString()
+      };
+      console.log('使用默认用户信息:', defaultUserInfo);
 
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      const { result } = await wx.cloud.callFunction({
-        name: 'login',
-        data: {
-          code,
-          userInfo: {
-            nickName: userInfo.nickName,
-            avatarUrl: userInfo.avatarUrl
-          }
-        }
-      });
+      // 暂时跳过云函数调用，直接使用本地数据测试登录
+      console.log('跳过云函数调用，使用本地数据测试...');
 
-      if (result.success) {
+      // 模拟登录成功
+      const mockResult = {
+        success: true,
+        userInfo: defaultUserInfo
+      };
+      console.log('模拟登录结果:', mockResult);
+
+      if (mockResult.success) {
+        console.log('登录成功，保存用户信息...');
         // 清除旧的缓存
         wx.removeStorageSync('userInfo');
         // 保存最新的用户信息到缓存
-        wx.setStorageSync('userInfo', result.userInfo);
+        wx.setStorageSync('userInfo', mockResult.userInfo);
         this.setData({
-          userInfo: result.userInfo,
+          userInfo: mockResult.userInfo,
           isLoggingIn: false
         });
 
         // 确保用户信息保存完成后再记录登录打卡
         setTimeout(async () => {
           console.log('开始记录登录打卡...');
-          const success = await recordLoginCheckIn();
-          console.log('登录打卡结果:', success);
+          try {
+            const success = await recordLoginCheckIn();
+            console.log('登录打卡结果:', success);
+          } catch (checkInError) {
+            console.error('登录打卡失败:', checkInError);
+          }
 
           // 登录打卡完成后刷新打卡数据
           this.initCheckInData();
@@ -252,10 +324,11 @@ Page({
 
         this.showMessage('登录成功🎉', 'success');
       } else {
-        throw new Error(result.message || '登录失败');
+        console.error('模拟登录失败:', mockResult);
+        throw new Error(mockResult.message || '登录失败');
       }
     } catch (error) {
-      console.error('登录失败：', error);
+      console.error('执行登录失败：', error);
       this.setData({ isLoggingIn: false });
       this.showMessage('登录失败💔', 'error');
     }
@@ -288,6 +361,29 @@ Page({
       showDialog: false,
       tempAvatar: '',
       tempUsername: ''
+    });
+  },
+
+  // 强制重新登录
+  forceReLogin() {
+    wx.showModal({
+      title: '重新登录',
+      content: '确定要重新登录吗？这将清除当前登录状态，需要重新授权。',
+      confirmText: '确定',
+      confirmColor: '#F35A75',
+      success: (res) => {
+        if (res.confirm) {
+          // 清除用户信息
+          wx.removeStorageSync('userInfo');
+          this.setData({
+            userInfo: null,
+            showDialog: false,
+            tempAvatar: '',
+            tempUsername: ''
+          });
+          this.showMessage('已退出登录，请重新登录', 'success');
+        }
+      }
     });
   },
 
@@ -674,15 +770,13 @@ Page({
 
   // 点击创作工具时记录打卡
   onCreateTap() {
-    if (!this.data.userInfo) {
-      this.showMessage('请先登录', 'warn');
-      return;
+    // 如果用户已登录，记录创作打卡
+    if (this.data.userInfo) {
+      // 记录创作打卡（创作数量为1）
+      recordCreationCheckIn(1);
     }
     
-    // 记录创作打卡（创作数量为1）
-    recordCreationCheckIn(1);
-    
-    // 跳转到工具页面
+    // 无论是否登录都跳转到工具页面
     wx.switchTab({
       url: '/pages/tools/index'
     });

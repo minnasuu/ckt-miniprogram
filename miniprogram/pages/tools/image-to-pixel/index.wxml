@@ -8,7 +8,7 @@
         subTitle="点击上传图片，以图片大小为基础自动调整像素格范围"
       ></part-title>
       <view class="upload-section">
-        <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片（500KB以内）" maxSize="{{500*1024}}" bind:imageSelected="onImageSelected"></image-uploader>
+        <image-uploader imageUrl="{{imageUrl}}" height="120px" placeholderText="点击上传图片（500KB以内）" maxSize="{{500*1024}}" bind:imageSelected="onImageSelected"></image-uploader>
       </view>
     </view>
 
@@ -70,7 +70,7 @@
      <dialog
        visible="{{showPermissionDialog}}"
        title="权限不足"
-       content="保存功能仅限高级用户和管理员使用，基础用户暂不支持此功能。"
+       content="保存功能仅限高级用户使用，基础用户暂不支持此功能。"
        showCancel="{{false}}"
        confirmText="我知道了"
        bindconfirm="onPermissionDialogClose"

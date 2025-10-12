@@ -1,0 +1,40 @@
+.think-content {
+  position: relative;
+  padding: 8px 12px;
+  background-color: var(--ckt-gray-1);
+  border-radius: 4px;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
+}
+.think-content .think-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.think-content .think-content-title {
+  font-size: 14px;
+  color: #666;
+}
+.think-content .expand-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+.think-content .think-content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+.think-content .think-content-body.expanded {
+  max-height: unset;
+  transition: max-height 0.5s ease-in;
+}

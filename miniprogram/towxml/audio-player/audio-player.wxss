@@ -1,7 +1,7 @@
 /*音频播放器样式*/
 .h2w__audio {
-    height: 136rpx;
-    margin:16rpx 0;
+    height: 118px;
+    margin:8px 0;
     background: #f1f1f1;
     position: relative;
 }
@@ -35,10 +35,10 @@
     background:red;
 }
 
-/* .h2w__audio--end .h2w__audio__icon {width:20rpx; height:20rpx; background:white; border:0; left:24rpx; top:24rpx; border-radius:2rpx;} */
+/* .h2w__audio--end .h2w__audio__icon {width:20rpx; height:20rpx; background:white; border:0; left:12px; top:12px; border-radius:2rpx;} */
 .h2w__audioCover {
-    width: 136rpx;
-    height: 136rpx;
+    width: 118px;
+    height: 118px;
     background: black;
     float: left;
     position: relative;
@@ -53,8 +53,8 @@
 }
 
 .h2w__audioCover .h2w__audioLoading {
-    width:80rpx;
-    height:80rpx;
+    width:40px;
+    height:40px;
     position:absolute;
     left:50%;
     top:50%;
@@ -65,9 +65,9 @@
 
 .h2w__audioInfo {
     padding-left: 20rpx;
-    padding-top: 16rpx;
+    padding-top: 8px;
     position: absolute;
-    left: 136rpx;
+    left: 118px;
     right: 0;
 }
 
@@ -76,7 +76,7 @@
     left: 0;
     top: 0;
     background: rgba(0, 255, 0, 0.1);
-    height: 136rpx;
+    height: 118px;
     width: 0;
 }
 
@@ -84,8 +84,8 @@
     position:absolute;
     right:0;
     top:0;
-    height: 32rpx;
-    line-height: 32rpx;
+    height: 16px;
+    line-height: 16px;
     padding:10rpx 20rpx;
     font-size:20rpx;
 }
@@ -96,7 +96,7 @@
 
 .h2w__audioTitle {
     display: block;
-    font-size: 24rpx;
+    font-size: 12px;
     height: 40rpx;
     line-height: 40rpx;
     font-weight: bold;
@@ -105,15 +105,15 @@
 .h2w__audioAuthor {
     display: block;
     font-size: 20rpx;
-    height: 32rpx;
-    line-height: 32rpx;
+    height: 16px;
+    line-height: 16px;
 }
 
 .h2w__audioTime {
     display: block;
     font-size: 20rpx;
-    height: 32rpx;
-    line-height: 32rpx;
+    height: 16px;
+    line-height: 16px;
 }
 
 .h2w__audioIcon {
@@ -121,7 +121,7 @@
     height: 0;
     position: absolute;
     left: 60rpx;
-    top: 48rpx;
+    top: 24px;
     border-width: 20rpx 0 20rpx 20rpx;
     border-style: solid;
     border-color: transparent transparent transparent #fff;

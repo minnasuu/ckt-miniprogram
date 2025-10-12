@@ -5,7 +5,7 @@
 
 .content-container {
   padding: 20rpx;
-  min-height: calc(100vh - 164rpx);
+  min-height: calc(100vh - 132px);
   box-sizing: border-box;
 }
 
@@ -19,20 +19,20 @@
 }
 
 .login-icon {
-  font-size: 80rpx;
+  font-size: 40px;
   margin-bottom: 20rpx;
 }
 
 .login-title {
   color: #333;
-  font-size: 32rpx;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 10rpx;
 }
 
 .login-desc {
   color: #999;
-  font-size: 28rpx;
+  font-size: 14px;
   margin-bottom: 30rpx;
   text-align: center;
 }
@@ -43,7 +43,7 @@
   border: none;
   border-radius: 40rpx;
   padding: 20rpx 40rpx;
-  font-size: 28rpx;
+  font-size: 14px;
 }
 
 /* 即将推出状态 */
@@ -56,19 +56,19 @@
 }
 
 .coming-icon {
-  font-size: 80rpx;
+  font-size: 40px;
   margin-bottom: 20rpx;
 }
 
 .coming-title {
   color: #333;
-  font-size: 32rpx;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 10rpx;
 }
 
 .coming-desc {
   color: #999;
-  font-size: 28rpx;
+  font-size: 14px;
   text-align: center;
 }

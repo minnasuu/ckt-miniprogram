@@ -9,11 +9,11 @@
 
 .welcome-content {
   text-align: center;
-  margin-bottom: 80rpx;
+  margin-bottom: 40px;
 }
 
 .welcome-title {
-  font-size: 36rpx;
+  font-size: 18px;
   font-weight: bold;
   color: var(--ckt-gray-12);
   margin-top: 40rpx;
@@ -22,13 +22,13 @@
 
 .loading-indicator {
   display: flex;
-  gap: 12rpx;
+  gap: 6px;
   align-items: center;
 }
 
 .loading-dot {
-  width: 12rpx;
-  height: 12rpx;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background-color: var(--ckt-theme-6);
   animation: loading 1.4s infinite ease-in-out;

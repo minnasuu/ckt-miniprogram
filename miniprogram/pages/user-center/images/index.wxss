@@ -8,7 +8,7 @@
 .nav-container {
   display: inline-flex;
   width: 100vw;
-  padding: 16rpx 32rpx;
+  padding: 8px 16px;
   border-bottom: 1rpx solid var(--ckt-gray-3);
   background: #fff;
   box-sizing: border-box;
@@ -34,7 +34,7 @@
 .loading-text {
   margin-top: 20rpx;
   color: var(--ckt-gray-9);
-  font-size: 28rpx;
+  font-size: 14px;
 }
 
 /* 错误状态 */
@@ -45,7 +45,7 @@
   gap: 8rpx;
   padding-top: 30vh;
   color: var(--ckt-gray-9);
-  font-size: 28rpx;
+  font-size: 14px;
 }
 
 .retry-btn:not([size=mini]) {
@@ -53,7 +53,7 @@
   margin: 0;
   padding: 0;
   color: var(--ckt-theme-6);
-  font-size: 28rpx;
+  font-size: 14px;
   line-height: 1.5rem;
 }
 
@@ -68,14 +68,14 @@
 
 .empty-title {
   color: var(--ckt-gray-9);
-  font-size: 32rpx;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 10rpx;
 }
 
 .empty-desc {
   color: var(--ckt-gray-9);
-  font-size: 28rpx;
+  font-size: 14px;
   margin-bottom: 30rpx;
   text-align: center;
 }
@@ -85,7 +85,7 @@
   color: var(--ckt-theme-6);
   border-radius: 40rpx;
   padding: 20rpx 40rpx;
-  font-size: 28rpx;
+  font-size: 14px;
 }
 
 /* 图片预览窗口样式 */
@@ -139,7 +139,7 @@
 
 .preview-title {
   color: white;
-  font-size: 32rpx;
+  font-size: 16px;
   font-weight: bold;
   text-align: center;
   max-width: 80vw;
@@ -150,7 +150,7 @@
 
 .preview-counter {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 24rpx;
+  font-size: 12px;
 }
 
 .preview-actions {
@@ -162,7 +162,7 @@
   background-color: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 40rpx;
-  padding: 16rpx 32rpx;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   gap: 8rpx;
@@ -170,20 +170,20 @@
 }
 
 .preview-btn .btn-icon {
-  font-size: 24rpx;
+  font-size: 12px;
 }
 
 .preview-btn .btn-text {
   color: white;
-  font-size: 24rpx;
+  font-size: 12px;
 }
 
 .preview-close {
   position: absolute;
   top: 120rpx;
   right: 40rpx;
-  width: 80rpx;
-  height: 80rpx;
+  width: 40px;
+  height: 40px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
@@ -194,7 +194,7 @@
 
 .close-icon {
   color: white;
-  font-size: 32rpx;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -205,13 +205,13 @@
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 20rpx;
-  padding: 12rpx 24rpx;
+  padding: 6px 12px;
   backdrop-filter: blur(10px);
 }
 
 .hint-text {
   color: white;
-  font-size: 24rpx;
+  font-size: 12px;
   opacity: 0.8;
 }
 

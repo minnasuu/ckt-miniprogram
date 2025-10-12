@@ -37,3 +37,17 @@
   font-size: 14px;
   color: var(--ckt-gray-8);
 }
+.upload-image-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.upload-image-list .upload-image-item {
+  aspect-ratio: 1;
+  background-color: var(--ckt-gray-1);
+  border-radius: 8px;
+}
+.upload-image-list .upload-image-item image {
+  width: 100%;
+  height: 100%;
+}

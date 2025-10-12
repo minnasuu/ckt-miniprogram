@@ -5,8 +5,8 @@
 }
 
 .color-item {
-  width: 32rpx;
-  height: 32rpx;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
 }
 
