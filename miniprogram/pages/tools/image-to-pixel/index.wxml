@@ -31,12 +31,13 @@
         />
         </view>
         <view class="filter-right">
-          <button 
-            type="primary"
-            class="start-button"
-            bind:tap="onPixelate" 
-            disabled="{{loading || !imageUrl || finished}}"
-            >转换</button>
+            <ckt-button
+            style="width: 80px;"
+              text="转换"
+              type="primary"
+              disabled="{{loading || !imageUrl || finished}}"
+              bind:tap="onPixelate"
+            />
         </view>
       </view>
     </view>
@@ -50,18 +51,20 @@
             <image wx:if="{{pixelatedImageSrc}}" src="{{pixelatedImageSrc}}" style="width: {{resultWidth}}px;height:{{resultWidth*imgSize.w/imgSize.h}}px;" mode="aspectFit"/>
             <view
               class="pixel-loading {{loading ? '':'hide'}}">
-              <loading color="rgba(0,0,0,0.1)"></loading>
+              <loading></loading>
             </view>
           </view>
           <!-- <text>合并算法</text> -->
           <view class="bottom-buttons">
-            <ckt-button 
-              text="下载图片" 
-              type="primary" 
-              disabled="{{!pixelatedImageSrc}}" 
-              bind:tap="onDownload" 
-              data-type="merge"
-            />
+          <view style="width: 100%;display: flex;justify-content: center;">
+                <ckt-button 
+                  text="下载图片" 
+                  type="primary" 
+                  disabled="{{!pixelatedImageSrc}}" 
+                  bind:tap="onDownload" 
+                  data-type="merge"
+                />
+              </view>
             <!-- <button bind:tap="onSave" data-type="merge" class="save" disabled="{{saveLoading || loginLoading || !pixelatedImageSrc}}">
               {{loginLoading ? '登录中...' : (saveLoading ? '保存中...' : '保存')}}
             </button> -->
@@ -71,16 +74,4 @@
     </view>
     <text class="alert-text">温馨提示：处理能力基于canvas实现，由于不同设备对canvas兼容性不同，转换效果可能存在差异。</text>
     </view>
-     <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
-     
-     <!-- 权限不足提示弹窗 -->
-     <dialog
-       visible="{{showPermissionDialog}}"
-       title="权限不足"
-       content="保存功能仅限高级用户使用，基础用户暂不支持此功能。"
-       showCancel="{{false}}"
-       confirmText="我知道了"
-       bindconfirm="onPermissionDialogClose"
-       bindclose="onPermissionDialogClose"
-     />
 </view>

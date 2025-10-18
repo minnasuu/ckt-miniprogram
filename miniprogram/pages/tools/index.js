@@ -12,7 +12,7 @@ Page({
             id: "pattern-1",
             icon: '✏️',
             title: '像素画板',
-            description: '在线绘制像素图、内置线材色卡',
+            description: '在线绘制像素图',
             new: false,
             path: '/pages/tools/pixel-canvas/index'
           },
@@ -40,7 +40,7 @@ Page({
           },
           {
             id: "image-2",
-            icon: '🎨',
+            icon: '🌈',
             title: '提取图片主色',
             description: '一键提取图片主要颜色、生成色卡',
             new: false,

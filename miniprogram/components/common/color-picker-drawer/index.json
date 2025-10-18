@@ -2,7 +2,8 @@
   "component": true,
   "usingComponents": {
     "color-picker": "/components/common/color-picker/index",
-    "close-icon": "/components/icon/close-icon/index"
+    "close-icon": "/components/icon/close-icon/index",
+    "ckt-button": "/components/common/ckt-button/index"
   },
   "styleIsolation": "isolated"
 }

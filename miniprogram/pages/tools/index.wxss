@@ -25,6 +25,7 @@
   height: 1%;
   width: 100%;
   padding: 10px 12px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 12px) + 20px);
   overflow: auto;
   box-sizing: border-box;
 }

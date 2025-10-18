@@ -23,8 +23,6 @@ Page({
       { value: '2', label: '6' },
       { value: '3', label: '8' }
     ],
-    showAlert: false,
-    alertMessage: '',
     showCanvasModal: false,
     canvasWidth: 0,
     canvasHeight: 0,
@@ -48,21 +46,7 @@ Page({
       });
     }
   },
-  // 显示提示框
-  showMessage(msg) {
-    this.setData({
-      showAlert: true,
-      alertMessage: msg
-    });
-    
-    // 2秒后自动隐藏
-    setTimeout(() => {
-      this.setData({
-        showAlert: false,
-        alertMessage:''
-      });
-    }, 1000);
-  },
+
   // 处理图片上传事件
   onImageSelected(e) {
     const { imageUrl,width,height } = e.detail;
@@ -78,7 +62,11 @@ Page({
   //提取图片主色入口函数
   getImgColor(){
     if(!this.data.imageUrl){
-      this.showMessage('请先上传图片喔 😉');
+      wx.showToast({
+        title: '请先上传图片喔 😉',
+        icon: 'none',
+        duration: 1500
+      });
       return;
     }
     // 设置picking状态为true，清除临时文件路径
@@ -94,7 +82,11 @@ Page({
       },
       fail: (error) => {
         console.error('获取图片信息失败:', error);
-        this.showMessage('获取图片失败💔');
+        wx.showToast({
+          title: '获取图片失败💔',
+          icon: 'none',
+          duration: 1500
+        });
         this.setData({
           picking: false
         });
@@ -129,7 +121,11 @@ Page({
       
     } catch (error) {
       console.error('处理图片出错:', error);
-      this.showMessage('处理图片失败💔');
+      wx.showToast({
+        title: '处理图片失败💔',
+        icon: 'none',
+        duration: 1500
+      });
       this.setData({ picking: false });
     }
   },
@@ -153,7 +149,11 @@ Page({
         });
       });
 
-      that.showMessage('提取成功✨');
+      wx.showToast({
+        title: '提取成功✨',
+        icon: 'none',
+        duration: 1500
+      });
       
       wx.getImageInfo({
         src: that.data.imageUrl,
@@ -283,7 +283,11 @@ Page({
   async getTopColors(pixelData) {
     try {
       if (!pixelData || pixelData.length === 0) {
-        this.showMessage('未获取到有效像素数据💔');
+        wx.showToast({
+          title: '未获取到有效像素数据💔',
+          icon: 'none',
+          duration: 1500
+        });
         return [];
       }
 
@@ -303,7 +307,11 @@ Page({
 
       // 检查是否有有效颜色数据
       if (colorCountMap.size === 0) {
-        this.showMessage('图片中没有有效颜色数据');
+        wx.showToast({
+          title: '图片中没有有效颜色数据',
+          icon: 'none',
+          duration: 1500
+        });
         return [];
       }
       
@@ -345,7 +353,11 @@ Page({
       
     } catch (error) {
       console.error('提取主色失败:', error);
-      this.showMessage('提取颜色失败💔');
+      wx.showToast({
+        title: '提取颜色失败💔',
+        icon: 'none',
+        duration: 1500
+      });
       this.setData({ picking: false });
       return [];
     }
@@ -380,7 +392,11 @@ Page({
     wx.setClipboardData({
       data: color,
       success: () => {
-        this.showMessage('颜色已复制☺️');
+        wx.showToast({
+          title: '颜色已复制☺️',
+          icon: 'none',
+          duration: 1500
+        });
       }
     });
   },
@@ -432,7 +448,11 @@ Page({
     }
 
     if (!this.data.colorArr.length) {
-      this.showMessage('请先提取颜色后再保存☺️');
+      wx.showToast({
+        title: '请先提取颜色后再保存☺️',
+        icon: 'none',
+        duration: 1500
+      });
       return;
     }
 
@@ -474,7 +494,11 @@ Page({
       fail: (error) => {
         console.error('生成临时文件路径失败:', error);
         this.setData({ saving: false });
-        this.showMessage('生成临时文件失败，请重试💔');
+        wx.showToast({
+          title: '生成临时文件失败，请重试💔',
+          icon: 'none',
+          duration: 1500
+        });
       }
     });
   },
@@ -512,19 +536,31 @@ Page({
             recordCreationCheckIn(1);
 
             this.setData({ saving: false });
-            this.showMessage(`保存成功🎉\n前往个人中心-我的创作查看`);
+            wx.showToast({
+              title: `保存成功🎉\n前往个人中心-我的创作查看`,
+              icon: 'none',
+              duration: 1500
+            });
           },
           fail: (err) => {
             console.error('保存到云数据库失败', err);
             this.setData({ saving: false });
-            this.showMessage('保存失败💔');
+            wx.showToast({
+              title: '保存失败💔',
+              icon: 'none',
+              duration: 1500
+            });
           }
         });
       },
       fail: (err) => {
         console.error('文件上传失败', err);
         this.setData({ saving: false });
-        this.showMessage('上传失败💔');
+        wx.showToast({
+          title: '上传失败💔',
+          icon: 'none',
+          duration: 1500
+        });
       }
     });
   },
@@ -569,7 +605,11 @@ Page({
       },
       fail: (err) => {
         console.error('获取 canvas 临时文件路径失败:', err);
-        this.showMessage('保存失败，请重试💔');
+        wx.showToast({
+          title: '保存失败，请重试💔',
+          icon: 'none',
+          duration: 1500
+        });
       }
     });
   },
@@ -579,11 +619,19 @@ Page({
     wx.saveImageToPhotosAlbum({
       filePath: tempFilePath,
       success: () => {
-        this.showMessage('保存成功🎉');
+        wx.showToast({
+          title: '保存成功🎉',
+          icon: 'none',
+          duration: 1500
+        });
       },
       fail: (err) => {
         console.error('保存图片到相册失败:', err);
-        this.showMessage('保存失败，请重试💔');
+        wx.showToast({
+          title: '保存失败，请重试💔',
+          icon: 'none',
+          duration: 1500
+        });
       }
     });
   },
@@ -637,7 +685,11 @@ Page({
     wx.setClipboardData({
       data: color,
       success: () => {
-        this.showMessage('颜色值已复制🎉');
+        wx.showToast({
+          title: '颜色值已复制🎉',
+          icon: 'none',
+          duration: 1500
+        });
       }
     });
   },

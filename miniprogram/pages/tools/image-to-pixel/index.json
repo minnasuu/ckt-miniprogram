@@ -3,7 +3,6 @@
     "custom-header": "/components/custom-header/index",
     "image-uploader": "/components/common/image-uploader/index",
     "loading": "/components/common/loading/index",
-    "alert-message": "/components/common/alert-message/index",
     "dialog": "/components/common/dialog/index",
     "ckt-button": "/components/common/ckt-button/index"
   },

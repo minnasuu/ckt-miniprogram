@@ -7,7 +7,6 @@
     "number-input": "/components/common/number-input/index",
     "custom-select": "/components/common/select/index",
     "loading": "/components/common/loading/index",
-    "alert-message": "/components/common/alert-message/index",
     "color-picker": "/components/common/color-picker/index",
     "dialog": "/components/common/dialog/index",
     "ckt-button": "/components/common/ckt-button/index"

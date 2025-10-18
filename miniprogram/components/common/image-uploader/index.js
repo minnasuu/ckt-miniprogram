@@ -27,9 +27,6 @@ Component({
   },
   
   data: {
-    alertMessage: '',
-    showAlert: false,
-    alertType: 'none',
     loading: false // 上传加载状态
   },
   
@@ -123,7 +120,7 @@ Component({
           } else if (oversizedFiles.length === res.tempFiles.length) {
             // 所有图片都超大
             const maxSizeMB = (this.data.maxSize / (1024 * 1024)).toFixed(1);
-            this.showAlert(`所有图片都过大，请选择小于${maxSizeMB}MB的图片`, 'error');
+            this.showAlert(`所有图片都过大，请选择小于${maxSizeMB}MB的图片`);
           }
 
           // 隐藏加载状态
@@ -172,25 +169,15 @@ Component({
         errorMessage = '选择图片失败，请重试';
       }
 
-      this.showAlert(errorMessage, 'error');
+      this.showAlert(errorMessage);
     },
 
-    showAlert(message, type = 'none') {
-      this.setData({
-        alertMessage: message,
-        showAlert: true,
-        alertType: type
+    showAlert(message) {
+      wx.showToast({
+        title: message,
+        icon: 'none',
+        duration: 1500
       });
-
-      // 根据消息类型调整显示时间
-      const duration = type === 'info' ? 1500 : 2500;
-
-      setTimeout(() => {
-        this.setData({
-          showAlert: false,
-          alertMessage: ''
-        });
-      }, duration);
     }
   }
 });

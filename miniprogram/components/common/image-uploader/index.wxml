@@ -12,4 +12,3 @@
     </view>
   </view>
 </view>
-<alert-message message="{{alertMessage}}" show="{{showAlert}}" type="{{alertType}}" />

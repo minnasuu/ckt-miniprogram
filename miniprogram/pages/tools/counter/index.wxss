@@ -222,7 +222,7 @@
 .history-operation {
   font-size: 14px;
   font-weight: 500;
-  color: var(--ckt-theme-4);
+  color: var(--ckt-gray-12);
   min-width: 40px;
 }
 

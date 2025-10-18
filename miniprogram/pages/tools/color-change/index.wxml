@@ -15,8 +15,17 @@
         </view>
     </view>
     <view class="buttons-container">
-      <button class="generate-button" type="primary" bind:tap="generate" disabled="{{!imageUrl || generateLoading || !hasModified}}">{{generateLoading?'转换中...':'开始转换'}}</button>
-      <button disabled="{{!hasModified}}" class="clear-button" bind:tap="clearCanvas">清除效果</button>
+      <ckt-button
+        text="{{generateLoading?'转换中...':'开始转换'}}"
+        type="primary"
+        disabled="{{!imageUrl || generateLoading || !hasModified}}"
+        bind:tap="generate"
+      />
+      <ckt-button
+        text="清除效果"
+        disabled="{{!hasModified}}"
+        bind:tap="clearCanvas"
+      />
     </view>
     <view class="canvas-container" wx:if="{{imageUrl}}" style="opacity: {{showColorPicker?0:1}};">
       <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="{{canvasStyle}}"></canvas>
@@ -31,7 +40,6 @@
       <!-- <button class="save-button" type="primary" disabled="{{!hasModified||!finished || saveLoading}}" bind:tap="saveColorCard">{{saveLoading?'保存中...':'保存'}}</button> -->
       </view>
   </view>
-  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
   
   <!-- 权限不足提示弹窗 -->
   <dialog

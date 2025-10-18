@@ -101,6 +101,25 @@
   background-color: var(--ckt-gray-10);
 }
 
+.preset-colors {
+  padding-top: 20rpx;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 146px;
+}
+
+.preset-color-item {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.preset-colors-list {
+  padding-inline: 40rpx;
+  padding-bottom: 20rpx;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48rpx, 1fr));
+  gap: 12rpx;
+}
 /* 响应式设计 */
 @media (max-width: 750rpx) {
   .drawer-content {

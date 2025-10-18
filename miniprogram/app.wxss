@@ -56,7 +56,18 @@ page{
   --ckt-lime-9: #346E0B;
   --ckt-lime-10: #1D4D00;
   
-  --ckt-theme-1: #FFE8E8;
+  --ckt-theme-1: #E8F6FF;
+  --ckt-theme-2: #A5C9E3;
+  --ckt-theme-3: #6C9EC7;
+  --ckt-theme-4: #3E76AA;
+  --ckt-theme-5: #1A528E;
+  --ckt-theme-6: #003472;
+  --ckt-theme-7: #002C69;
+  --ckt-theme-8: #00255F;
+  --ckt-theme-9: #001E56;
+  --ckt-theme-10: #00184D;
+  
+  /* --ckt-theme-1: #FFE8E8;
   --ckt-theme-2: #FDCBCD;
   --ckt-theme-3: #FAAEB4;
   --ckt-theme-4: #F8919D;
@@ -65,7 +76,7 @@ page{
   --ckt-theme-7: #C93857;
   --ckt-theme-8: #A01E3E;
   --ckt-theme-9: #760B29;
-  --ckt-theme-10: #4D0018;
+  --ckt-theme-10: #4D0018; */
 
   --ckt-gray-0: #FFFFFF;
   --ckt-gray-1: #F8F8F8;

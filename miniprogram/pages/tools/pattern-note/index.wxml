@@ -160,11 +160,6 @@ module.exports.formatHistoryTime = formatHistoryTime;
         </view>
     </view>
 
-        <alert-message 
-          message="{{alertMessage}}" 
-          show="{{showAlert}}" 
-          type="success"
-        ></alert-message>
 </view>
 
 <!-- 历史图解抽屉 -->

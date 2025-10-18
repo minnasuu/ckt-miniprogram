@@ -32,9 +32,12 @@
           </view>
         </block>
         <block wx:else>
-          <button class="color-pick-submit-btn" disabled="{{!imageUrl}}" bind:tap="getImgColor">
-            提取颜色
-          </button>
+          <ckt-button
+            text="提取颜色"
+            type="primary"
+            disabled="{{!imageUrl}}"
+            bind:tap="getImgColor"
+          />
         </block>
       </view>
       <!-- 颜色列表展示 -->
@@ -57,12 +60,13 @@
       <!-- 添加 canvas-id 属性并设置样式 -->
       <canvas canvas-id="colorCardCanvas" style="width: {{canvasWidth}}px; height: {{totalCanvasHeight}}px;"></canvas>
       <view wx:if="{{colorArr.length>0}}" class="color-result-button-container">
+        <view style="width: 100%;display: flex;justify-content: center;">
         <ckt-button 
           text="下载图片" 
           type="primary" 
           disabled="{{!imageUrl}}"
           bind:tap="downloadColorCard" 
-        />
+        /></view>
         <!-- <button class="color-card-btn save" disabled="{{saving || !colorArr.length}}" bind:tap="saveColorCard">
           <Icon name="download" />
           {{saving ? '保存中...' : '保存'}}
@@ -71,7 +75,6 @@
     </view>
   </view>
   </view>
-  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
   
   <!-- 权限不足提示弹窗 -->
   <dialog

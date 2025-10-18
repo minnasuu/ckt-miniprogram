@@ -16,37 +16,16 @@
       />
     </view>
 
- <!-- <view class="color-grid-container">
-      <view class="loading-container"><loading></loading></view>
-      <view class="custom-color-button">
+    <view class='preset-colors'>
+     <view class='preset-colors-list'>
+        <view wx:for="{{presetColors}}" class='preset-color-item' style="background-color: {{item}}" catch:tap="onPresetColorClick" data-color="{{item}}"></view>
       </view>
-      <view style="flex:1;height:1%;display:flex;flex-direction:column">
-        <view class="colors-menu-container">
-          <nav navList="{{colorsData}}" currentNav="{{activeColorTab}}" bind:navChange="onColorMenuChange"></nav>
-        </view>
-        <view class="colors-grid">
-            <view
-                wx:for="{{curColorsData}}"
-                wx:for-item="c"
-                key="{{c.id}}"
-                class="color-item"
-            >
-              <view
-                  class="color {{( c.value === 'white' || c.value === '#fff' || c.value === '#FFF' || c.value === '#ffffff' || c.value === '#FFFFFF') ? 'border' : ''}}"
-                  style="background-color: {{c.value}}"
-                  bindtap="onColorClick"
-                  data-color="{{c.value}}"
-              ></view>
-              <text>{{c.name}}</text>
-            </view>
-        </view>
-      </view>
-    </view> -->
+    </view>
                 
     <!-- 操作按钮 -->
     <view class="drawer-actions">
-      <view class="action-btn cancel-btn" bindtap="onCancel">取消</view>
-      <view class="action-btn confirm-btn" bindtap="onConfirm">确定</view>
+      <ckt-button text="取消" bind:tap="onCancel" block/>
+      <ckt-button text="确定" bind:tap="onConfirm" block/>
     </view>
   </view>
 </view>

@@ -1,5 +1,5 @@
 <view class="pixel-canvas-container">
-  <custom-header title="像素画板" showBack></custom-header>
+  <custom-header title="像素画板" showBack customBackHandler bindcustomBack="onCustomBack"></custom-header>
   <view class="content">
     <!-- 画布区域 -->
     <view class="canvas-container">
@@ -40,7 +40,7 @@
     <view class="option-item">
       <text class="title">画笔颜色</text>
       <view class="option-content">
-        <view class="color-block-container" bindtap="showBrushColorPicker">
+        <view class="color-block-container" bindtap="showBrushColorPicker" data-type="brush">
           <view class="color-block" style="background-color: {{brushColor}}"><view class="text">{{brushColor}}</view></view>
         </view>
         <button disabled="{{isCanvasEmpty}}" class="eraser-button {{isEraser?'active':''}}" bindtap="eraserChange"><view class="eraser-icon"></view></button>
@@ -58,7 +58,7 @@
       <view style="display:flex;gap:24px;width:100%">
         <view class="option-item" style="flex:1">
           <text class="title">画布颜色</text>
-          <view class="color-block-container" bindtap="showCanvasColorPicker">
+          <view class="color-block-container" bindtap="showCanvasColorPicker" data-type="canvas">
             <view class="color-block" style="background-color: {{canvasColor}}"><view class="text">{{canvasColor}}</view></view>
           </view>
         </view>
@@ -111,8 +111,8 @@
       <button class="zoom-out-button" style="width: 34px" bind:tap="onZoomOutCanvas"><view class="zoom-out-icon"></view></button>
   </movable-area>
   <canvas canvas-id="result-canvas" id="result-canvas" type="2d" style="display:none;width: {{canvasWidth*32}}px;height:{{canvasHeight*32}}px;"></canvas>
-  <alert-message message="{{alertMessage}}" show="{{showAlert}}" type="success" />
   
+
   <!-- 颜色选择器抽屉 -->
   <color-picker-drawer
     show="{{showColorPicker}}"
@@ -141,5 +141,18 @@
     confirmText="确定"
     bindconfirm="onClearCanvas"
     bindclose="onClearCanvasClose"
+  />
+
+  <!-- 退出确认对话框 -->
+  <dialog
+    visible="{{showExitDialog}}"
+    title="退出提示"
+    content="检测到您有未保存的绘画数据，退出后将清除绘画数据。"
+    confirmText="直接退出"
+    cancelText="缓存到本地"
+    showCancel="{{true}}"
+    bindconfirm="onDirectExit"
+    bindcancel="onCacheAndExit"
+    bindclose="onCancelExit"
   />
 </view>

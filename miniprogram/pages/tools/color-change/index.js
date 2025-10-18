@@ -16,9 +16,7 @@ Page({
     imgRatio: 0,
     colorCount: 6,
     colorArr:[],
-    newColorArr:['#FFF','#FFF','#FFF','#FFF','#FFF','#FFF'],
-    showAlert: false,
-    alertMessage: '',
+    newColorArr: ['#FFF', '#FFF', '#FFF', '#FFF', '#FFF', '#FFF'],
     // 当前操作周期是否修改过替换的颜色
     hasModified:false,
     generateLoading:false,
@@ -72,28 +70,8 @@ Page({
       author: isLoggedIn ? userInfo : null
     });
   },
-  // 显示提示框
-  showMessage(msg) {
-    this.setData({
-      showAlert: true,
-      alertMessage: msg
-    });
-    
-    // 2秒后自动隐藏
-    setTimeout(() => {
-      this.setData({
-        showAlert: false,
-        alertMessage:''
-      });
-    }, 1000);
-  },
 
-  // 关闭权限提示弹窗
-  onPermissionDialogClose() {
-    this.setData({
-      showPermissionDialog: false
-    });
-  },
+
   // 处理图片上传事件
   onImageSelected(e) {
     const { imageUrl,width,height } = e.detail;
@@ -1375,12 +1353,12 @@ Page({
     highResCtx.setTransform(1, 0, 0, 1, 0, 0);
 
     // 添加水印
-    addWatermarkToCanvas(highResCanvas, highResCtx, '织作时光', {
-      fontSize: 12 * scaleFactor,
-      color: 'rgba(0, 0, 0, 0.3)',
-      position: 'bottom-right',
-      padding: 10 * scaleFactor
-    });
+    // addWatermarkToCanvas(highResCanvas, highResCtx, '织作时光', {
+    //   fontSize: 12 * scaleFactor,
+    //   color: 'rgba(0, 0, 0, 0.3)',
+    //   position: 'bottom-right',
+    //   padding: 10 * scaleFactor
+    // });
 
     callback(highResCanvas);
   },

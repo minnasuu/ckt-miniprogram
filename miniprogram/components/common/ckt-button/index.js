@@ -38,10 +38,9 @@ Component({
       type: String,
       value: ''
     },
-    // 按钮宽度：auto, full
-    width: {
+    style: {
       type: String,
-      value: 'auto'
+      value: ''
     }
   },
 

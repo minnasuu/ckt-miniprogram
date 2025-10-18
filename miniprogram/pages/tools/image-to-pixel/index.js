@@ -17,12 +17,9 @@ Page({
     pixelatedImageSrc:'',
     pixelatedImageSrc2:'',
     resultWidth: 342,
-    showAlert: false,
-    alertMessage: '',
     author:null,
     saveLoading: false,
     loginLoading: false,
-    showPermissionDialog: false // 控制权限提示弹窗
   },
   
   onLoad() {
@@ -33,29 +30,7 @@ Page({
       });
     }
   },
-  
-  // 显示提示框
-  showMessage(msg) {
-    this.setData({
-      showAlert: true,
-      alertMessage: msg
-    });
-    
-    // 2秒后自动隐藏
-    setTimeout(() => {
-      this.setData({
-        showAlert: false,
-        alertMessage:''
-      });
-    }, 1000);
-  },
 
-  // 关闭权限提示弹窗
-  onPermissionDialogClose() {
-    this.setData({
-      showPermissionDialog: false
-    });
-  },
   // 处理图片选择事件
   onImageSelected(e) {
     const { imageUrl,width,height,size } = e.detail;

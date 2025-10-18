@@ -19,9 +19,7 @@ Page({
     canvasColor: '#FFFFFF',
     previousCanvasColor: '#FFFFFF', // 之前的画布颜色，用于比较
     brushPatternData:['','','','',''],
-    fullCanvas:false,
-    showAlert: false,
-    alertMessage: '',
+    fullCanvas: false,
     borderStyle: '3',
     gridStyleList: ['1', '2', '3'],
     // 画布尺寸预设选项
@@ -49,7 +47,9 @@ Page({
     initialTouchCount: 0, // 初始触摸点数量
     isMultiTouch: false, // 是否为多点触摸
     showClearCanvasDialog: false, // 控制清空画布提示弹窗
-    isCanvasEmpty: true // 画布是否为空（没有绘制任何像素）
+    isCanvasEmpty: true, // 画布是否为空（没有绘制任何像素）
+    showExitDialog: false, // 控制退出提示弹窗
+    hasUnsavedChanges: false // 是否有未保存的更改
   },
   
   onLoad() {
@@ -59,13 +59,8 @@ Page({
       screenHeight: systemInfo.windowHeight
     });
     
-    // 初始化画布数据
-    this.initCanvas();
-    
-    // 初始化之前的画布颜色
-    this.setData({
-      previousCanvasColor: this.data.canvasColor
-    });
+    // 尝试加载缓存的画布数据
+    this.loadCachedCanvasData();
 
     // 获取当前登录用户信息
     const userInfo = wx.getStorageSync('userInfo');
@@ -79,6 +74,151 @@ Page({
     setTimeout(() => {
       this.updateCanvasRect();
     }, 100);
+
+    // 初始化颜色选择器为画笔颜色模式
+    this.setColorPickerType('brush');
+  },
+
+  // 页面卸载时的处理
+  onUnload() {
+    // 页面卸载时不显示弹窗，直接退出
+    // 这里可以做一些清理工作，但不能阻止页面卸载
+    // 实际的退出确认逻辑通过自定义返回按钮处理
+  },
+
+  // 加载缓存的画布数据
+  loadCachedCanvasData() {
+    try {
+      const cachedData = wx.getStorageSync('pixel_canvas_cache');
+      if (cachedData) {
+        const { canvasData, canvasWidth, canvasHeight, canvasColor, brushColor, borderStyle } = cachedData;
+
+        this.setData({
+          canvasData: canvasData || [],
+          canvasWidth: canvasWidth || 12,
+          canvasHeight: canvasHeight || 12,
+          canvasColor: canvasColor || '#FFFFFF',
+          brushColor: brushColor || '#202020',
+          borderStyle: borderStyle || '3',
+          previousCanvasColor: canvasColor || '#FFFFFF'
+        }, () => {
+          // 加载缓存后更新画布空状态
+          this.updateCanvasEmptyState();
+          wx.showToast({
+            title: '已加载上次的绘画数据',
+            icon: 'none',
+            duration: 1500
+          });
+        });
+
+        return true;
+      }
+    } catch (error) {
+      console.error('加载缓存数据失败:', error);
+    }
+
+    // 没有缓存数据，初始化画布
+    this.initCanvas();
+    this.setData({
+      previousCanvasColor: this.data.canvasColor
+    });
+    return false;
+  },
+
+  // 保存画布数据到本地缓存
+  saveCacheData() {
+    try {
+      const { canvasData, canvasWidth, canvasHeight, canvasColor, brushColor, borderStyle } = this.data;
+      const cacheData = {
+        canvasData,
+        canvasWidth,
+        canvasHeight,
+        canvasColor,
+        brushColor,
+        borderStyle,
+        timestamp: Date.now()
+      };
+
+      wx.setStorageSync('pixel_canvas_cache', cacheData);
+      this.setData({ hasUnsavedChanges: false });
+      return true;
+    } catch (error) {
+      console.error('保存缓存数据失败:', error);
+      return false;
+    }
+  },
+
+  // 清除缓存数据
+  clearCacheData() {
+    try {
+      wx.removeStorageSync('pixel_canvas_cache');
+      this.setData({ hasUnsavedChanges: false });
+      return true;
+    } catch (error) {
+      console.error('清除缓存数据失败:', error);
+      return false;
+    }
+  },
+
+  // 显示退出确认对话框
+  showExitConfirmDialog() {
+    this.setData({
+      showExitDialog: true
+    });
+  },
+
+  // 直接退出（不保存）
+  onDirectExit() {
+    this.clearCacheData();
+    this.setData({
+      showExitDialog: false,
+      hasUnsavedChanges: false
+    });
+    wx.navigateBack();
+  },
+
+  // 缓存后退出
+  onCacheAndExit() {
+    const success = this.saveCacheData();
+    if (success) {
+      wx.showToast({
+        title: '数据已缓存到本地',
+        icon: 'none',
+        duration: 1500
+      });
+      setTimeout(() => {
+        this.setData({
+          showExitDialog: false
+        });
+        wx.navigateBack();
+      }, 1000);
+    } else {
+      wx.showToast({
+        title: '缓存失败，请重试',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 取消退出
+  onCancelExit() {
+    this.setData({
+      showExitDialog: false
+    });
+  },
+
+  // 自定义返回处理
+  onCustomBack() {
+    const { hasUnsavedChanges, isCanvasEmpty } = this.data;
+
+    // 如果画布为空或没有未保存的更改，直接退出
+    if (isCanvasEmpty || !hasUnsavedChanges) {
+      wx.navigateBack();
+      return;
+    }
+
+    // 有未保存的更改，显示退出确认对话框
+    this.showExitConfirmDialog();
   },
 
   // 更新画布区域信息
@@ -95,27 +235,6 @@ Page({
         });
       }
     }).exec();
-  },
-  showMessage(msg) {
-    this.setData({
-      showAlert: true,
-      alertMessage: msg
-    });
-    
-    // 2秒后自动隐藏
-    setTimeout(() => {
-      this.setData({
-        showAlert: false,
-        alertMessage:''
-      });
-    }, 1000);
-  },
-
-  // 关闭权限提示弹窗
-  onPermissionDialogClose() {
-    this.setData({
-      showPermissionDialog: false
-    });
   },
 
   // 检测画布是否为空（没有绘制任何像素）
@@ -480,7 +599,10 @@ Page({
     const newCanvasData = [...canvasData];
     newCanvasData[y][x] = isEraser ? canvasColor : brushColor;
     
-    this.setData({ canvasData: newCanvasData }, () => {
+    this.setData({
+      canvasData: newCanvasData,
+      hasUnsavedChanges: true // 标记有未保存的更改
+    }, () => {
       // 绘制后更新画布空状态
       this.updateCanvasEmptyState();
     });
@@ -596,6 +718,11 @@ Page({
                     const { recordCreationCheckIn } = require('../../../utils/checkInUtils');
                     recordCreationCheckIn(1);
 
+                    // 保存成功后清除未保存更改标记
+                    that.setData({
+                      hasUnsavedChanges: false
+                    });
+
                     wx.showToast({
                       title: `保存成功🎉\n前往个人中心-图片查看`,
                       icon: 'none'
@@ -651,7 +778,8 @@ Page({
       this.updateCanvas();
       // 调整尺寸后，更新之前的画布颜色
       this.setData({
-        previousCanvasColor: this.data.canvasColor
+        previousCanvasColor: this.data.canvasColor,
+        hasUnsavedChanges: true // 标记有未保存的更改
       });
       // 更新画布区域信息
       setTimeout(() => {
@@ -772,7 +900,8 @@ Page({
   onGridShowChange(e){ 
     const {type} = e.currentTarget.dataset;
     this.setData({
-      borderStyle: type
+      borderStyle: type,
+      hasUnsavedChanges: true // 标记有未保存的更改
     })
   },
   onResetSize() {
@@ -789,7 +918,8 @@ Page({
       this.updateCanvas();
       // 重置尺寸后，更新之前的画布颜色
       this.setData({
-        previousCanvasColor: this.data.canvasColor
+        previousCanvasColor: this.data.canvasColor,
+        hasUnsavedChanges: true // 标记有未保存的更改
       });
       // 更新画布区域信息
       setTimeout(() => {
@@ -799,21 +929,34 @@ Page({
   },
 
   // 显示画笔颜色选择器
-  showBrushColorPicker() {
-    this.setData({
-      showColorPicker: true,
-      currentPickerColor: this.data.brushColor,
-      currentPickerType: 'brush'
-    });
+  showBrushColorPicker(e) {
+    const type = e.currentTarget.dataset.type || 'brush';
+    this.setColorPickerType(type);
   },
 
   // 显示画布颜色选择器
-  showCanvasColorPicker() {
+  showCanvasColorPicker(e) {
+    const type = e.currentTarget.dataset.type || 'canvas';
+    this.setColorPickerType(type);
+  },
+
+  // 设置颜色选择器类型（用于一直显示的颜色选择器）
+  setColorPickerType(type) {
     this.setData({
       showColorPicker: true,
-      currentPickerColor: this.data.canvasColor,
-      currentPickerType: 'canvas'
+      currentPickerType: type
     });
+    if (type === 'brush') {
+      this.setData({
+        currentPickerColor: this.data.brushColor,
+        currentPickerType: 'brush'
+      });
+    } else if (type === 'canvas') {
+      this.setData({
+        currentPickerColor: this.data.canvasColor,
+        currentPickerType: 'canvas'
+      });
+    }
   },
 
   // 关闭颜色选择器
@@ -847,7 +990,8 @@ Page({
       this.setData({
         canvasColor: color,
         previousCanvasColor: previousCanvasColor,
-        showColorPicker: false
+        showColorPicker: false,
+        hasUnsavedChanges: true // 标记有未保存的更改
       }, () => {
         // 更新画布背景色后，调用专门的方法来更新背景色
         // 这样可以保持用户已绘制的内容不变
@@ -890,7 +1034,8 @@ Page({
       // 清除画布后，更新之前的画布颜色
       this.setData({
         previousCanvasColor: this.data.canvasColor,
-        showClearCanvasDialog: false
+        showClearCanvasDialog: false,
+        hasUnsavedChanges: true // 标记有未保存的更改
       });
       // initCanvas 方法内部已经会调用 updateCanvasEmptyState
   },

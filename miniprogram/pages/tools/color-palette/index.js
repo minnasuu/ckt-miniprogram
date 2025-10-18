@@ -342,7 +342,111 @@ const ColorFill_Path_List_Data = [
 ]
 
 const ColorFIll_Color_Data = [
-  {
+    {
+        "type": "international-10-classic-colors",
+        "name": "国际10大经典色彩",
+        "colors": [
+            {
+                "name": "克莱茵蓝",
+                "value": "#002FA7"
+            },
+            {
+                "name": "爱马仕橙",
+                "value": "#D75F28"
+            },
+            {
+                "name": "中国红",
+                "value": "#D12C25"
+            },
+            {
+                "name": "提香红",
+                "value": "#FF6347"
+            },
+            {
+                "name": "申布伦黄",
+                "value": "#F7E14D"
+            },
+            {
+                "name": "普鲁士蓝",
+                "value": "#0D3869"
+            },
+            {
+                "name": "波尔多红",
+                "value": "#5E0004"
+            },
+            {
+                "name": "凡戴克棕",
+                "value": "#432913"
+            },
+            {
+                "name": "马尔斯绿",
+                "value": "#39855E"
+            },
+            {
+                "name": "蒂芙尼蓝",
+                "value": "#81D8CF"
+            },
+        ]
+    },
+    {
+        "type": "chinese-painting-colors",
+        "name": "中国国画色彩",
+        "colors": [
+            {
+                "name": "银朱",
+                "value": "#BF242A"
+            },
+            {
+                "name": "胭脂",
+                "value": "#9D2933"
+            },
+            {
+                "name": "朱砂",
+                "value": "#FF461F"
+            },
+            {
+                "name": "朱膘",
+                "value": "#F36838"
+            },
+            {
+                "name": "赭石",
+                "value": "#845A33"
+            },
+            {
+                "name": "石青",
+                "value": "#1685A9"
+            },
+            {
+                "name": "石绿",
+                "value": "#16A851"
+            },
+            {
+                "name": "白粉",
+                "value": "#FFF2DF"
+            },
+            {
+                "name": "花青",
+                "value": "#003472"
+            },
+            {
+                "name": "藤黄",
+                "value": "#FFB61E"
+            },
+            {
+                "name": "雌黄",
+                "value": "#FFC64B"
+            },
+            {
+                "name": "洋红",
+                "value": "#FF4777"
+            },
+            {
+                "name": "墨色",
+                "value": "#50616D"
+            },
+        ]
+    },
+    {
       "type": "gift-2mm",
       "name": "BigGift 2mm 空心棉",
       "colors": [
@@ -1552,9 +1656,7 @@ const ColorFIll_Color_Data = [
 ]
 Page({
   data: {
-    screenWidth: 375,
-    showAlert: false,
-    alertMessage: '',
+        screenWidth: 375,
     palettes: [
       {
         name: '明亮橙黄',
@@ -1634,27 +1736,6 @@ Page({
         return ColorFIll_Color_Data.filter(item => !item.private);
     },
 
-  showMessage(msg) {
-    this.setData({
-      showAlert: true,
-      alertMessage: msg
-    });
-    
-    // 2秒后自动隐藏
-    setTimeout(() => {
-      this.setData({
-        showAlert: false,
-        alertMessage:''
-      });
-    }, 1000);
-  },
-
-    // 关闭权限提示弹窗
-    onPermissionDialogClose() {
-        this.setData({
-            showPermissionDialog: false
-        });
-    },
   onTabChange(e){
     const {type} = e.detail;
     this.setData({
