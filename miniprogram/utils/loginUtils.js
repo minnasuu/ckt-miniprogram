@@ -549,7 +549,7 @@ class LoginUtils {
       title,
       content,
       confirmText,
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {

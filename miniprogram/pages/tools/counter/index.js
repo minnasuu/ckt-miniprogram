@@ -83,7 +83,7 @@ Page({
     wx.showModal({
       title: '确认重置',
       content: '确定要将计数器重置为0吗？',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       success: (res) => {
         if (res.confirm) {
           this.updateCount(0, '重置');
@@ -124,7 +124,7 @@ Page({
       title: '设置数值',
       editable: true,
       placeholderText: '请输入数值',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       success: (res) => {
         if (res.confirm && res.content) {
           const value = parseInt(res.content);
@@ -146,7 +146,7 @@ Page({
     wx.showModal({
       title: '确认清空',
       content: '确定要清空操作历史和统计数据吗？',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       success: (res) => {
         if (res.confirm) {
           this.setData({

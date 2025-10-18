@@ -1380,7 +1380,7 @@ Page({
               wx.showModal({
                 title: '提示',
                 content: '需要您授权保存图片到相册，请前往设置开启权限',
-                confirmColor: '#F35A75',
+                confirmColor: '#003472',
                 success: (modalRes) => {
                   if (modalRes.confirm) {
                     wx.openSetting();

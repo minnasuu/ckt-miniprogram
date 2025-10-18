@@ -930,22 +930,24 @@ Page({
 
   // 显示画笔颜色选择器
   showBrushColorPicker(e) {
+    this.setData({
+      showColorPicker: true,
+    });
     const type = e.currentTarget.dataset.type || 'brush';
     this.setColorPickerType(type);
   },
 
   // 显示画布颜色选择器
   showCanvasColorPicker(e) {
+    this.setData({
+      showColorPicker: true,
+    });
     const type = e.currentTarget.dataset.type || 'canvas';
     this.setColorPickerType(type);
   },
 
   // 设置颜色选择器类型（用于一直显示的颜色选择器）
   setColorPickerType(type) {
-    this.setData({
-      showColorPicker: true,
-      currentPickerType: type
-    });
     if (type === 'brush') {
       this.setData({
         currentPickerColor: this.data.brushColor,

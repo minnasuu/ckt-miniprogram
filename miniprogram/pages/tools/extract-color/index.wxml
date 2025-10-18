@@ -1,9 +1,9 @@
 <view class="extract-color-view">
   <custom-header title="提取图片主色" showBack></custom-header>
-  <view class="extract-color-content">
+  <scroll-view scroll-y class="extract-color-content">
   <!-- 上传框 -->
   <view class="extract-color-step-container">
-    <part-title title="Step 01：上传图片" subTitle="点击来上传图片，以像素为单位对颜色计数"></part-title>
+    <part-title title="Step 01：上传图片"></part-title>
     <view class="upload-section">
       <image-uploader imageUrl="{{imageUrl}}" height="240rpx" placeholderText="点击上传图片（500KB以内）" bind:imageSelected="onImageSelected" size="{{200*1024}}"></image-uploader>
     </view>
@@ -12,11 +12,11 @@
   <view class="extract-color-step-container">
     <!-- 取色配置 -->
     <part-title title="Step 02：取色配置"></part-title>
-    <view class="step-desc-list">
+    <!-- <view class="step-desc-list">
       <view>【过滤中性色】根据数值（0-35）过滤中性色（黑白灰）</view>
       <view>【提取数量】可一次提取6、8、10个颜色</view>
       <view>【编辑颜色】支持删除、添加、修改提取的颜色列表</view>
-    </view>
+    </view> -->
     <view class="filter-list {{imageUrl?'':'disabled'}}">
       <custom-checkbox text="过滤中性色" checked="{{filterChecked}}" bind:change="onCheckboxChange" ></custom-checkbox>
       <number-input value="{{filter}}" min="0" max="35" step="5" bind:change="onFilterNumberChange" />
@@ -56,7 +56,7 @@
     </view>
     <!-- 色卡 -->
     <view class="extract-color-step-container">
-      <part-title title="Step 03：下载、保存色卡" subTitle="调整颜色至满意值后，即可下载色卡到本地，也支持保存色卡至仓库。"></part-title>
+      <part-title title="Step 03：下载、保存色卡" ></part-title>
       <!-- 添加 canvas-id 属性并设置样式 -->
       <canvas canvas-id="colorCardCanvas" style="width: {{canvasWidth}}px; height: {{totalCanvasHeight}}px;"></canvas>
       <view wx:if="{{colorArr.length>0}}" class="color-result-button-container">
@@ -74,7 +74,7 @@
       </view>
     </view>
   </view>
-  </view>
+  </scroll-view>
   
   <!-- 权限不足提示弹窗 -->
   <dialog

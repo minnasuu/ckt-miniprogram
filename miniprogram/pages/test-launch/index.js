@@ -132,7 +132,7 @@ Page({
       title: '路由测试',
       content: `将跳转到: ${targetPage}`,
       confirmText: '确认跳转',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
@@ -212,7 +212,7 @@ Page({
     wx.showModal({
       title: '确认清空',
       content: '将清空所有用户数据和创作记录',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       success: (res) => {
         if (res.confirm) {
           wx.removeStorageSync('userInfo');

@@ -807,7 +807,7 @@ Page({
                   wx.showModal({
                     title: '提示',
                     content: '需要您授权保存图片到相册，请前往设置开启权限',
-                    confirmColor: '#F35A75',
+                    confirmColor: '#003472',
                     success: (modalRes) => {
                       if (modalRes.confirm) {
                         wx.openSetting();
@@ -1249,7 +1249,7 @@ Page({
       title: '保存数量已达上限',
       content: `${levelText}最多可保存 ${saveQuota.limit} 个文档，当前已保存 ${saveQuota.used} 个。\n\n${upgradeText}\n\n您可以删除一些历史文档后再保存新文档。`,
       confirmText: '查看历史',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       cancelText: '知道了',
       success: (res) => {
         if (res.confirm) {
@@ -1335,7 +1335,7 @@ Page({
       wx.showModal({
         title: '确认创建新文档',
         content: '当前文档有未保存的更改，创建新文档后将丢失这些更改。',
-        confirmColor: '#F35A75',
+        confirmColor: '#003472',
         success: (res) => {
           if (res.confirm) {
             this.createNewDocument();
@@ -1483,7 +1483,7 @@ Page({
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个历史文档吗？删除后无法恢复。',
-      confirmColor: '#F35A75',
+      confirmColor: '#003472',
       success: (res) => {
         if (res.confirm) {
           this.deleteDocument(documentId);
@@ -1675,7 +1675,7 @@ Page({
       wx.showModal({
         title: '确认退出',
         content: '当前文档有未保存的更改，退出后将丢失这些更改。',
-        confirmColor: '#F35A75',
+        confirmColor: '#003472',
         cancelText: '直接退出',
         confirmText: '保存退出',
         success: (res) => {
