@@ -604,7 +604,7 @@ Page({
     // 绘制背景问题（大字、半透明）
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
-    ctx.font = '100px sans-serif';
+    ctx.font = '100px Momozhuanji';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -621,7 +621,7 @@ Page({
     // 绘制答案文字（前景、清晰）
     ctx.save();
     ctx.fillStyle = '#202020';
-    ctx.font = 'bold 48px sans-serif';
+    ctx.font = 'bold 48px Momozhuanji';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
