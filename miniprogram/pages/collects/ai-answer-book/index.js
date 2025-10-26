@@ -540,32 +540,81 @@ Page({
       mask: true
     });
 
-    // 获取 Canvas 实例
-    const query = wx.createSelectorQuery();
-    query.select('#shareCanvas')
-      .fields({ node: true, size: true })
-      .exec((res) => {
-        if (!res || !res[0]) {
-          wx.hideLoading();
-          wx.showToast({
-            title: 'Canvas 初始化失败',
-            icon: 'none'
+    // 先加载字体，确保字体可用
+    this.loadFontForCanvas(() => {
+      // 获取 Canvas 实例
+      const query = wx.createSelectorQuery();
+      query.select('#shareCanvas')
+        .fields({ node: true, size: true })
+        .exec((res) => {
+          if (!res || !res[0]) {
+            wx.hideLoading();
+            wx.showToast({
+              title: 'Canvas 初始化失败',
+              icon: 'none'
+            });
+            return;
+          }
+
+          const canvas = res[0].node;
+          const ctx = canvas.getContext('2d');
+
+          // 设置 Canvas 尺寸
+          const dpr = wx.getSystemInfoSync().pixelRatio;
+          canvas.width = 800 * dpr;
+          canvas.height = 800 * dpr;
+          ctx.scale(dpr, dpr);
+
+          // 绘制图片
+          this.drawCanvas(canvas, ctx, action);
+        });
+    });
+  },
+
+  /**
+   * 为 Canvas 加载字体
+   */
+  loadFontForCanvas(callback) {
+    // 检查全局字体是否已加载
+    const app = getApp();
+    if (app.globalData.fontsLoaded) {
+      console.log('✅ 字体已在全局加载，直接使用');
+      callback && callback();
+      return;
+    }
+    
+    // 下载云文件到本地
+    wx.cloud.downloadFile({
+      fileID: 'cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf',
+      success: (res) => {
+        if (res.statusCode === 200) {
+          const tempFilePath = res.tempFilePath;
+          console.log('Canvas 字体文件下载成功:', tempFilePath);
+          
+          // 使用本地临时路径加载字体
+          wx.loadFontFace({
+            family: 'Momozhuanji',
+            source: `url("${tempFilePath}")`,
+            global: true,
+            success: (loadRes) => {
+              console.log('✅ Canvas 字体加载成功', loadRes);
+              callback && callback();
+            },
+            fail: (loadErr) => {
+              console.error('❌ Canvas 字体加载失败', loadErr);
+              callback && callback();
+            }
           });
-          return;
+        } else {
+          console.error('字体文件下载失败，状态码:', res.statusCode);
+          callback && callback();
         }
-
-        const canvas = res[0].node;
-        const ctx = canvas.getContext('2d');
-
-        // 设置 Canvas 尺寸
-        const dpr = wx.getSystemInfoSync().pixelRatio;
-        canvas.width = 800 * dpr;
-        canvas.height = 800 * dpr;
-        ctx.scale(dpr, dpr);
-
-        // 绘制图片
-        this.drawCanvas(canvas, ctx, action);
-      });
+      },
+      fail: (err) => {
+        console.error('❌ 下载云文件失败', err);
+        callback && callback();
+      }
+    });
   },
 
   /**
@@ -603,8 +652,8 @@ Page({
 
     // 绘制背景问题（大字、半透明）
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
-    ctx.font = '100px sans-serif';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.font = '100px Momozhuanji';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -620,8 +669,8 @@ Page({
 
     // 绘制答案文字（前景、清晰）
     ctx.save();
-    ctx.fillStyle = '#202020';
-    ctx.font = 'bold 48px sans-serif';
+    ctx.fillStyle = '#1a1a1a';
+    ctx.font = 'bold 42px Momozhuanji';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -652,11 +701,11 @@ Page({
     const timeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
     // 绘制时间
-    ctx.font = '14px sans-serif';
-    ctx.fillText(timeString, 760, 755);
+    ctx.font = '16px sans-serif';
+    ctx.fillText(timeString, 760, 745);
 
     // 绘制来源
-    ctx.font = '14px sans-serif';
+    ctx.font = '16px sans-serif';
     ctx.fillText('答案之书 Agent 生成', 760, 770);
     ctx.restore();
 

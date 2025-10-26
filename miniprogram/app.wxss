@@ -1,4 +1,13 @@
 /**app.wxss**/
+
+/* 全局加载自定义字体 Momozhuanji */
+@font-face {
+  font-family: 'Momozhuanji';
+  src: url('cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
 page{
   overflow: hidden;
   --ckt-red-1: #FFECE8;

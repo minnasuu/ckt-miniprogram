@@ -16,9 +16,8 @@
         <view class="card-inner" id="card">
           <!-- 输入框 -->
           <view wx:if="{{!showAnswer && !isThinking}}" class="input-container">
-            <textarea 
+            <input 
               class="question-input" 
-              auto-height="true"
               value="{{question}}"
               bindinput="handleInput"
               bindconfirm="handleConfirm"
@@ -26,7 +25,7 @@
               disabled="{{isThinking}}"
               focus="{{true}}"
               maxlength="25"
-            ></textarea>
+            />
             <view wx:if="{{question && question.length > 0 && isExceeded}}" class="char-count error">
               超出 {{Math.abs(remainingChars)}} 字
             </view>
