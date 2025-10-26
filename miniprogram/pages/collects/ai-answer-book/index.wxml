@@ -40,7 +40,7 @@
                 <view class="dot dot-2"></view>
                 <view class="dot dot-3"></view>
               </view>
-              <text class="thinking-text">命运之书正在翻阅...</text>
+              <text class="thinking-text">答案之书正在翻阅...</text>
             </view>
 
             <!-- 背景问题 - 弱化显示 -->

@@ -373,48 +373,34 @@ Page({
       // 创建 AI 模型实例
       const model = wx.cloud.extend.AI.createModel('deepseek');
       
-      // 调用 AI 生成文本
+      // 调用 AI 生成文本（优化版：使用 Few-shot 示例，大幅减少 token）
       const res = await model.generateText({
-        model: 'deepseek-v3', // 使用 DeepSeek V3 模型
+        model: 'deepseek-v3',
         messages: [
           {
             role: 'system',
-            content: `你是一个智慧的答案之书AI助手。用户会提出一个问题，你需要针对这个问题生成16条不同类型且均不重复的回答。
-
-要求：
-1. 所有回答必须与用户的问题相关
-2. 每条回答控制在15-30字以内
-3. 回答要简短、富有哲理、充满智慧
-4. 必须严格按照以下JSON格式返回，不要有任何其他文字
-
-{
-  "affirmative": ["肯定回答1", "肯定回答2", "肯定回答3", "肯定回答4", "肯定回答5"],
-  "negative": ["否定回答1", "否定回答2", "否定回答3", "否定回答4", "否定回答5"],
-  "mysterious": ["神秘回答1", "神秘回答2"],
-  "neutral": ["中立回答1", "中立回答2"],
-  "advice": ["建议回答1", "建议回答2"]
-}
-
-分类说明：
-- affirmative（肯定类，5条）：给予肯定、支持、积极的答案
-- negative（否定类，5条）：给予否定、警示、消极的答案
-- mysterious（神秘类，2条）：模糊、神秘、引人思考的答案
-- neutral（中立类，2条）：客观、中立、不偏不倚的答案
-- advice（建议类，2条）：给出建议、指导、行动的答案`
+            content: `答案之书AI，返回JSON`
+          },
+          {
+            role: 'user',
+            content: '我应该换工作吗？'
+          },
+          {
+            role: 'assistant',
+            content: `{"affirmative":["是的，新机会在等你","勇敢迈出这一步","改变会带来成长","时机已到","相信你的选择"],"negative":["现在不是时候","再等等看","风险太大","保持现状更好","你还没准备好"],"mysterious":["答案在你心中","命运自有安排"],"neutral":["权衡利弊再决定","听从内心声音"],"advice":["先做好准备","咨询他人意见"]}`
           },
           {
             role: 'user',
             content: question
           }
         ],
-        // 可选参数
-        temperature: 0.8, // 控制随机性，0-1 之间
+        temperature: 0.8,
       });
 
       console.log('AI 调用成功:', res);
 
       // 解析 AI 返回的答案
-      let answer = '命运之书暂时无法给出答案';
+      let answer = '答案之书暂时无法给出答案';
       
       // 获取AI返回的内容
       let aiContent = '';
