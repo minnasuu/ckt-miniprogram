@@ -3,7 +3,8 @@
 /* 全局加载自定义字体 Momozhuanji */
 @font-face {
   font-family: 'Momozhuanji';
-  src: url('cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf');
+  src: url('cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/MFBoHeHaiYan.otf');
+  /* src: url('cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf'); */
 }
 
 page{

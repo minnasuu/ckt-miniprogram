@@ -258,7 +258,8 @@ Page({
   onLoad() {
     // 先获取云存储文件的临时链接
     wx.cloud.getTempFileURL({
-      fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf'],
+      fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/MFBoHeHaiYan.otf'],
+      // fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf'],
       success: res => {
         if (res.fileList && res.fileList.length > 0) {
           const tempFileURL = res.fileList[0].tempFileURL;
@@ -282,7 +283,7 @@ Page({
         // 降级方案：使用公网链接
         wx.loadFontFace({
           family: 'Momozhuanji',
-          source: 'url("https://suminhan.cn/Momozhuanji.ttf")',
+          source: 'url("https://suminhan.cn/MFBoHeHaiYan.otf")',
           success: () => {
             console.log('字体加载成功（降级方案）');
           },
@@ -640,7 +641,7 @@ Page({
     // 绘制背景问题（大字、半透明）
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
-    ctx.font = '100px Momozhuanji';
+    ctx.font = '120px Momozhuanji';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -657,7 +658,7 @@ Page({
     // 绘制答案文字（前景、清晰）
     ctx.save();
     ctx.fillStyle = '#202020';
-    ctx.font = 'bold 48px Momozhuanji';
+    ctx.font = '60px Momozhuanji';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
