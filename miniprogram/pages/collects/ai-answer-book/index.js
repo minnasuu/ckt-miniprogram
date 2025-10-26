@@ -260,6 +260,7 @@ Page({
     wx.cloud.getTempFileURL({
       fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/MFBoHeHaiYan.otf'],
       // fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf'],
+      // fileList: ['https://suminhan.cn/MFBoHeHaiYan.otf'],
       success: res => {
         if (res.fileList && res.fileList.length > 0) {
           const tempFileURL = res.fileList[0].tempFileURL;
@@ -378,7 +379,7 @@ Page({
         messages: [
           {
             role: 'system',
-            content: `你是一个智慧的答案之书AI助手。用户会提出一个问题，你需要针对这个问题生成16条不同类型的回答。
+            content: `你是一个智慧的答案之书AI助手。用户会提出一个问题，你需要针对这个问题生成16条不同类型且均不重复的回答。
 
 要求：
 1. 所有回答必须与用户的问题相关
@@ -399,7 +400,7 @@ Page({
 - negative（否定类，5条）：给予否定、警示、消极的答案
 - mysterious（神秘类，2条）：模糊、神秘、引人思考的答案
 - neutral（中立类，2条）：客观、中立、不偏不倚的答案
-- advice（建议类，2条）：给出建议、指导的答案`
+- advice（建议类，2条）：给出建议、指导、行动的答案`
           },
           {
             role: 'user',
