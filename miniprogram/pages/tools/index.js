@@ -141,5 +141,31 @@ Page({
         url: aiTool.path
       });
     }
+  },
+
+  /**
+   * 用户点击右上角分享给朋友
+   */
+  onShareAppMessage(res) {
+    console.log('分享来源:', res.from);
+    
+    return {
+      title: 'minna的工具集合站',
+      path: '/pages/tools/index',
+      // imageUrl: '/images/tools-share-cover.png', // 可以设置自定义分享封面图
+    };
+  },
+
+  /**
+   * 用户点击右上角分享到朋友圈
+   */
+  onShareTimeline() {
+    console.log('分享到朋友圈');
+    
+    return {
+      title: 'minna的工具集合站',
+      query: '',
+      // imageUrl: '/images/tools-share-cover.png',
+    };
   }
 });
