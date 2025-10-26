@@ -256,6 +256,42 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
+    // 先获取云存储文件的临时链接
+    wx.cloud.getTempFileURL({
+      fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf'],
+      success: res => {
+        if (res.fileList && res.fileList.length > 0) {
+          const tempFileURL = res.fileList[0].tempFileURL;
+          console.log('获取临时链接成功:', tempFileURL);
+          
+          // 使用临时链接加载字体
+          wx.loadFontFace({
+            family: 'Momozhuanji',
+            source: `url("${tempFileURL}")`,
+            success: () => {
+              console.log('字体加载成功');
+            },
+            fail: (err) => {
+              console.error('字体加载失败:', err);
+            }
+          });
+        }
+      },
+      fail: err => {
+        console.error('获取临时链接失败:', err);
+        // 降级方案：使用公网链接
+        wx.loadFontFace({
+          family: 'Momozhuanji',
+          source: 'url("https://suminhan.cn/Momozhuanji.ttf")',
+          success: () => {
+            console.log('字体加载成功（降级方案）');
+          },
+          fail: (err) => {
+            console.error('字体加载失败:', err);
+          }
+        });
+      }
+    });
   },
 
   /**
