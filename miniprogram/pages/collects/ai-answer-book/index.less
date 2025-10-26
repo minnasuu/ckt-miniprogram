@@ -1,0 +1,313 @@
+/* pages/collects/ai-answer-book/index.wxss */
+
+.answer-view {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+.answer-content {
+  flex: 1;
+  height: 1%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  padding-inline: 20px;
+  padding-bottom: calc(env(safe-area-inset-bottom,12px) + 60px);
+  box-sizing: border-box;
+}
+
+/* 头部 */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.book-icon {
+  display: block;
+  font-size: 60px;
+  line-height: 1;
+  margin-bottom: 16px;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  color: #333;
+}
+
+.ai-toggle {
+  position: relative;
+  font-size: 32px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.ai-toggle.inactive {
+  color: #ccc;
+}
+
+.ai-toggle.active {
+  color: #333;
+  font-weight: 600;
+}
+
+.subtitle {
+  display: block;
+  font-size: 16px;
+  color: #666;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+
+/* 卡片 */
+.card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.card-inner {
+  position: relative;
+  min-height: 240px;
+}
+
+/* 输入框 */
+.input-container {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.question-input {
+  width: 100%;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+}
+
+.char-count {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #999;
+  transition: color 0.3s;
+}
+
+.char-count.error {
+  color: #ff4444;
+}
+
+/* 内容区域 */
+.content-area {
+  position: relative;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 思考中 */
+.thinking-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 1;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #333;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.dot-1 {
+  animation-delay: 0ms;
+}
+
+.dot-2 {
+  animation-delay: 150ms;
+}
+
+.dot-3 {
+  animation-delay: 300ms;
+}
+
+.thinking-text {
+  font-size: 14px;
+  color: #666;
+  animation: pulse 1.5s infinite;
+}
+
+/* 背景问题 */
+.question-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.question-bg-text {
+  font-size: 60px;
+  color: rgba(200, 200, 200, 0.3);
+  font-family: 'Momozhuanji';
+  text-align: center;
+  user-select: none;
+  animation: fadeIn 0.6s ease-in;
+  letter-spacing: 2px;
+  font-weight: 400;
+}
+
+/* 答案 */
+.answer-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+}
+
+.answer-text {
+  font-size: 32px;
+  line-height: 1.5;
+  color: #111;
+  font-family: 'Momozhuanji';
+  text-align: center;
+  letter-spacing: 1px;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 24px;
+  background-color: #333;
+  margin-left: 4px;
+  animation: blink 1s infinite;
+}
+
+/* 按钮组 */
+.button-group {
+  position: absolute;
+  top: 700px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+  margin-top: 16px;
+}
+
+.icon-button {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.icon-button:active {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 1);
+}
+
+.reset-icon,
+.camera-icon{
+  width: 18px;
+  height: 18px;
+  background-color: var(--ckt-gray-12);
+}
+.reset-icon{
+  clip-path: path('M7.14171 2.23236C7.3013 2.06865 7.54413 2.01752 7.75597 2.10345C7.96797 2.18964 8.10656 2.39609 8.10656 2.62494V5.89544C10.3976 6.03686 12.3763 6.94212 14.0167 8.60443C15.7803 10.3916 16.7922 12.6187 17.0597 15.2568C17.0847 15.5036 16.9451 15.7377 16.7159 15.8329C16.4868 15.9281 16.2218 15.8618 16.0646 15.6699C14.2431 13.4465 12.7191 12.3105 11.4952 12.0507C10.3072 11.7986 9.17845 11.7345 8.10656 11.8535V15.3749C8.10656 15.6065 7.96482 15.814 7.74913 15.8984C7.53346 15.9827 7.28808 15.9269 7.13097 15.7568L1.08702 9.21087C0.884105 8.99112 0.888071 8.65071 1.09679 8.43646L7.14171 2.23236ZM2.27452 8.83978L6.98156 13.9355V11.3632C6.98172 11.0879 7.18155 10.8532 7.45324 10.8085C8.81723 10.5852 10.2442 10.6352 11.7286 10.9501C12.9463 11.2085 14.2261 12.0639 15.5694 13.4267C15.1243 11.876 14.3407 10.5353 13.2159 9.39544C11.6538 7.81241 9.77235 7.01762 7.54015 6.99994C7.23123 6.99749 6.98156 6.74636 6.98156 6.43744V4.00873L2.27452 8.83978Z');
+}
+.camera-icon{
+  clip-path: path('M11.25 1.6875C11.4629 1.6875 11.6576 1.80771 11.7529 1.99805L12.7227 3.9375H15.375C16.307 3.9375 17.0625 4.69302 17.0625 5.625V14.625C17.0625 15.557 16.307 16.3125 15.375 16.3125H2.625C1.69302 16.3125 0.9375 15.557 0.9375 14.625V5.625C0.9375 4.69302 1.69302 3.9375 2.625 3.9375H5.27734L6.24707 1.99805L6.28711 1.93066C6.39112 1.77984 6.56349 1.6875 6.75 1.6875H11.25ZM2.625 5.0625C2.31434 5.0625 2.0625 5.31434 2.0625 5.625V14.625C2.0625 14.9357 2.31434 15.1875 2.625 15.1875H15.375C15.6857 15.1875 15.9375 14.9357 15.9375 14.625V5.625C15.9375 5.31434 15.6857 5.0625 15.375 5.0625H2.625ZM9 6.5625C10.9675 6.5625 12.5625 8.15748 12.5625 10.125C12.5625 12.0925 10.9675 13.6875 9 13.6875C7.03248 13.6875 5.4375 12.0925 5.4375 10.125C5.4375 8.15748 7.03248 6.5625 9 6.5625ZM9 7.6875C7.6538 7.6875 6.5625 8.7788 6.5625 10.125C6.5625 11.4712 7.6538 12.5625 9 12.5625C10.3462 12.5625 11.4375 11.4712 11.4375 10.125C11.4375 8.7788 10.3462 7.6875 9 7.6875ZM6.53516 3.9375H11.4648L10.9023 2.8125H7.09766L6.53516 3.9375Z');
+}
+
+/* 底部 */
+.footer {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: #999;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

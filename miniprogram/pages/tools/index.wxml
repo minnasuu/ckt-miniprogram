@@ -1,27 +1,7 @@
 <!-- tools.wxml -->
 <view class="tools-view">
   <!-- 页面内容 -->
-  <view class="tools-content" style="padding-top: {{statusBarHeight + 44}}px;">
-    <view wx:if="{{showAiTools}}" class="tools-top-container">
-      <swiper 
-        autoplay="{{true}}" 
-        interval="3000" 
-        duration="500" 
-        circular="{{true}}" 
-        indicator-dots="{{true}}" 
-        indicator-color="var(--ckt-theme-2)" 
-        indicator-active-color="var(--ckt-theme-6)"
-        class="ai-tools-swiper"
-      >
-        <swiper-item wx:for="{{aiTools}}" wx:key="id" bindtap="onAiToolTap" data-id="{{item.id}}">
-          <view class="ai-tool-item" style="background-color: {{item.color}}">
-            <view class="ai-tool-title">{{item.title}}</view>
-            <view class="ai-tool-description">{{item.description}}</view>
-          </view>
-        </swiper-item>
-      </swiper>
-    </view>
-    
+  <view class="tools-content" style="padding-top: {{statusBarHeight + 44}}px;"> 
     <!-- 按分类显示工具 -->
     <view class="tools-categories">
       <view class="category-section" wx:for="{{tools}}" wx:key="id">
@@ -45,4 +25,5 @@
     </view>
   </view>
   <view class="mask"></view>
+  <custom-tabbar></custom-tabbar>
 </view>

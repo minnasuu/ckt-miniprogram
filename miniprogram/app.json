@@ -8,8 +8,8 @@
     "pages/tools/pattern-note/index",
     "pages/tools/color-change/index",
     "pages/tools/counter/index",
-    "pages/test-login/index",
-    "pages/launch/index"
+    "pages/collects/index",
+    "pages/collects/ai-answer-book/index"
   ],
   "window": {
     "backgroundColor": "#FFF",
@@ -30,8 +30,8 @@
         "text": "工具"
       },
       {
-        "pagePath": "pages/launch/index",
-        "text": "我的"
+        "pagePath": "pages/collects/index",
+        "text": "玩"
       }
     ]
   },

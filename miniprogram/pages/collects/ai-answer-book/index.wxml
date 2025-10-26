@@ -1,0 +1,80 @@
+<!--pages/collects/ai-answer-book/index.wxml-->
+<view class="answer-view">
+  <custom-header showBack background="transparent"></custom-header>
+  <view class="answer-content">
+      <view class="header">
+        <text class="book-icon">📖</text>
+        <view class="title-container">
+          <text class="title">答案之书（</text>
+          <view class="ai-toggle {{isAIMode ? 'active' : 'inactive'}}" bindtap="toggleAIMode">AI 版</view>
+          <text class="title">）</text>
+        </view>
+        <text class="subtitle">{{isAIMode ? 'The AI-Powered Book of Answers.' : 'The Book of Answers.'}}</text>
+      </view>
+
+      <view class="card">
+        <view class="card-inner" id="card">
+          <!-- 输入框 -->
+          <view wx:if="{{!showAnswer && !isThinking}}" class="input-container">
+            <input 
+              class="question-input" 
+              value="{{question}}"
+              bindinput="handleInput"
+              bindconfirm="handleConfirm"
+              placeholder="输入你的问题，回车获取答案（限30字）"
+              disabled="{{isThinking}}"
+              focus="{{true}}"
+              maxlength="30"
+            />
+            <view wx:if="{{question && question.length > 0 && isExceeded}}" class="char-count error">
+              超出 {{Math.abs(remainingChars)}} 字
+            </view>
+          </view>
+
+          <!-- 主内容区 -->
+          <view class="content-area">
+            <!-- 思考中状态 -->
+            <view wx:if="{{isThinking}}" class="thinking-container">
+              <view class="dots">
+                <view class="dot dot-1"></view>
+                <view class="dot dot-2"></view>
+                <view class="dot dot-3"></view>
+              </view>
+              <text class="thinking-text">命运之书正在翻阅...</text>
+            </view>
+
+            <!-- 背景问题 - 弱化显示 -->
+            <view wx:if="{{question}}" class="question-bg">
+              <text class="question-bg-text">{{question}}</text>
+            </view>
+
+            <!-- 答案显示 -->
+            <view wx:if="{{showAnswer && answer}}" class="answer-container">
+              <text class="answer-text">{{displayedText}}</text>
+              <text wx:if="{{displayedText && answer && displayedText.length < answer.length}}" class="cursor"></text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="footer">
+        <text class="footer-text">✨ 让直觉指引你的方向 ✨</text>
+      </view>
+       <!-- 操作按钮 -->
+       <view wx:if="{{showAnswer && showButton}}" class="button-group">
+              <view class="icon-button" bindtap="onReset">
+                <view class="reset-icon"></view>
+              </view>
+              <view class="icon-button" bindtap="onPhoto">
+                <view class="camera-icon"></view>
+              </view>
+            </view>
+  </view>
+  
+  <!-- Painter 组件 -->
+  <painter 
+    palette="{{painterPalette}}" 
+    bind:imgOK="onPainterSuccess" 
+    bind:imgErr="onPainterFail"
+  />
+</view>

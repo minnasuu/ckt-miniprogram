@@ -2,7 +2,6 @@
 Page({
   data: {
     statusBarHeight: 0,
-    showAiTools: false, // 控制AI工具显示/隐藏的开关
     tools: [
       {
         id: 'pattern',
@@ -108,6 +107,14 @@ Page({
     this.setData({
       statusBarHeight: systemInfo.statusBarHeight
     });
+  },
+
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 0
+      });
+    }
   },
 
   // 卡片点击事件

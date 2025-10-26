@@ -10,12 +10,12 @@ Component({
       {
         id: "tools",
         pagePath: "pages/tools/index",
-        text: "工具"
+        text: "织作时光"
       },
       {
-        id: "user-center",
-        pagePath: "pages/user-center/index",
-        text: "我的"
+        id: "collects",
+        pagePath: "pages/collects/index",
+        text: "玩✨"
       }
     ]
   },

@@ -95,14 +95,12 @@ page{
   --ckt-gray-14: #181818;
 }
 
-/* 定义全局字体 */
-@font-face {
-  font-family: 'AiDianFengYaHei'; /* 自定义字体名称 */
-  src: url('https://suminhan.cn/AiDianFengYaHei.ttf'); /* 替换为实际的字体文件路径 */
+@font-face{
+  font-family: 'Momozhuanji'; 
+  src: url('https://suminhan.cn/Momozhuanji.ttf'); 
   font-weight: normal;
   font-style: normal;
-}
-
+} 
 
 button {
   background: initial;

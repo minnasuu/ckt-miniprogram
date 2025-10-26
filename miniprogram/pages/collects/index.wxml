@@ -1,0 +1,29 @@
+<!--pages/collects/index.wxml-->
+<view class="collects-view">
+  <!-- 页面内容 -->
+  <view class="collects-content" style="padding-top: {{statusBarHeight + 44}}px;">
+   <!-- 按分类显示工具 -->
+   <view class="collects-categories">
+      <view class="category-section" wx:for="{{collects}}" wx:key="id">
+        <!-- 分类标题 -->
+        <view class="category-title">
+          <text class="category-name">{{item.type}}</text>
+        </view>
+        
+        <!-- 分类下的工具网格 -->
+        <view class="collects-grid">
+          <view class="collect-card" wx:for="{{item.data}}" wx:key="id" wx:for-item="collect" bindtap="onToolTap" data-id="{{collect.id}}" data-path="{{collect.path}}">
+            <view class="new-tag" wx:if="{{collect.new}}">NEW</view>
+            <view class="collect-icon">{{collect.icon}}</view>
+            <view class="collect-card-text">
+              <view class="collect-title">{{collect.title}}</view>
+              <view class="collect-description">{{collect.description}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="mask"></view>
+  <custom-tabbar selected="{{1}}"></custom-tabbar>
+</view>

@@ -11,7 +11,7 @@ App({
         //   env 参数决定接下来小程序发起的云开发调用（wx.cloud.xxx）会默认请求到哪个云环境的资源
         //   此处请填入环境 ID, 环境 ID 可打开云控制台查看
         //   如不填则使用默认环境（第一个创建的环境）
-        env: "",
+        env: "cloud1-8gzjqovx9c2ec2e9", // 云开发环境 ID
         traceUser: true,
       });
     }
@@ -19,8 +19,10 @@ App({
     // 清除所有旧版本登录数据，强制所有用户重新登录
     LoginUtils.clearAllOldLoginData();
 
+    // 初始化全局数据
     this.globalData = {
-      userInfo: null
+      userInfo: null,
+      fontsLoaded: false // 字体加载状态
     };
-  },
+  }
 });
