@@ -35,11 +35,6 @@
           <view class="content-area">
             <!-- 思考中状态 -->
             <view wx:if="{{isThinking}}" class="thinking-container">
-              <view class="dots">
-                <view class="dot dot-1"></view>
-                <view class="dot dot-2"></view>
-                <view class="dot dot-3"></view>
-              </view>
               <text class="thinking-text">答案之书正在翻阅...</text>
             </view>
 
