@@ -16,6 +16,7 @@ Page({
     typingTimer: null,
     isAIMode: false, // 默认为普通版（置灰）
     shareTime: '', // 分享图片时间戳
+    shareImagePath: '', // 分享图片路径
     normalAnswers: [
       "是的，毫无疑问。",
       "现在不是时候。",
@@ -508,9 +509,24 @@ Page({
   },
 
   /**
-   * 使用 Canvas 生成图片
+   * 使用 Canvas 生成图片（保存到相册）
    */
   onPhoto() {
+    this.generateImage('save');
+  },
+
+  /**
+   * 分享图片给微信好友
+   */
+  onShare() {
+    this.generateImage('share');
+  },
+
+  /**
+   * 生成图片（统一方法）
+   * @param {string} action - 'save' 保存到相册 | 'share' 分享给好友
+   */
+  generateImage(action = 'save') {
     if (!this.data.answer || !this.data.question) {
       wx.showToast({
         title: '请先获取答案',
@@ -520,7 +536,7 @@ Page({
     }
 
     wx.showLoading({
-      title: '生成图片中...',
+      title: action === 'save' ? '生成图片中...' : '准备分享...',
       mask: true
     });
 
@@ -548,14 +564,17 @@ Page({
         ctx.scale(dpr, dpr);
 
         // 绘制图片
-        this.drawCanvas(canvas, ctx);
+        this.drawCanvas(canvas, ctx, action);
       });
   },
 
   /**
    * Canvas 绘制方法
+   * @param {Object} canvas - Canvas 实例
+   * @param {Object} ctx - Canvas 上下文
+   * @param {string} action - 'save' 保存到相册 | 'share' 分享给好友
    */
-  drawCanvas(canvas, ctx) {
+  drawCanvas(canvas, ctx, action = 'save') {
     // 随机渐变背景色组合
     const gradientColors = [
       ['#f5f7fa', '#c3cfe2'], // 浅蓝灰
@@ -584,7 +603,7 @@ Page({
 
     // 绘制背景问题（大字、半透明）
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
     ctx.font = '100px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -601,8 +620,8 @@ Page({
 
     // 绘制答案文字（前景、清晰）
     ctx.save();
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = 'bold 42px sans-serif';
+    ctx.fillStyle = '#202020';
+    ctx.font = 'bold 48px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -618,7 +637,7 @@ Page({
 
     // 绘制右下角水印
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
 
@@ -633,50 +652,27 @@ Page({
     const timeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
     // 绘制时间
-    ctx.font = '12px sans-serif';
+    ctx.font = '14px sans-serif';
     ctx.fillText(timeString, 760, 755);
 
     // 绘制来源
-    ctx.font = '12px sans-serif';
-    ctx.fillText('答案之书生成', 760, 770);
+    ctx.font = '14px sans-serif';
+    ctx.fillText('答案之书 Agent 生成', 760, 770);
     ctx.restore();
 
     // 导出图片
     wx.canvasToTempFilePath({
       canvas: canvas,
       success: (res) => {
-        wx.hideLoading();
+        const tempFilePath = res.tempFilePath;
         
-        // 保存到相册
-        wx.saveImageToPhotosAlbum({
-          filePath: res.tempFilePath,
-          success: () => {
-            wx.showToast({
-              title: '已保存到相册',
-              icon: 'success',
-              duration: 2000
-            });
-          },
-          fail: (err) => {
-            console.error('保存失败:', err);
-            if (err.errMsg.includes('auth deny')) {
-              wx.showModal({
-                title: '提示',
-                content: '需要授权保存图片到相册',
-                success: (modalRes) => {
-                  if (modalRes.confirm) {
-                    wx.openSetting();
-                  }
-                }
-              });
-            } else {
-              wx.showToast({
-                title: '保存失败',
-                icon: 'none'
-              });
-            }
-          }
-        });
+        if (action === 'save') {
+          // 保存到相册
+          this.saveImageToAlbum(tempFilePath);
+        } else if (action === 'share') {
+          // 分享给好友
+          this.shareImageToFriend(tempFilePath);
+        }
       },
       fail: (err) => {
         wx.hideLoading();
@@ -684,6 +680,81 @@ Page({
         wx.showToast({
           title: '生成图片失败',
           icon: 'none'
+        });
+      }
+    });
+  },
+
+  /**
+   * 保存图片到相册
+   */
+  saveImageToAlbum(filePath) {
+    wx.hideLoading();
+    
+    wx.saveImageToPhotosAlbum({
+      filePath: filePath,
+      success: () => {
+        wx.showToast({
+          title: '已保存到相册',
+          icon: 'none',
+          duration: 2000
+        });
+      },
+      fail: (err) => {
+        console.error('保存失败:', err);
+        if (err.errMsg.includes('auth deny')) {
+          wx.showModal({
+            title: '提示',
+            content: '需要授权保存图片到相册',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                wx.openSetting();
+              }
+            }
+          });
+        } else {
+          wx.showToast({
+            title: '保存失败',
+            icon: 'none'
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 分享图片给微信好友
+   * 使用 wx.showShareImageMenu 显示分享菜单
+   */
+  shareImageToFriend(filePath) {
+    wx.hideLoading();
+    
+    // 保存图片路径到 data
+    this.setData({
+      shareImagePath: filePath
+    });
+
+    // 使用 wx.showShareImageMenu 显示分享菜单
+    wx.showShareImageMenu({
+      path: filePath,
+      success: (res) => {
+        console.log('分享菜单显示成功', res);
+        // 用户可以选择：发送给朋友、保存图片、收藏等
+      },
+      fail: (err) => {
+        console.error('显示分享菜单失败:', err);
+        
+        // 如果 API 不支持，提供备选方案
+        wx.showModal({
+          title: '分享提示',
+          content: '当前微信版本不支持此功能，是否保存图片到相册后手动分享？',
+          confirmText: '保存图片',
+          cancelText: '取消',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              this.saveImageToAlbum(filePath);
+            }
+          }
         });
       }
     });

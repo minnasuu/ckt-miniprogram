@@ -68,6 +68,9 @@
               <view class="icon-button" bindtap="onPhoto">
                 <view class="camera-icon"></view>
               </view>
+              <view class="icon-button" bindtap="onShare">
+                <view class="share-icon"></view>
+              </view>
             </view>
   </view>
   
