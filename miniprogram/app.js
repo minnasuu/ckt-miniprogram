@@ -24,48 +24,5 @@ App({
       userInfo: null,
       fontsLoaded: false // 字体加载状态
     };
-
-    // 加载自定义字体
-    this.loadCustomFont();
-  },
-
-  /**
-   * 加载自定义字体 Momozhuanji
-   */
-  loadCustomFont() {
-    const that = this;
-    
-    // 先下载云文件到本地临时路径
-    wx.cloud.downloadFile({
-      fileID: 'cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/Momozhuanji.ttf',
-      success: (res) => {
-        if (res.statusCode === 200) {
-          const tempFilePath = res.tempFilePath;
-          console.log('字体文件下载成功，本地路径:', tempFilePath);
-          
-          // 使用本地临时路径加载字体
-          wx.loadFontFace({
-            family: 'Momozhuanji',
-            source: `url("${tempFilePath}")`,
-            global: true,
-            success: (loadRes) => {
-              console.log('✅ 全局字体 Momozhuanji 加载成功', loadRes);
-              that.globalData.fontsLoaded = true;
-            },
-            fail: (loadErr) => {
-              console.error('❌ 全局字体 Momozhuanji 加载失败', loadErr);
-              that.globalData.fontsLoaded = false;
-            }
-          });
-        } else {
-          console.error('字体文件下载失败，状态码:', res.statusCode);
-          that.globalData.fontsLoaded = false;
-        }
-      },
-      fail: (err) => {
-        console.error('❌ 下载云文件失败', err);
-        that.globalData.fontsLoaded = false;
-      }
-    });
   }
 });
