@@ -16,16 +16,17 @@
         <view class="card-inner" id="card">
           <!-- 输入框 -->
           <view wx:if="{{!showAnswer && !isThinking}}" class="input-container">
-            <input 
+            <textarea 
               class="question-input" 
+              auto-height="true"
               value="{{question}}"
               bindinput="handleInput"
               bindconfirm="handleConfirm"
-              placeholder="输入你的问题，回车获取答案（限30字）"
+              placeholder="输入你的问题，回车获取答案（限25字）"
               disabled="{{isThinking}}"
               focus="{{true}}"
-              maxlength="30"
-            />
+              maxlength="25"
+            ></textarea>
             <view wx:if="{{question && question.length > 0 && isExceeded}}" class="char-count error">
               超出 {{Math.abs(remainingChars)}} 字
             </view>

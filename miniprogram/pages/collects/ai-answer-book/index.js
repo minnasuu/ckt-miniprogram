@@ -12,7 +12,7 @@ Page({
     isThinking: false,
     showButton: false,
     isExceeded: false,
-    remainingChars: 30,
+    remainingChars: 25,
     typingTimer: null,
     isAIMode: false, // 默认为普通版（置灰）
     shareTime: '', // 分享图片时间戳

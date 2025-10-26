@@ -74,6 +74,7 @@
 
 /* 卡片 */
 .card {
+    position: relative;
   width: 100%;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(20px);
@@ -84,14 +85,13 @@
 }
 
 .card-inner {
-  position: relative;
   min-height: 240px;
 }
 
 /* 输入框 */
 .input-container {
   position: absolute;
-  width: 100%;
+  width: calc(100% - 40px);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -100,8 +100,8 @@
 
 .question-input {
   width: 100%;
-  height: 36px;
-  line-height: 36px;
+  min-height: 36px;
+  line-height: 24px;
   text-align: center;
   background: transparent;
   border: none;
@@ -174,8 +174,6 @@
 
 /* 背景问题 */
 .question-bg {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +181,8 @@
 }
 
 .question-bg-text {
-  font-size: 60px;
+  font-size: 48px;
+  line-height: 60px;
   color: rgba(200, 200, 200, 0.3);
   font-family: 'Momozhuanji';
   text-align: center;
