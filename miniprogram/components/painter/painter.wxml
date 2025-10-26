@@ -1,7 +1,0 @@
-<view class="painter-container">
-  <canvas 
-    type="2d" 
-    id="canvas" 
-    style="{{painterStyle}};position:fixed;left:-9999px;top:0;"
-  ></canvas>
-</view>

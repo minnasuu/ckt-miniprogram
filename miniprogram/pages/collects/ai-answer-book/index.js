@@ -16,7 +16,6 @@ Page({
     typingTimer: null,
     isAIMode: false, // 默认为普通版（置灰）
     shareTime: '', // 分享图片时间戳
-    painterPalette: null, // Painter 配置
     normalAnswers: [
       "是的，毫无疑问。",
       "现在不是时候。",
@@ -509,7 +508,7 @@ Page({
   },
 
   /**
-   * 使用 Painter 生成图片
+   * 使用 Canvas 生成图片
    */
   onPhoto() {
     if (!this.data.answer || !this.data.question) {
@@ -525,149 +524,32 @@ Page({
       mask: true
     });
 
-    // 格式化时间
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    const timeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-    // 随机渐变背景色
-    const gradientColors = [
-      [{ offset: 0, color: '#f5f7fa' }, { offset: 1, color: '#c3cfe2' }],
-      [{ offset: 0, color: '#ffecd2' }, { offset: 1, color: '#fcb69f' }],
-      [{ offset: 0, color: '#e0c3fc' }, { offset: 1, color: '#8ec5fc' }],
-      [{ offset: 0, color: '#fbc2eb' }, { offset: 1, color: '#a6c1ee' }],
-      [{ offset: 0, color: '#fdcbf1' }, { offset: 1, color: '#e6dee9' }],
-      [{ offset: 0, color: '#a1c4fd' }, { offset: 1, color: '#c2e9fb' }],
-      [{ offset: 0, color: '#ffd1ff' }, { offset: 1, color: '#ffeaa7' }],
-      [{ offset: 0, color: '#cfd9df' }, { offset: 1, color: '#e2ebf0' }],
-      [{ offset: 0, color: '#ffeaa7' }, { offset: 1, color: '#fdcb6e' }],
-      [{ offset: 0, color: '#dfe6e9' }, { offset: 1, color: '#b2bec3' }],
-      [{ offset: 0, color: '#fab1a0' }, { offset: 1, color: '#ffeaa7' }],
-      [{ offset: 0, color: '#a29bfe' }, { offset: 1, color: '#dfe6e9' }],
-    ];
-
-    const randomGradient = gradientColors[Math.floor(Math.random() * gradientColors.length)];
-
-    // 构建 Painter 配置
-    const palette = {
-      width: 800,
-      height: 800,
-      gradient: randomGradient,
-      views: [
-        // 背景问题文字
-        {
-          type: 'text',
-          text: this.data.question,
-          fontSize: 100,
-          fontFamily: 'Momozhuanji',
-          color: 'rgba(0, 0, 0, 0.08)',
-          textAlign: 'center',
-          baseline: 'middle',
-          left: 400,
-          top: 350,
-          width: 700,
-          lineHeight: 120
-        },
-        // 答案文字
-        {
-          type: 'text',
-          text: this.data.answer,
-          fontSize: 42,
-          fontWeight: 'bold',
-          fontFamily: 'Momozhuanji',
-          color: '#1a1a1a',
-          textAlign: 'center',
-          baseline: 'middle',
-          left: 400,
-          top: 370,
-          width: 680,
-          lineHeight: 60
-        },
-        // 时间水印
-        {
-          type: 'text',
-          text: timeString,
-          fontSize: 12,
-          color: 'rgba(0, 0, 0, 0.4)',
-          textAlign: 'right',
-          baseline: 'bottom',
-          left: 760,
-          top: 755
-        },
-        // 来源水印
-        {
-          type: 'text',
-          text: '答案之书生成',
-          fontSize: 12,
-          color: 'rgba(0, 0, 0, 0.4)',
-          textAlign: 'right',
-          baseline: 'bottom',
-          left: 760,
-          top: 770
-        }
-      ]
-    };
-
-    // 触发 Painter 绘制
-    this.setData({
-      painterPalette: palette
-    });
-  },
-
-  /**
-   * Painter 生成成功
-   */
-  onPainterSuccess(e) {
-    wx.hideLoading();
-    
-    const filePath = e.detail.path;
-    
-    // 保存到相册
-    wx.saveImageToPhotosAlbum({
-      filePath: filePath,
-      success: () => {
-        wx.showToast({
-          title: '已保存到相册',
-          icon: 'success'
-        });
-      },
-      fail: (err) => {
-        console.error('保存失败:', err);
-        if (err.errMsg.includes('auth deny')) {
-          wx.showModal({
-            title: '提示',
-            content: '需要授权保存到相册',
-            success: (modalRes) => {
-              if (modalRes.confirm) {
-                wx.openSetting();
-              }
-            }
-          });
-        } else {
+    // 获取 Canvas 实例
+    const query = wx.createSelectorQuery();
+    query.select('#shareCanvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (!res || !res[0]) {
+          wx.hideLoading();
           wx.showToast({
-            title: '保存失败',
+            title: 'Canvas 初始化失败',
             icon: 'none'
           });
+          return;
         }
-      }
-    });
-  },
 
-  /**
-   * Painter 生成失败
-   */
-  onPainterFail(e) {
-    wx.hideLoading();
-    console.error('Painter 生成失败:', e);
-    wx.showToast({
-      title: '生成图片失败',
-      icon: 'none'
-    });
+        const canvas = res[0].node;
+        const ctx = canvas.getContext('2d');
+
+        // 设置 Canvas 尺寸
+        const dpr = wx.getSystemInfoSync().pixelRatio;
+        canvas.width = 800 * dpr;
+        canvas.height = 800 * dpr;
+        ctx.scale(dpr, dpr);
+
+        // 绘制图片
+        this.drawCanvas(canvas, ctx);
+      });
   },
 
   /**
@@ -703,7 +585,7 @@ Page({
     // 绘制背景问题（大字、半透明）
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-    ctx.font = '100px Momozhuanji';
+    ctx.font = '100px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -720,7 +602,7 @@ Page({
     // 绘制答案文字（前景、清晰）
     ctx.save();
     ctx.fillStyle = '#1a1a1a';
-    ctx.font = 'bold 42px Momozhuanji';
+    ctx.font = 'bold 42px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -759,51 +641,52 @@ Page({
     ctx.fillText('答案之书生成', 760, 770);
     ctx.restore();
 
-    // 导出图片（字体已预加载，无需延迟）
+    // 导出图片
     wx.canvasToTempFilePath({
-        canvas: canvas,
-        success: (res) => {
-          wx.hideLoading();
-          
-          // 保存到相册
-          wx.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => {
-              wx.showToast({
-                title: '已保存到相册',
-                icon: 'none',
-                duration: 1000
-              });
-            },
-            fail: (err) => {
-              if (err.errMsg.includes('auth deny')) {
-                wx.showModal({
-                  title: '提示',
-                  content: '需要授权保存图片到相册',
-                  success: (modalRes) => {
-                    if (modalRes.confirm) {
-                      wx.openSetting();
-                    }
+      canvas: canvas,
+      success: (res) => {
+        wx.hideLoading();
+        
+        // 保存到相册
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: () => {
+            wx.showToast({
+              title: '已保存到相册',
+              icon: 'success',
+              duration: 2000
+            });
+          },
+          fail: (err) => {
+            console.error('保存失败:', err);
+            if (err.errMsg.includes('auth deny')) {
+              wx.showModal({
+                title: '提示',
+                content: '需要授权保存图片到相册',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    wx.openSetting();
                   }
-                });
-              } else {
-                wx.showToast({
-                  title: '保存失败',
-                  icon: 'none'
-                });
-              }
+                }
+              });
+            } else {
+              wx.showToast({
+                title: '保存失败',
+                icon: 'none'
+              });
             }
-          });
-        },
-        fail: (err) => {
-          wx.hideLoading();
-          console.error('导出图片失败:', err);
-          wx.showToast({
-            title: '生成图片失败',
-            icon: 'none'
-          });
-        }
-      });
+          }
+        });
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('导出图片失败:', err);
+        wx.showToast({
+          title: '生成图片失败',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   /**

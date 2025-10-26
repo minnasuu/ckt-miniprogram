@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "custom-header": "/components/custom-header/index",
-    "painter": "/components/painter/painter"
+    "custom-header": "/components/custom-header/index"
   }
 }

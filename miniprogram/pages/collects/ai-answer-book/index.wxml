@@ -71,10 +71,10 @@
             </view>
   </view>
   
-  <!-- Painter 组件 -->
-  <painter 
-    palette="{{painterPalette}}" 
-    bind:imgOK="onPainterSuccess" 
-    bind:imgErr="onPainterFail"
-  />
+  <!-- Canvas 组件（隐藏） -->
+  <canvas 
+    type="2d" 
+    id="shareCanvas" 
+    style="position: fixed; left: -9999px; top: -9999px; width: 800px; height: 800px;"
+  ></canvas>
 </view>

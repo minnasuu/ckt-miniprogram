@@ -95,13 +95,6 @@ page{
   --ckt-gray-14: #181818;
 }
 
-@font-face{
-  font-family: 'Momozhuanji'; 
-  src: url('https://suminhan.cn/Momozhuanji.ttf'); 
-  font-weight: normal;
-  font-style: normal;
-} 
-
 button {
   background: initial;
 }
