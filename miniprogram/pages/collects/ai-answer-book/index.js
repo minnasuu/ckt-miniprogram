@@ -379,7 +379,7 @@ Page({
         messages: [
           {
             role: 'system',
-            content: `答案之书AI，返回JSON`
+            content: `你是答案之书AI。必须严格返回JSON格式，包含5类答案共16条：affirmative(5条肯定)、negative(5条否定)、neutral(2条中立)、mysterious(2条神秘)、advice(2条建议)。每条答案8-15字。`
           },
           {
             role: 'user',
@@ -387,14 +387,22 @@ Page({
           },
           {
             role: 'assistant',
-            content: `{"affirmative":["是的，新机会在等你","勇敢迈出这一步","改变会带来成长","时机已到","相信你的选择"],"negative":["现在不是时候","再等等看","风险太大","保持现状更好","你还没准备好"],"mysterious":["答案在你心中","命运自有安排"],"neutral":["权衡利弊再决定","听从内心声音"],"advice":["先做好准备","咨询他人意见"]}`
+            content: `{"affirmative":["是的，新机会在等你","勇敢迈出这一步","改变会带来成长","时机已到","相信你的选择"],"negative":["现在不是时候","再等等看","风险太大","保持现状更好","你还没准备好"],"neutral":["权衡利弊再决定","听从内心声音"],"mysterious":["答案在你心中","命运自有安排"],"advice":["先做好准备","咨询他人意见"]}`
+          },
+          {
+            role: 'user',
+            content: '我能考上理想的大学吗？'
+          },
+          {
+            role: 'assistant',
+            content: `{"affirmative":["努力会有回报","你比想象中更优秀","坚持下去必有收获","相信自己的实力","成功在向你招手"],"negative":["还需要更多努力","目标可能太高","现在还不够稳","别给自己太大压力","换个方向也不错"],"neutral":["尽力就好","结果不是唯一"],"mysterious":["命运会给你答案","一切自有安排"],"advice":["制定详细计划","保持良好心态"]}`
           },
           {
             role: 'user',
             content: question
           }
         ],
-        temperature: 0.8,
+        temperature: 0.7,
       });
 
       console.log('AI 调用成功:', res);
@@ -437,11 +445,14 @@ Page({
           const validAnswers = allAnswers.filter(a => a && a.trim());
 
           // 随机选择一条答案
-          if (validAnswers.length > 0) {
+          if (validAnswers.length >= 16) {
             answer = validAnswers[Math.floor(Math.random() * validAnswers.length)];
-            console.log('从AI生成的', validAnswers.length, '条答案中随机选择:', answer);
+            console.log('✅ 从AI生成的', validAnswers.length, '条答案中随机选择:', answer);
+          } else if (validAnswers.length > 0) {
+            answer = validAnswers[Math.floor(Math.random() * validAnswers.length)];
+            console.warn('⚠️ AI返回答案不足16条，实际:', validAnswers.length, '条');
           } else {
-            console.warn('AI返回的答案数组为空');
+            console.error('❌ AI返回的答案数组为空');
           }
         } catch (parseError) {
           console.error('解析AI返回的JSON失败:', parseError);
@@ -464,6 +475,11 @@ Page({
     } catch (err) {
       console.error('AI 调用失败:', err);
       
+      // 自动切换到经典版
+      this.setData({
+        isAIMode: false
+      });
+      
       // 使用本地备用答案
       const randomAnswer = this.data.normalAnswers[Math.floor(Math.random() * this.data.normalAnswers.length)];
       
@@ -479,9 +495,9 @@ Page({
 
       // 提示用户
       wx.showToast({
-        title: 'AI 暂时不可用，使用离线答案',
+        title: 'AI调用失败，已切换到经典版',
         icon: 'none',
-        duration: 2000
+        duration: 2500
       });
     }
   },
