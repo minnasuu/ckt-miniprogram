@@ -1,4 +1,14 @@
 // pages/collects/ai-answer-book/index.js
+
+// ========== 访问频次配置 ==========
+// 可根据需要调整以下参数
+const FREQUENCY_CONFIG = {
+  DAILY_LIMIT: 100,        // 经典版每日限制次数
+  AI_DAILY_LIMIT: 20,      // AI版每日限制次数
+  INTERVAL_LIMIT: 5000,   // 两次提问最小间隔（毫秒）5秒
+};
+// ==================================
+
 Page({
 
   /**
@@ -17,6 +27,13 @@ Page({
     isAIMode: false, // 默认为普通版（置灰）
     shareTime: '', // 分享图片时间戳
     shareImagePath: '', // 分享图片路径
+    // 访问频次限制相关
+    dailyLimit: FREQUENCY_CONFIG.DAILY_LIMIT, // 每日普通版限制次数
+    aiDailyLimit: FREQUENCY_CONFIG.AI_DAILY_LIMIT, // 每日AI版限制次数
+    intervalLimit: FREQUENCY_CONFIG.INTERVAL_LIMIT, // 两次提问最小间隔（毫秒）
+    todayUsedCount: 0, // 今日已使用次数
+    aiTodayUsedCount: 0, // 今日AI版已使用次数
+    lastQueryTime: 0, // 上次提问时间戳
     normalAnswers: [
       "是的，毫无疑问。",
       "现在不是时候。",
@@ -256,6 +273,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
+    // 初始化访问频次数据
+    this.initFrequencyLimit();
+    
     // 先获取云存储文件的临时链接
     wx.cloud.getTempFileURL({
       fileList: ['cloud://cloud1-8gzjqovx9c2ec2e9.636c-cloud1-8gzjqovx9c2ec2e9-1307913003/MFBoHeHaiYan.otf'],
@@ -297,6 +317,181 @@ Page({
   },
 
   /**
+   * 初始化访问频次限制
+   */
+  initFrequencyLimit() {
+    try {
+      const today = this.getTodayString();
+      const storageKey = 'answerBook_frequency';
+      const aiStorageKey = 'answerBook_ai_frequency';
+      
+      // 获取存储的数据
+      const storedData = wx.getStorageSync(storageKey);
+      const aiStoredData = wx.getStorageSync(aiStorageKey);
+      
+      // 普通版次数
+      if (storedData && storedData.date === today) {
+        this.setData({
+          todayUsedCount: storedData.count || 0
+        });
+      } else {
+        // 新的一天，重置计数
+        wx.setStorageSync(storageKey, {
+          date: today,
+          count: 0
+        });
+        this.setData({
+          todayUsedCount: 0
+        });
+      }
+      
+      // AI版次数
+      if (aiStoredData && aiStoredData.date === today) {
+        this.setData({
+          aiTodayUsedCount: aiStoredData.count || 0
+        });
+      } else {
+        // 新的一天，重置计数
+        wx.setStorageSync(aiStorageKey, {
+          date: today,
+          count: 0
+        });
+        this.setData({
+          aiTodayUsedCount: 0
+        });
+      }
+    } catch (err) {
+      console.error('初始化访问频次失败:', err);
+    }
+  },
+
+  /**
+   * 获取今天的日期字符串 (YYYY-MM-DD)
+   */
+  getTodayString() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  },
+
+  /**
+   * 检查是否可以提问
+   */
+  checkCanQuery() {
+    const now = Date.now();
+    const isAI = this.data.isAIMode;
+    
+    // 1. 检查时间间隔
+    if (this.data.lastQueryTime > 0) {
+      const timeDiff = now - this.data.lastQueryTime;
+      if (timeDiff < this.data.intervalLimit) {
+        const remainSeconds = Math.ceil((this.data.intervalLimit - timeDiff) / 1000);
+        wx.showToast({
+          title: `请等待${remainSeconds}秒后再提问`,
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
+    }
+    
+    // 2. 检查每日次数限制
+    if (isAI) {
+      // AI版限制
+      if (this.data.aiTodayUsedCount >= this.data.aiDailyLimit) {
+        wx.showModal({
+          title: '今日AI版次数已用完',
+          content: `AI版每天限制${this.data.aiDailyLimit}次，已使用${this.data.aiTodayUsedCount}次。\n\n可切换到经典版继续使用（每天${this.data.dailyLimit}次）`,
+          showCancel: true,
+          confirmText: '切换经典版',
+          cancelText: '知道了',
+          success: (res) => {
+            if (res.confirm) {
+              this.setData({
+                isAIMode: false
+              });
+            }
+          }
+        });
+        return false;
+      }
+    } else {
+      // 普通版限制
+      if (this.data.todayUsedCount >= this.data.dailyLimit) {
+        wx.showModal({
+          title: '今日次数已用完',
+          content: `经典版每天限制${this.data.dailyLimit}次，已使用${this.data.todayUsedCount}次。\n\n明天再来吧~`,
+          showCancel: false,
+          confirmText: '知道了'
+        });
+        return false;
+      }
+    }
+    
+    return true;
+  },
+
+  /**
+   * 更新使用次数
+   */
+  updateUsageCount() {
+    const today = this.getTodayString();
+    const isAI = this.data.isAIMode;
+    
+    if (isAI) {
+      // 更新AI版次数
+      const newCount = this.data.aiTodayUsedCount + 1;
+      this.setData({
+        aiTodayUsedCount: newCount,
+        lastQueryTime: Date.now()
+      });
+      
+      wx.setStorageSync('answerBook_ai_frequency', {
+        date: today,
+        count: newCount
+      });
+      
+      // 提示剩余次数
+      const remaining = this.data.aiDailyLimit - newCount;
+      if (remaining <= 2 && remaining > 0) {
+        setTimeout(() => {
+          wx.showToast({
+            title: `AI版今日还剩${remaining}次`,
+            icon: 'none',
+            duration: 2000
+          });
+        }, 1500);
+      }
+    } else {
+      // 更新普通版次数
+      const newCount = this.data.todayUsedCount + 1;
+      this.setData({
+        todayUsedCount: newCount,
+        lastQueryTime: Date.now()
+      });
+      
+      wx.setStorageSync('answerBook_frequency', {
+        date: today,
+        count: newCount
+      });
+      
+      // 提示剩余次数
+      const remaining = this.data.dailyLimit - newCount;
+      if (remaining <= 2 && remaining > 0) {
+        setTimeout(() => {
+          wx.showToast({
+            title: `今日还剩${remaining}次`,
+            icon: 'none',
+            duration: 2000
+          });
+        }, 1500);
+      }
+    }
+  },
+
+  /**
    * 处理输入
    */
   handleInput(e) {
@@ -321,6 +516,12 @@ Page({
       });
       return;
     }
+    
+    // 检查是否可以提问
+    if (!this.checkCanQuery()) {
+      return;
+    }
+    
     this.getAnswer(question);
   },
 
@@ -361,6 +562,9 @@ Page({
           showAnswer: true,
           displayedText: ''
         });
+
+        // 更新使用次数
+        this.updateUsageCount();
 
         // 打字机效果
         this.typeWriter(randomAnswer);
@@ -469,6 +673,9 @@ Page({
         displayedText: ''
       });
 
+      // 更新使用次数
+      this.updateUsageCount();
+
       // 打字机效果
       this.typeWriter(answer);
 
@@ -489,6 +696,9 @@ Page({
         showAnswer: true,
         displayedText: ''
       });
+
+      // 更新使用次数（降级到普通版，使用普通版计数）
+      this.updateUsageCount();
 
       // 打字机效果
       this.typeWriter(randomAnswer);
