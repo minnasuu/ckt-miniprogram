@@ -55,10 +55,7 @@
       <view class="footer">
         <text class="footer-text">✨ 让直觉指引你的方向 ✨</text>
       </view>
-      <!-- 剩余次数提示 -->
-      <view class="usage-info">
-          <text class="usage-text">你今日还可以问 {{isAIMode ? (aiDailyLimit - aiTodayUsedCount) : (dailyLimit - todayUsedCount)}} 次</text>
-        </view>
+
        <!-- 操作按钮 -->
        <view wx:if="{{showAnswer && showButton}}" class="button-group">
               <view class="icon-button" bindtap="onReset">
