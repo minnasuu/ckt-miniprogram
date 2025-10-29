@@ -954,18 +954,21 @@ Page({
     });
   },
 
-  // 保存图片到相册的方法
+  // 保存图片到相册的方法（优化版：带权限检查）
   saveImageToAlbum(tempFilePath) {
-    wx.saveImageToPhotosAlbum({
-      filePath: tempFilePath,
-      success: () => {
+    const saveHelper = require('../../../utils/saveImageHelper.js');
+    saveHelper.saveImageToAlbum(tempFilePath, {
+      onSuccess: () => {
         this.setData({ downloadLoading: false });
         this.showAlert('高分辨率图片已保存到相册🎉', 'success');
       },
-      fail: (err) => {
+      onFail: (err) => {
         console.error('保存图片到相册失败:', err);
         this.setData({ downloadLoading: false });
         this.showAlert('保存失败，请重试', 'error');
+      },
+      onCancel: () => {
+        this.setData({ downloadLoading: false });
       }
     });
   },

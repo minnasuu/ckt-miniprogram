@@ -1397,22 +1397,18 @@ Page({
     });
   },
 
-  // 保存图片到相册的方法
+  // 保存图片到相册的方法（优化版：带权限检查）
   saveImageToAlbum(tempFilePath) {
-    wx.saveImageToPhotosAlbum({
-      filePath: tempFilePath,
-      success: () => {
-        wx.showToast({
-          title: '已保存图片到相册🎉',
-          icon: 'none'
-        });
+    const saveHelper = require('../../../utils/saveImageHelper.js');
+    saveHelper.saveImageToAlbum(tempFilePath, {
+      onSuccess: () => {
+        console.log('保存成功');
       },
-      fail: (err) => {
+      onFail: (err) => {
         console.error('保存图片到相册失败:', err);
-        wx.showToast({
-          title: '保存失败，请重试💔',
-          icon: 'none'
-        });
+      },
+      onCancel: () => {
+        console.log('用户取消保存');
       }
     });
   }

@@ -871,20 +871,17 @@ Page({
           canvasId: 'result-canvas',
           canvas: canvas,
           success: (res) => {
-            // 保存高分辨率图片到相册
-            wx.saveImageToPhotosAlbum({
-              filePath: res.tempFilePath,
-              success: () => {
-                wx.showToast({
-                  title: '已保存图片到相册🎉',
-                  icon: 'none'
-                });
+            // 保存高分辨率图片到相册（优化版：带权限检查）
+            const saveHelper = require('../../../utils/saveImageHelper.js');
+            saveHelper.saveImageToAlbum(res.tempFilePath, {
+              onSuccess: () => {
+                console.log('保存成功');
               },
-              fail: (_err) => {
-                wx.showToast({
-                  title: '保存失败，请重试💔',
-                  icon: 'none'
-                });
+              onFail: (err) => {
+                console.error('保存失败', err);
+              },
+              onCancel: () => {
+                console.log('用户取消保存');
               }
             });
           },

@@ -323,37 +323,19 @@ Page({
         data: base64Data,
         encoding: 'base64',
         success: () => {
-          // 保存图片到相册
-          wx.saveImageToPhotosAlbum({
-            filePath: fileName,
-            success: () => {
+          // 保存图片到相册（优化版：带权限检查）
+          const saveHelper = require('../../../utils/saveImageHelper.js');
+          saveHelper.saveImageToAlbum(fileName, {
+            onSuccess: () => {
               wx.hideLoading();
-              wx.showToast({
-                title: '已保存图片到相册🎉',
-                icon: 'none'
-              });
+              console.log('保存成功');
             },
-            fail: (err) => {
+            onFail: (err) => {
               console.error('保存图片失败', err);
               wx.hideLoading();
-
-              if (err.errMsg.indexOf('auth deny') >= 0) {
-                wx.showToast({
-                  title: '请授权保存图片到相册',
-                  icon: 'none'
-                });
-                // 引导用户授权
-                wx.openSetting({
-                  success: (res) => {
-                    console.log('设置结果', res);
-                  }
-                });
-              } else {
-                wx.showToast({
-                  title: '保存失败，请重试💔',
-                  icon: 'none'
-                });
-              }
+            },
+            onCancel: () => {
+              wx.hideLoading();
             }
           });
         },
