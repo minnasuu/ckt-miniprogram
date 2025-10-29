@@ -936,38 +936,131 @@ Page({
   },
 
   /**
-   * 保存图片到相册
+   * 保存图片到相册（优化版：先检查权限）
    */
   saveImageToAlbum(filePath) {
     wx.hideLoading();
     
+    // 先检查是否已授权
+    wx.getSetting({
+      success: (res) => {
+        // 检查相册权限
+        if (res.authSetting['scope.writePhotosAlbum'] === true) {
+          // 已授权，直接保存
+          this.doSaveImage(filePath);
+        } else if (res.authSetting['scope.writePhotosAlbum'] === false) {
+          // 已拒绝授权，引导用户去设置页面
+          wx.showModal({
+            title: '需要相册权限',
+            content: '保存图片需要您授权访问相册，请在设置中开启权限',
+            confirmText: '去设置',
+            cancelText: '取消',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                // 打开设置页面
+                wx.openSetting({
+                  success: (settingRes) => {
+                    if (settingRes.authSetting['scope.writePhotosAlbum']) {
+                      // 用户在设置页面授权了，保存图片
+                      this.doSaveImage(filePath);
+                    } else {
+                      // 用户在设置页面仍未授权
+                      wx.showToast({
+                        title: '未授权，保存失败💔',
+                        icon: 'none',
+                        duration: 2000
+                      });
+                    }
+                  }
+                });
+              } else {
+                // 用户取消去设置
+                wx.showToast({
+                  title: '已取消保存',
+                  icon: 'none',
+                  duration: 1500
+                });
+              }
+            }
+          });
+        } else {
+          // 未询问过权限（undefined），调用授权
+          this.requestSavePermission(filePath);
+        }
+      },
+      fail: (err) => {
+        console.error('获取设置失败:', err);
+        // 获取设置失败，尝试直接保存（会触发授权弹窗）
+        this.requestSavePermission(filePath);
+      }
+    });
+  },
+
+  /**
+   * 请求保存权限并保存
+   */
+  requestSavePermission(filePath) {
+    wx.authorize({
+      scope: 'scope.writePhotosAlbum',
+      success: () => {
+        // 授权成功，保存图片
+        this.doSaveImage(filePath);
+      },
+      fail: () => {
+        // 用户拒绝授权
+        wx.showModal({
+          title: '授权失败',
+          content: '保存图片需要您授权访问相册',
+          confirmText: '去设置',
+          cancelText: '取消',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              wx.openSetting({
+                success: (settingRes) => {
+                  if (settingRes.authSetting['scope.writePhotosAlbum']) {
+                    this.doSaveImage(filePath);
+                  } else {
+                    wx.showToast({
+                      title: '未授权，保存失败',
+                      icon: 'none',
+                      duration: 2000
+                    });
+                  }
+                }
+              });
+            } else {
+              wx.showToast({
+                title: '已取消保存',
+                icon: 'none',
+                duration: 1500
+              });
+            }
+          }
+        });
+      }
+    });
+  },
+
+  /**
+   * 执行保存图片操作
+   */
+  doSaveImage(filePath) {
     wx.saveImageToPhotosAlbum({
       filePath: filePath,
       success: () => {
         wx.showToast({
-          title: '已保存到相册',
+          title: '已保存到相册🎉',
           icon: 'none',
           duration: 2000
         });
       },
       fail: (err) => {
-        console.error('保存失败:', err);
-        if (err.errMsg.includes('auth deny')) {
-          wx.showModal({
-            title: '提示',
-            content: '需要授权保存图片到相册',
-            success: (modalRes) => {
-              if (modalRes.confirm) {
-                wx.openSetting();
-              }
-            }
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
-            icon: 'none'
-          });
-        }
+        console.error('保存图片失败:', err);
+        wx.showToast({
+          title: '保存失败，请重试',
+          icon: 'none',
+          duration: 2000
+        });
       }
     });
   },
