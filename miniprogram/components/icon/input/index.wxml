@@ -1,0 +1,4 @@
+<!--components/icon/input/index.wxml-->
+<view class="input-button" bindtap="onInputTap">
+    <view class="input-icon" style="background-color:{{color}};"></view>
+</view>

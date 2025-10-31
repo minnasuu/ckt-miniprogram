@@ -1,0 +1,4 @@
+<!--components/icon/reset/index.wxml-->
+<view class="reset-button" bindtap="onResetTap">
+    <view class="reset-icon" style="background-color:{{color}};"></view>
+</view>

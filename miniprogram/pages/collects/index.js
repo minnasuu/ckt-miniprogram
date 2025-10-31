@@ -19,6 +19,14 @@ Page({
             new: true,
             path: '/pages/collects/ai-answer-book/index'
           },
+          {
+            id: "pattern-2",
+            icon: '📷',
+            title: '咔嚓！',
+            description: '拍照留念，记录此地此刻',
+            new: true,
+            path: '/pages/collects/party-camera/index'
+          }
         ]
       },
     ]

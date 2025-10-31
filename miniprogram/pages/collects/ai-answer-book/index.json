@@ -1,5 +1,8 @@
 {
   "usingComponents": {
-    "custom-header": "/components/custom-header/index"
+    "custom-header": "/components/custom-header/index",
+    "download-button": "/components/icon/download/index",
+    "reset-button": "/components/icon/reset/index",
+    "share-button": "/components/icon/share/index"
   }
 }

@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/index",
+    "download-button": "/components/icon/download/index",
+    "share-button": "/components/icon/share/index",
+     "reset-button": "/components/icon/reset/index",
+     "input-button": "/components/icon/input/index"
+  },
+  "navigationBarTitleText": "聚会相机",
+  "navigationStyle": "custom"
+}

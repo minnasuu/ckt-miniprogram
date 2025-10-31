@@ -58,15 +58,9 @@
 
        <!-- 操作按钮 -->
        <view wx:if="{{showAnswer && showButton}}" class="button-group">
-              <view class="icon-button" bindtap="onReset">
-                <view class="reset-icon"></view>
-              </view>
-              <view class="icon-button" bindtap="onPhoto">
-                <view class="camera-icon"></view>
-              </view>
-              <view class="icon-button" bindtap="onShare">
-                <view class="share-icon"></view>
-              </view>
+                <reset-button bind:reset="onReset"></reset-button>
+                <download-button bind:download="onPhoto"></download-button>
+                <share-button bind:share="onShare"></share-button>
             </view>
   </view>
   

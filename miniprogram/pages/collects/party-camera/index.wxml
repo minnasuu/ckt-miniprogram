@@ -1,0 +1,80 @@
+<!--pages/collects/party-camera/index.wxml-->
+<view class="camera-view">
+  <custom-header showBack background="transparent"></custom-header>
+  
+  <view class="camera-content">
+    <!-- 头部标题 -->
+    <view class="header">
+      <text class="camera-icon">📸</text>
+      <view class="title-container">
+        <text class="title">聚会相机</text>
+      </view>
+      <text class="subtitle">Party Camera</text>
+    </view>
+
+    <!-- 相框卡片 -->
+    <view class="card">
+      <view class="card-inner">
+        <!-- 相框区域 -->
+        <view class="photo-frame" bindtap="onTakePhoto">
+          <!-- 空状态 -->
+          <view wx:if="{{!photoPath}}" class="empty-frame">
+            <text class="placeholder-text">点击拍照</text>
+          </view>
+          
+          <!-- 显示照片 -->
+          <image wx:if="{{photoPath}}" 
+                 class="photo-image" 
+                 src="{{photoPath}}" 
+                 mode="aspectFill">
+          </image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮组 -->
+    <view wx:if="{{photoPath}}" class="button-group">
+    <reset-button bind:reset="onClearPhoto"></reset-button>
+    <download-button bind:download="onSaveLocal"></download-button>
+    <share-button bind:share="onShareFriend"></share-button>
+    <input-button bind:input="onAddMemory"></input-button>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="footer">
+      <text class="footer-text">✨ 记录此时此刻的我们 ✨</text>
+    </view>
+  </view>
+
+  <!-- 纪念语输入弹窗 -->
+  <view wx:if="{{showMemoryInput}}" class="memory-modal">
+    <view class="memory-modal-content">
+      <view class="memory-modal-header">
+        <text class="memory-modal-title">添加纪念语</text>
+      </view>
+      <view class="memory-input-container">
+        <textarea 
+          class="memory-input" 
+          value="{{memoryText}}"
+          bindinput="onMemoryInput"
+          placeholder="为这张照片写下美好的回忆..."
+          maxlength="50"
+          auto-height
+        ></textarea>
+        <view class="char-count">{{memoryText.length}}/50</view>
+      </view>
+      <view class="memory-modal-buttons">
+        <view class="memory-btn memory-btn-cancel" bindtap="onCancelMemory">取消</view>
+        <view class="memory-btn memory-btn-confirm" bindtap="onConfirmMemory">确定</view>
+      </view>
+    </view>
+    <view class="memory-modal-mask" bindtap="onCancelMemory"></view>
+  </view>
+
+  <!-- Canvas 组件（用于生成分享图片） -->
+  <canvas 
+    type="2d" 
+    id="shareCanvas" 
+    style="position: fixed; left: -9999px; top: -9999px; width: 800px; height: 800px;">
+  </canvas>
+</view>

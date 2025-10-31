@@ -9,7 +9,8 @@
     "pages/tools/color-change/index",
     "pages/tools/counter/index",
     "pages/collects/index",
-    "pages/collects/ai-answer-book/index"
+    "pages/collects/ai-answer-book/index",
+    "pages/collects/party-camera/index"
   ],
   "window": {
     "backgroundColor": "#FFF",

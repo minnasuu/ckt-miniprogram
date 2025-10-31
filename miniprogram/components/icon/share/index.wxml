@@ -1,0 +1,4 @@
+<!--components/icon/share/index.wxml-->
+<view class="share-button" bindtap="onShareTap">
+    <view class="share-icon" style="background-color:{{color}};"></view>
+</view>
