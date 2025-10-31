@@ -23,11 +23,23 @@
           </view>
           
           <!-- 显示照片 -->
-          <image wx:if="{{photoPath}}" 
-                 class="photo-image" 
-                 src="{{photoPath}}" 
-                 mode="aspectFill">
-          </image>
+          <view wx:if="{{photoPath}}" class="photo-container">
+            <image class="photo-image" 
+                   src="{{photoPath}}" 
+                   mode="aspectFill">
+            </image>
+            
+            <!-- 实时显示的时间水印 -->
+            <view class="time-watermark">
+              <text class="time-text">{{currentTime}}</text>
+              <text class="app-text">聚会相机 生成</text>
+            </view>
+            
+            <!-- 实时显示的纪念语 -->
+            <view wx:if="{{memoryText}}" class="memory-overlay">
+              <text class="memory-text">{{memoryText}}</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>

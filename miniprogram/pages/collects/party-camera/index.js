@@ -9,6 +9,7 @@ Page({
     shareImagePath: '', // 分享图片路径
     showMemoryInput: false, // 是否显示纪念语输入弹窗
     memoryText: '', // 纪念语内容
+    currentTime: '', // 当前时间
   },
 
   /**
@@ -16,6 +17,22 @@ Page({
    */
   onLoad(options) {
     // 页面加载时的初始化
+    this.updateCurrentTime();
+    // 每秒更新时间
+    this.timeInterval = setInterval(() => {
+      this.updateCurrentTime();
+    }, 1000);
+  },
+
+  /**
+   * 更新当前时间
+   */
+  updateCurrentTime() {
+    const now = new Date();
+    const timeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    this.setData({
+      currentTime: timeString
+    });
   },
 
   /**
@@ -331,64 +348,39 @@ Page({
    * Canvas 绘制分享图片
    */
   drawShareCanvas(canvas, ctx) {
-    // 绘制背景
-    const gradient = ctx.createLinearGradient(0, 0, 800, 800);
-    gradient.addColorStop(0, '#ffeaa7');
-    gradient.addColorStop(1, '#fab1a0');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 800, 800);
-
     // 创建图片对象
     const img = canvas.createImage();
     img.onload = () => {
-      // 绘制照片（居中，保持比例）
-      const imgWidth = img.width;
-      const imgHeight = img.height;
-      const maxSize = 500;
-      
-      let drawWidth, drawHeight;
-      if (imgWidth > imgHeight) {
-        drawWidth = maxSize;
-        drawHeight = (imgHeight / imgWidth) * maxSize;
-      } else {
-        drawHeight = maxSize;
-        drawWidth = (imgWidth / imgHeight) * maxSize;
-      }
-      
-      const x = (800 - drawWidth) / 2;
-      const y = (800 - drawHeight) / 2 - 50;
-      
-      // 绘制白色相框背景
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(x - 20, y - 20, drawWidth + 40, drawHeight + 40);
-      
-      // 绘制照片
-      ctx.drawImage(img, x, y, drawWidth, drawHeight);
-      
-      // 绘制相框边框
-      ctx.strokeStyle = '#ddd';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x - 20, y - 20, drawWidth + 40, drawHeight + 40);
-
-      // 绘制标题
-      ctx.fillStyle = '#2d3436';
-      ctx.font = 'bold 32px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('聚会相机', 400, y - 60);
+      // 直接让照片填满整个画布
+      ctx.drawImage(img, 0, 0, 800, 800);
 
       // 绘制纪念语（如果有的话）
       if (this.data.memoryText && this.data.memoryText.trim()) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-        ctx.font = '20px sans-serif';
-        ctx.textAlign = 'right';
+        // 绘制纪念语背景
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
         
-        // 处理纪念语换行
-        const memoryLines = this.wrapText(ctx, this.data.memoryText.trim(), 300);
-        const lineHeight = 24;
-        const startY = y + drawHeight - (memoryLines.length * lineHeight) - 10;
+        // 计算纪念语文本尺寸
+        ctx.font = '24px sans-serif';
+        const memoryLines = this.wrapText(ctx, this.data.memoryText.trim(), 350);
+        const lineHeight = 28;
+        const padding = 12;
+        const textWidth = Math.max(...memoryLines.map(line => ctx.measureText(line).width));
+        const textHeight = memoryLines.length * lineHeight;
+        
+        // 绘制纪念语背景框
+        const bgX = 16;
+        const bgY = 800 - textHeight - padding * 2 - 60; // 为时间水印留出空间
+        const bgWidth = textWidth + padding * 2;
+        const bgHeight = textHeight + padding * 2;
+        
+        ctx.fillRect(bgX, bgY, bgWidth, bgHeight);
+        
+        // 绘制纪念语文本
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'left';
         
         memoryLines.forEach((line, index) => {
-          ctx.fillText(line, x + drawWidth - 10, startY + index * lineHeight);
+          ctx.fillText(line, bgX + padding, bgY + padding + (index + 1) * lineHeight);
         });
       }
 
@@ -396,11 +388,28 @@ Page({
       const now = new Date();
       const timeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       
+      // 时间水印背景
       ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      ctx.font = '20px sans-serif';
+      const timeWidth = ctx.measureText(timeString).width;
+      const appText = '聚会相机 生成';
       ctx.font = '16px sans-serif';
-      ctx.textAlign = 'right';
-      ctx.fillText(timeString, 760, 750);
-      ctx.fillText('聚会相机 生成', 760, 770);
+      const appWidth = ctx.measureText(appText).width;
+      const maxWidth = Math.max(timeWidth, appWidth);
+      
+      const timeX = 800 - maxWidth - 32;
+      const timeY = 800 - 48;
+      ctx.fillRect(timeX, timeY, maxWidth + 16, 40);
+      
+      // 绘制时间文本
+      ctx.fillStyle = 'white';
+      ctx.font = '20px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(timeString, timeX + 8, timeY + 20);
+      
+      ctx.font = '16px sans-serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.fillText(appText, timeX + 8, timeY + 36);
 
       // 导出图片
       wx.canvasToTempFilePath({
@@ -519,7 +528,10 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    // 清理定时器
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+    }
   },
 
   /**
