@@ -134,6 +134,9 @@ Page({
         icon: 'none',
         duration: 1500
       });
+      this.setData({
+        showMemoryInput: false
+      })
     }
   },
 
