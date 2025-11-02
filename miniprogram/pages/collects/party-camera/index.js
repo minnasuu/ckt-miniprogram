@@ -10,7 +10,7 @@ Page({
     showMemoryInput: false, // 是否显示纪念语输入弹窗
     memoryText: '输入纪念语...', // 纪念语内容
     currentTime: '', // 当前时间
-    currentLocation: '桃花源', // 当前位置
+    currentLocation: '', // 当前位置
     memberList: [],
   },
 
@@ -53,6 +53,9 @@ Page({
         that.setData({
           photoPath: tempFilePath
         });
+
+        // 拍照成功后自动获取定位
+        that.getCurrentLocation();
       },
       fail: (err) => {
         console.error('拍照失败:', err);
@@ -64,6 +67,232 @@ Page({
           title: '拍照失败，请重试',
           icon: 'none',
           duration: 2000
+        });
+      }
+    });
+  },
+
+  /**
+   * 获取当前定位
+   */
+  getCurrentLocation() {
+    const that = this;
+
+    // 先检查是否已授权
+    wx.getSetting({
+      success: (res) => {
+        if (res.authSetting['scope.userLocation'] === true) {
+          // 已授权，直接获取定位
+          that.getLocation();
+        } else if (res.authSetting['scope.userLocation'] === false) {
+          // 已拒绝授权，引导用户去设置页面
+          wx.showModal({
+            title: '需要定位权限',
+            content: '获取位置信息需要您授权定位权限，以便记录拍照地点',
+            confirmText: '去设置',
+            cancelText: '跳过',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                wx.openSetting({
+                  success: (settingRes) => {
+                    if (settingRes.authSetting['scope.userLocation']) {
+                      that.getLocation();
+                    }
+                  }
+                });
+              } else {
+                // 用户选择跳过，使用默认位置
+                that.setData({
+                  currentLocation: '未知位置'
+                });
+              }
+            }
+          });
+        } else {
+          // 未询问过权限，请求授权
+          that.requestLocationPermission();
+        }
+      },
+      fail: () => {
+        // 获取设置失败，直接尝试获取定位
+        that.requestLocationPermission();
+      }
+    });
+  },
+
+  /**
+   * 请求定位权限
+   */
+  requestLocationPermission() {
+    const that = this;
+
+    wx.authorize({
+      scope: 'scope.userLocation',
+      success: () => {
+        that.getLocation();
+      },
+      fail: () => {
+        // 用户拒绝授权
+        wx.showModal({
+          title: '定位权限',
+          content: '获取位置信息需要您授权定位权限，是否开启？',
+          confirmText: '去设置',
+          cancelText: '跳过',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              wx.openSetting({
+                success: (settingRes) => {
+                  if (settingRes.authSetting['scope.userLocation']) {
+                    that.getLocation();
+                  }
+                }
+              });
+            } else {
+              that.setData({
+                currentLocation: '未知位置'
+              });
+            }
+          }
+        });
+      }
+    });
+  },
+
+  /**
+   * 获取定位信息
+   */
+  getLocation() {
+    const that = this;
+
+    wx.showLoading({
+      title: '获取位置中...',
+      mask: true
+    });
+
+    wx.getLocation({
+      type: 'gcj02', // 使用 gcj02 坐标系，适用于国内地图服务
+      isHighAccuracy: true, // 开启高精度定位
+      highAccuracyExpireTime: 5000, // 高精度定位超时时间 5秒
+      success: (res) => {
+        const latitude = res.latitude;
+        const longitude = res.longitude;
+        const accuracy = res.accuracy;
+
+        console.log('定位成功:', { latitude, longitude, accuracy });
+
+        // 使用逆地址解析获取地址信息
+        that.reverseGeocoding(latitude, longitude);
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('获取定位失败:', err);
+
+        // 根据错误类型给出不同提示
+        let errorMsg = '定位失败';
+        if (err.errMsg && err.errMsg.includes('auth deny')) {
+          errorMsg = '定位权限被拒绝';
+        } else if (err.errMsg && err.errMsg.includes('timeout')) {
+          errorMsg = '定位超时，请重试';
+        } else if (err.errMsg && err.errMsg.includes('fail')) {
+          errorMsg = '定位服务不可用';
+        }
+
+        that.setData({
+          currentLocation: errorMsg
+        });
+
+        wx.showToast({
+          title: errorMsg,
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    });
+  },
+
+  /**
+   * 逆地址解析（坐标转地址）
+   * 使用腾讯位置服务 API，需要配置 key
+   */
+  reverseGeocoding(latitude, longitude) {
+    const that = this;
+
+    // 腾讯位置服务密钥（需要在 https://lbs.qq.com/ 申请）
+    const TENCENT_MAP_KEY = 'YOUR_TENCENT_MAP_KEY';
+
+    // 如果没有配置密钥，只显示经纬度
+    if (TENCENT_MAP_KEY === 'YOUR_TENCENT_MAP_KEY') {
+      wx.hideLoading();
+      console.warn('未配置腾讯地图密钥，仅显示经纬度');
+      that.setData({
+        currentLocation: `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`
+      });
+      return;
+    }
+
+    // 调用腾讯位置服务逆地址解析 API
+    wx.request({
+      url: 'https://apis.map.qq.com/ws/geocoder/v1/',
+      data: {
+        location: `${latitude},${longitude}`,
+        key: TENCENT_MAP_KEY,
+        get_poi: 1, // 返回 POI（兴趣点）信息
+        output: 'json'
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      success: (res) => {
+        wx.hideLoading();
+
+        if (res.statusCode === 200 && res.data.status === 0) {
+          const result = res.data.result;
+          let locationText = '';
+
+          // 优先级1: 使用最近的 POI 信息（如：星巴克、北京大学）
+          if (result.pois && result.pois.length > 0) {
+            locationText = result.pois[0].title;
+          }
+          // 优先级2: 使用推荐格式化地址
+          else if (result.formatted_addresses && result.formatted_addresses.recommend) {
+            locationText = result.formatted_addresses.recommend;
+          }
+          // 优先级3: 使用标准地址并简化
+          else if (result.address_component) {
+            const ac = result.address_component;
+            // 组合：区县 + 街道 + 街道号
+            if (ac.street) {
+              locationText = `${ac.district || ''}${ac.street}${ac.street_number || ''}`;
+            } else if (ac.district) {
+              locationText = ac.district;
+            } else {
+              locationText = result.address || '未知位置';
+            }
+          }
+
+          // 去除多余空格
+          locationText = locationText.trim() || '未知位置';
+
+          that.setData({
+            currentLocation: locationText
+          });
+
+          console.log('逆地址解析成功:', locationText);
+        } else {
+          // API 返回错误状态
+          console.error('逆地址解析失败:', res.data);
+          that.setData({
+            currentLocation: `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`
+          });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('逆地址解析请求失败:', err);
+
+        // 网络请求失败，显示经纬度
+        that.setData({
+          currentLocation: `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`
         });
       }
     });
@@ -91,7 +320,8 @@ Page({
         if (res.confirm) {
           this.setData({
             photoPath: '',
-            memoryText: ''
+            memoryText: '输入纪念语...',
+            currentLocation: ''
           });
           wx.showToast({
             title: '相框已清空',
@@ -386,7 +616,7 @@ Page({
         });
       }
 
-      // 绘制时间水印
+      // 绘制时间和位置水印
       const now = new Date();
       const timeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       
@@ -394,14 +624,22 @@ Page({
       ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
       ctx.font = '20px sans-serif';
       const timeWidth = ctx.measureText(timeString).width;
-      const appText = '聚会相机 生成';
+
+      // 位置信息
+      const locationText = this.data.currentLocation || '';
       ctx.font = '16px sans-serif';
+      const locationWidth = locationText ? ctx.measureText('📍 ' + locationText).width : 0;
+
+      const appText = '聚会相机 生成';
       const appWidth = ctx.measureText(appText).width;
-      const maxWidth = Math.max(timeWidth, appWidth);
+
+      const maxWidth = Math.max(timeWidth, locationWidth, appWidth);
+      const lineCount = locationText ? 3 : 2;
+      const bgHeight = lineCount * 20 + 8;
       
       const timeX = 800 - maxWidth - 32;
-      const timeY = 800 - 48;
-      ctx.fillRect(timeX, timeY, maxWidth + 16, 40);
+      const timeY = 800 - bgHeight - 8;
+      ctx.fillRect(timeX, timeY, maxWidth + 16, bgHeight);
       
       // 绘制时间文本
       ctx.fillStyle = 'white';
@@ -409,9 +647,18 @@ Page({
       ctx.textAlign = 'left';
       ctx.fillText(timeString, timeX + 8, timeY + 20);
       
+      // 绘制位置信息（如果有）
+      if (locationText) {
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.fillText('📍 ' + locationText, timeX + 8, timeY + 38);
+      }
+
+      // 绘制应用信息
       ctx.font = '16px sans-serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.fillText(appText, timeX + 8, timeY + 36);
+      const appY = locationText ? timeY + 56 : timeY + 36;
+      ctx.fillText(appText, timeX + 8, appY);
 
       // 导出图片
       wx.canvasToTempFilePath({

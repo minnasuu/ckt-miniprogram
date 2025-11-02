@@ -43,5 +43,8 @@
     "scope.writePhotosAlbum": {
       "desc": "需要您的授权以保存图片到相册"
     }
-  }
+  },
+  "requiredPrivateInfos": [
+    "chooseAddress"
+  ]
 }
