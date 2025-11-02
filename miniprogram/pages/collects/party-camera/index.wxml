@@ -28,19 +28,28 @@
                    src="{{photoPath}}" 
                    mode="aspectFill">
             </image>
-            
-            <!-- 实时显示的时间水印 -->
-            <view class="time-watermark">
-              <text class="time-text">{{currentTime}}</text>
-              <text class="app-text">聚会相机 生成</text>
-            </view>
-            
-            <!-- 实时显示的纪念语 -->
-            <view wx:if="{{memoryText}}" class="memory-overlay">
-              <text class="memory-text">{{memoryText}}</text>
-            </view>
           </view>
         </view>
+      </view>
+     <view class="time-watermark-container">
+     <!-- 实时显示的纪念语 -->
+      <text wx:if="{{memoryText}}" class="memory-text">{{memoryText}}</text>
+      <!-- 实时显示的时间水印 -->
+      <view wx:if="{{photoPath}}" class="time-watermark">
+        <text class="time-text">{{currentTime}}</text>
+        <view wx:if="{{currentLocation}}" class="location-text">
+         <view class='location-cion'></view>
+         {{currentLocation}}
+        </view>
+      </view>
+      <!-- 成员 -->
+      <view  wx:if="{{memberList.length > 0}}" class="member-container">
+        <view wx:for="{{memberList}}" wx:key="index" class="member-item">
+          <image class="member-image" src="{{item.avatar}}" mode="aspectFill"></image>
+          <text class="member-name">{{item.name}}</text>
+        </view>
+        <view class='add-button'>+</view>
+      </view>
       </view>
     </view>
 

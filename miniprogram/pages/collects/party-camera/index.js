@@ -10,6 +10,8 @@ Page({
     showMemoryInput: false, // 是否显示纪念语输入弹窗
     memoryText: '', // 纪念语内容
     currentTime: '', // 当前时间
+    currentLocation: '桃花源', // 当前位置
+    memberList: [],
   },
 
   /**
