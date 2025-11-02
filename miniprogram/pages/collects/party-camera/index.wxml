@@ -53,6 +53,10 @@
       </view>
     </view>
 
+<!-- 底部提示 -->
+    <view class="footer">
+      <text class="footer-text">✨ 记录此时此刻的我们 ✨</text>
+    </view>
     <!-- 操作按钮组 -->
     <view wx:if="{{photoPath}}" class="button-group">
     <reset-button bind:reset="onClearPhoto"></reset-button>
@@ -60,10 +64,6 @@
     <share-button bind:share="onShareFriend"></share-button>
     </view>
 
-    <!-- 底部提示 -->
-    <view class="footer">
-      <text class="footer-text">✨ 记录此时此刻的我们 ✨</text>
-    </view>
   </view>
 
   <!-- 纪念语输入弹窗 -->

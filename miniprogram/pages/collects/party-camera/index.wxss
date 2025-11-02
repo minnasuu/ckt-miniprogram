@@ -58,7 +58,7 @@
   padding: 24px;
   box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
-  margin-bottom: 30px;
+  margin-bottom: 16px;
 }
 .card-inner {
   min-height: 300px;
@@ -204,7 +204,7 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-top: 12px;
 }
 .icon-button {
   width: 44px;
@@ -221,7 +221,6 @@
 /* 底部 */
 .footer {
   text-align: center;
-  margin-top: 16px;
 }
 .footer-text {
   font-size: 14px;
