@@ -168,6 +168,7 @@
   color: var(--ckt-gray-8);
 }
 .add-button {
+  position: relative;
   width: 24px;
   height: 24px;
   border: 1px dashed var(--ckt-gray-5);
@@ -176,6 +177,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.add-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 1px;
+  background-color: var(--ckt-gray-6);
+  transform: translateY(-50%) translateX(-50%);
+}
+.add-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 12px;
+  background-color: var(--ckt-gray-6);
+  transform: translateX(-50%) translateY(-50%);
 }
 /* 操作按钮组 */
 .button-group {

@@ -33,7 +33,7 @@
       </view>
      <view class="time-watermark-container">
      <!-- 实时显示的纪念语 -->
-      <text wx:if="{{memoryText}}" class="memory-text">{{memoryText}}</text>
+      <text wx:if="{{photoPath}}" class="memory-text" ontap="onAddMemory">{{memoryText}}</text>
       <!-- 实时显示的时间水印 -->
       <view wx:if="{{photoPath}}" class="time-watermark">
         <text class="time-text">{{currentTime}}</text>
@@ -43,12 +43,12 @@
         </view>
       </view>
       <!-- 成员 -->
-      <view  wx:if="{{memberList.length > 0}}" class="member-container">
+      <view  wx:if="{{photoPath}}" class="member-container">
         <view wx:for="{{memberList}}" wx:key="index" class="member-item">
           <image class="member-image" src="{{item.avatar}}" mode="aspectFill"></image>
           <text class="member-name">{{item.name}}</text>
         </view>
-        <view class='add-button'>+</view>
+        <view class='add-button'></view>
       </view>
       </view>
     </view>
@@ -58,7 +58,6 @@
     <reset-button bind:reset="onClearPhoto"></reset-button>
     <download-button bind:download="onSaveLocal"></download-button>
     <share-button bind:share="onShareFriend"></share-button>
-    <input-button bind:input="onAddMemory"></input-button>
     </view>
 
     <!-- 底部提示 -->

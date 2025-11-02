@@ -8,7 +8,7 @@ Page({
     photoPath: '', // 当前照片路径
     shareImagePath: '', // 分享图片路径
     showMemoryInput: false, // 是否显示纪念语输入弹窗
-    memoryText: '', // 纪念语内容
+    memoryText: '输入纪念语...', // 纪念语内容
     currentTime: '', // 当前时间
     currentLocation: '桃花源', // 当前位置
     memberList: [],
